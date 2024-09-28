@@ -1,12 +1,16 @@
 import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useState } from "react"
+import { useNavigate } from "react-router-dom";
 
 const Login: React.FC = () => {
 
-  // Respo
-  const [LoginRequest, setLoginRequest] = useState({
-    idTipoUsuario: "3",
+  // Hook para redireccionar a otra página
+  const navigate = useNavigate();
+
+  // Formulario para enviar los datos del login
+  const [loginRequest, setLoginRequest] = useState({
+    idTipoUsuario: "1",
     correo: "",
     contrasenia: "",
   });
@@ -15,23 +19,38 @@ const Login: React.FC = () => {
 
     e.preventDefault();
     
-    const dataToSent = LoginRequest;
+    const dataToSent = loginRequest;
     
     try {
-      
+
+      // Enviar los datos al servidor
       const response = await axios.post("http://192.168.0.8:5045/api/Autenticacion/login", dataToSent);
 
-      if (response.data === 200) {
+      // Si la respuesta es correcta y el IdUsuario es diferente de 0
+      if (response.status === 200 && response.data.IdUsuario !== 0) {
         alert(response.data.mensaje);
+        navigate("/Admin/Home");
       } else {
         alert(response.data.mensaje);
       }
 
     } catch (error) {
-      console.log("Error:", error);
-      alert("Ocurrió un error durante el inicio de sesión. Intentelo nuevamente más tarde.")
+
+      // Si el error es de tipo AxiosError y tiene una respuesta
+      if (axios.isAxiosError(error) && error.response) {
+        const { status, data } = error.response;
+        if(status === 400) {
+          alert(data.mensaje);
+        } else {
+          alert(data.mensaje);
+        }
+      } else {
+        console.log("Error:", error);
+        alert("Ocurrió un error durante el inicio de sesión. Intentelo nuevamente más tarde.")
+      }
+
     }
-    
+
   }
 
   return (
@@ -72,11 +91,11 @@ const Login: React.FC = () => {
               <InputLabel id="lbl-tipoUsuario">Tipo de usuario</InputLabel>
               <Select
                 labelId="lbl-tipoUsuario"
-                value={LoginRequest.idTipoUsuario}
-                onChange={(e) => setLoginRequest({ ...LoginRequest, idTipoUsuario: e.target.value })}
+                value={loginRequest.idTipoUsuario}
+                onChange={(e) => setLoginRequest({ ...loginRequest, idTipoUsuario: e.target.value })}
               >
                 <MenuItem value="1" selected>Cliente</MenuItem>
-                <MenuItem value="2">vendedor</MenuItem> {/* Editar */}
+                <MenuItem value="2">Vendedor</MenuItem>
                 <MenuItem value="3">Administrador</MenuItem>
               </Select>
             </FormControl>
@@ -85,8 +104,8 @@ const Login: React.FC = () => {
               sx={{ mb: 2 }}
               label="Correo"
               variant="standard"
-              value={LoginRequest.correo}
-              onChange={(e) => setLoginRequest({ ...LoginRequest, correo: e.target.value})}
+              value={loginRequest.correo}
+              onChange={(e) => setLoginRequest({ ...loginRequest, correo: e.target.value})}
             />
             <TextField
               fullWidth
@@ -94,8 +113,8 @@ const Login: React.FC = () => {
               type="password"
               label="Contraseña"
               variant="standard"
-              value={LoginRequest.contrasenia}
-              onChange={(e) => setLoginRequest({ ...LoginRequest, contrasenia: e.target.value })}
+              value={loginRequest.contrasenia}
+              onChange={(e) => setLoginRequest({ ...loginRequest, contrasenia: e.target.value })}
             />
           </Box>
           <Button
