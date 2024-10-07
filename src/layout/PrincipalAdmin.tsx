@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 const PrincipalAdmin = () => {
 
   // Estado para controlar la apertura y cierre de la barra
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   // Función para alternar el estado de la barra lateral
   const alternar = () => {

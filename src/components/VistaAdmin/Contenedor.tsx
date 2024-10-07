@@ -16,6 +16,7 @@ const Contenedor: React.FC<ContenedorProps> = ({ children }) => {
         display: "flex",
         flexDirection: "column",
         bgcolor: "#DEDEDE",
+        overflowX: "auto",
       }}
     >
 
@@ -29,11 +30,22 @@ const Contenedor: React.FC<ContenedorProps> = ({ children }) => {
           transition: "all 0.3s ease",
           borderRadius: 2,
           bgcolor: "#fff",
+          overflow: "auto",
         }}
       >
 
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+
         {/* Contenido */}
         {children}
+
+        </Box>
 
       </Card>
 

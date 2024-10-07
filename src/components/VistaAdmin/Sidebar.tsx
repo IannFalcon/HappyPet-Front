@@ -154,22 +154,6 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
                 )}
               </ListItemButton>
 
-              {/* Marcas */}
-              <ListItemButton
-                component={Link}
-                to="/admin/home/productos/marcas"
-                sx={estilosSeleccionado("/admin/home/productos/marcas", estilosItemChild())}
-              >
-                <ListItemIcon sx={estilosIconos}>
-                  <AddBusiness />
-                </ListItemIcon>
-                {open && (
-                  <ListItemText
-                    primary="Marcas"
-                  />
-                )}
-              </ListItemButton>
-
               {/* Categorias */}
               <ListItemButton
                 component={Link}
@@ -182,6 +166,22 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
                 {open && (
                   <ListItemText
                     primary="Categorias"
+                  />
+                )}
+              </ListItemButton>
+
+              {/* Marcas */}
+              <ListItemButton
+                component={Link}
+                to="/admin/home/productos/marcas"
+                sx={estilosSeleccionado("/admin/home/productos/marcas", estilosItemChild())}
+              >
+                <ListItemIcon sx={estilosIconos}>
+                  <AddBusiness />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary="Marcas"
                   />
                 )}
               </ListItemButton>
