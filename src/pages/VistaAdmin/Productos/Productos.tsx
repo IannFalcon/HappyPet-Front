@@ -11,6 +11,8 @@ import AgregarProductos from "./AgregarProducto";
 interface Data {
   idProducto: number;
   nombre: string;
+  idcategoria: number;
+  idmarca: number;
   descripcion: string;
   precioUnitario: number;
   stock: number;
@@ -37,6 +39,7 @@ interface Columna {
 
 const columnas: Columna[] = [
   { id: "idProducto", label: "#", minWidth: 10 },
+  { id: "rutaImagen", label: "Imagen", minWidth: 100 },
   { id: "nombre", label: "Nombre", minWidth: 100 },
   { id: "descripcion", label: "Descripción", minWidth: 100 },
   { id: "precioUnitario", label: "Precio", minWidth: 50 },
@@ -68,6 +71,8 @@ const Productos: React.FC = () => {
       const data = response.data.data.map((item: Data) => ({
         idProducto: item.idProducto,
         nombre: item.nombre,
+        idCategoria: item.idcategoria,
+        idMarca: item.idmarca,
         descripcion: item.descripcion,
         precioUnitario: item.precioUnitario,
         stock: item.stock,
@@ -130,7 +135,9 @@ const Productos: React.FC = () => {
                     key={columna.id}
                     align={columna.align}
                   >
-                  {columna.id === "productoCategoria" 
+                  { columna.id === "rutaImagen"
+                  ? <img src={producto.rutaImagen} alt={producto.nombre} style={{ width: 70, height: 60 }} />
+                  : columna.id === "productoCategoria" 
                   ? (producto.productoCategoria.nombre) 
                   : columna.id === "productoMarca"
                   ? (producto.productoMarca.nombre)
