@@ -38,7 +38,6 @@ interface Columna {
 }
 
 const columnas: Columna[] = [
-  { id: "idProducto", label: "#", minWidth: 10 },
   { id: "rutaImagen", label: "Imagen", minWidth: 100 },
   { id: "nombre", label: "Nombre", minWidth: 100 },
   { id: "descripcion", label: "Descripción", minWidth: 100 },
