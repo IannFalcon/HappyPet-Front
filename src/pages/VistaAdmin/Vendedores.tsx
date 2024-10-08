@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Contenedor from '../../components/VistaAdmin/Contenedor';
 import ContenedorBotones from '../../components/VistaAdmin/ContenedorBotones';
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { AddCircle, Download } from '@mui/icons-material';
 import ContenedorTabla from '../../components/VistaAdmin/ContenedorTabla';
 import axios from 'axios';
+import { formatoFecha } from '../../utils/utils';
+import { BotonAgregar, BotonExportar } from '../../components/VistaAdmin/Botones';
 
 interface Data {
   idUsuario: number;
@@ -53,7 +54,7 @@ const Vendedores: React.FC = () => {
 
   const obtenerVendedores = async () => {
     try {
-      const response = await axios.get("http://192.168.0.8:5045/api/Vendedor");
+      const response = await axios.get("http://192.168.0.3:5045/api/Vendedor");
       const data = response.data.data.map((item: Data) => ({
         idUsuario: item.idUsuario,
         nombre: item.nombre,
@@ -63,7 +64,7 @@ const Vendedores: React.FC = () => {
         telefono: item.telefono,
         direccion: item.direccion,
         correo: item.correo,
-        fecRegistro: item.fecRegistro,
+        fecRegistro: formatoFecha(item.fecRegistro),
         usuTipoDoc: {
           idTipoDocumento: item.usuTipoDoc.idTipoDocumento,
           descripcion: item.usuTipoDoc.descripcion,
@@ -86,21 +87,14 @@ const Vendedores: React.FC = () => {
   return (
     <Contenedor>
       <ContenedorBotones>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddCircle />}
-        >
-          Nuevo Vendedor
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ ml: "auto" }}
-          startIcon={<Download />}
-        >
-          Exportar
-        </Button>
+        <BotonAgregar
+          onClick={() => console.log("Agregar")}
+          text="Agregar vendedor"
+        />
+        <BotonExportar
+          onClick={() => console.log("Exportar")}
+          text="Exportar"
+        />
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>

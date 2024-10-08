@@ -2,12 +2,12 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from "../pages/Autenticacion/Login";
 import PrincipalAdmin from "../layout/PrincipalAdmin";
 import Resumen from "../pages/VistaAdmin/Resumen";
-import Productos from "../pages/VistaAdmin/Productos";
+import Productos from "../pages/VistaAdmin/Productos/Productos";
 import Vendedores from "../pages/VistaAdmin/Vendedores";
 import Ventas from "../pages/VistaAdmin/Ventas";
 import Clientes from "../pages/VistaAdmin/Clientes";
-import Categorias from "../pages/VistaAdmin/Categorias";
-import Marcas from "../pages/VistaAdmin/Marcas";
+import Categorias from "../pages/VistaAdmin/Categorias/Categorias";
+import Marcas from "../pages/VistaAdmin/Marcas/Marcas";
 import Usuarios from "../pages/VistaAdmin/Usuarios";
 
 export const router = createBrowserRouter([

@@ -1,10 +1,11 @@
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import Contenedor from '../../components/VistaAdmin/Contenedor'
-import ContenedorBotones from '../../components/VistaAdmin/ContenedorBotones';
-import { AddCircle } from '@mui/icons-material';
-import ContenedorTabla from '../../components/VistaAdmin/ContenedorTabla';
+import Contenedor from '../../../components/VistaAdmin/Contenedor'
+import ContenedorBotones from '../../../components/VistaAdmin/ContenedorBotones';
+import ContenedorTabla from '../../../components/VistaAdmin/ContenedorTabla';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import AgregarCategoria from './AgregarCategoria';
+import { BotonAgregar } from '../../../components/VistaAdmin/Botones';
 
 interface Data {
   idCategoria: number;
@@ -28,9 +29,19 @@ const Categorias: React.FC = () => {
 
   const [categorias, setCategorias] = useState<Data[]>([]);
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = (categoria?: Data) => {
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
+
   const obtenerCategorias = async () => {
     try {
-      const response = await axios.get("http://192.168.0.8:5045/api/Categoria");
+      const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
       const data = response.data.data.map((item: Data) => ({
         idCategoria: item.idCategoria,
         nombre: item.nombre,
@@ -48,13 +59,18 @@ const Categorias: React.FC = () => {
   return (
     <Contenedor>
       <ContenedorBotones>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddCircle />}
-        >
-          Agregar categoría
-        </Button>
+
+        <BotonAgregar
+          onClick={() => handleOpenModal()}
+          text="Agregar categoría"
+        />
+
+        <AgregarCategoria
+          open={openModal}
+          onClose={handleCloseModal}
+          categoria={null}
+        />
+
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>

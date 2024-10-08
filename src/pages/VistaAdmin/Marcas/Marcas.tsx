@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import Contenedor from "../../components/VistaAdmin/Contenedor"
+import Contenedor from "../../../components/VistaAdmin/Contenedor"
 import axios from "axios";
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import { AddCircle } from "@mui/icons-material";
-import ContenedorBotones from "../../components/VistaAdmin/ContenedorBotones";
-import ContenedorTabla from "../../components/VistaAdmin/ContenedorTabla";
+import ContenedorBotones from "../../../components/VistaAdmin/ContenedorBotones";
+import ContenedorTabla from "../../../components/VistaAdmin/ContenedorTabla";
+import { BotonAgregar } from "../../../components/VistaAdmin/Botones";
+import AgregarMarca from "./AgregarMarca";
 
 interface Data {
   idMarca: number;
@@ -28,9 +29,19 @@ const Marcas: React.FC = () => {
 
   const [marcas, setMarcas] = useState<Data[]>([]);
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = (marca?: Data) => {
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
+
   const obtenerMarcas = async () => {
     try {
-      const response = await axios.get("http://192.168.0.8:5045/api/Marca");
+      const response = await axios.get("http://192.168.0.3:5045/api/Marca");
       const data = response.data.data.map((item: Data) => ({
         idMarca: item.idMarca,
         nombre: item.nombre,
@@ -48,13 +59,19 @@ const Marcas: React.FC = () => {
   return (
     <Contenedor>
       <ContenedorBotones>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddCircle />}
-        >
-          Agregar marca
-        </Button>
+        
+        <BotonAgregar
+          onClick={() => handleOpenModal()}
+          text="Agregar marca"
+        />
+
+        {/* Modal */}
+        <AgregarMarca
+          open={openModal}
+          onClose={handleCloseModal}
+          marca={null}
+        />
+
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>

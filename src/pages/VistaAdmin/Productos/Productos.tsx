@@ -1,10 +1,12 @@
-import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import Contenedor from "../../components/VistaAdmin/Contenedor";
-import { AddCircle, Download } from "@mui/icons-material";
-import ContenedorBotones from "../../components/VistaAdmin/ContenedorBotones";
+import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import Contenedor from "../../../components/VistaAdmin/Contenedor";
+import ContenedorBotones from "../../../components/VistaAdmin/ContenedorBotones";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import ContenedorTabla from "../../components/VistaAdmin/ContenedorTabla";
+import ContenedorTabla from "../../../components/VistaAdmin/ContenedorTabla";
+import { formatoFecha } from "../../../utils/utils";
+import { BotonAgregar, BotonExportar } from "../../../components/VistaAdmin/Botones";
+import AgregarProductos from "./AgregarProducto";
 
 interface Data {
   idProducto: number;
@@ -50,15 +52,19 @@ const Productos: React.FC = () => {
 
   const [productos, setProductos] = useState<Data[]>([]);
 
-  const formatoFecha = (fecha: string) => {
-    const date = new Date(fecha);
-    const mes = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
-    return `${date.getDate()}-${mes}-${date.getFullYear()}`;
-  }
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = (producto?: Data) => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   const obtenerProductos = async () => {
     try {
-      const response = await axios.get("http://192.168.0.8:5045/api/Producto");
+      const response = await axios.get("http://192.168.0.3:5045/api/Producto");
       const data = response.data.data.map((item: Data) => ({
         idProducto: item.idProducto,
         nombre: item.nombre,
@@ -86,21 +92,21 @@ const Productos: React.FC = () => {
   return (
     <Contenedor>
       <ContenedorBotones>
-        <Button
-          variant="contained"
-          color="success"
-          startIcon={<AddCircle />}
-        >
-          Nuevo Producto
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ ml: "auto" }}
-          startIcon={<Download />}
-        >
-          Exportar
-        </Button>
+        <BotonAgregar
+          onClick={() => handleOpenModal()}
+          text="Agregar producto"
+        />
+
+        <AgregarProductos 
+          open={openModal}
+          onClose={handleCloseModal}
+          producto={null}
+        />
+
+        <BotonExportar
+          onClick={() => console.log("Exportar productos")}
+          text="Exportar"
+        />
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>

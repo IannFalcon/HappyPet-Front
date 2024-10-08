@@ -24,7 +24,7 @@ const Login: React.FC = () => {
     try {
 
       // Enviar los datos al servidor
-      const response = await axios.post("http://192.168.0.8:5045/api/Autenticacion/login", dataToSent);
+      const response = await axios.post("http://192.168.0.3:5045/api/Autenticacion/login", dataToSent);
 
       // Si la respuesta es correcta y el IdUsuario es diferente de 0
       if (response.status === 200 && response.data.IdUsuario !== 0) {

@@ -10,7 +10,7 @@ const Contenedor: React.FC<ContenedorProps> = ({ children }) => {
     <Box
       sx={{
         flexGrow: 1,
-        minHeight: "100vh",
+        height: "100vh",
         p: 3,
         pt: "9.5rem",
         display: "flex",

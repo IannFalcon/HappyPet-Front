@@ -1,10 +1,11 @@
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import Contenedor from "../../components/VistaAdmin/Contenedor";
 import ContenedorBotones from "../../components/VistaAdmin/ContenedorBotones";
-import { Download } from "@mui/icons-material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ContenedorTabla from "../../components/VistaAdmin/ContenedorTabla";
+import { formatoFecha } from "../../utils/utils";
+import { BotonAgregar, BotonExportar } from "../../components/VistaAdmin/Botones";
 
 interface Data {
   idUsuario: number;
@@ -53,7 +54,7 @@ const Clientes: React.FC = () => {
 
   const obtenerClientes = async () => {
     try {
-      const response = await axios.get("http://192.168.0.8:5045/api/Cliente");
+      const response = await axios.get("http://192.168.0.3:5045/api/Cliente");
       const data = response.data.data.map((item: Data) => ({
         idUsuario: item.idUsuario,
         nombre: item.nombre,
@@ -63,7 +64,7 @@ const Clientes: React.FC = () => {
         telefono: item.telefono,
         direccion: item.direccion,
         correo: item.correo,
-        fecRegistro: item.fecRegistro,
+        fecRegistro: formatoFecha(item.fecRegistro),
         usuTipoDoc: {
           idTipoDocumento: item.usuTipoDoc.idTipoDocumento,
           descripcion: item.usuTipoDoc.descripcion,
@@ -86,17 +87,14 @@ const Clientes: React.FC = () => {
   return (
     <Contenedor>
       <ContenedorBotones>
-        <Button>
-          
-        </Button>
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ ml: "auto" }}
-          startIcon={<Download />}
-        >
-          Exportar
-        </Button>
+        <BotonAgregar
+          onClick={() => console.log("Agregar cliente")}
+          text="Agregar cliente"
+        />
+        <BotonExportar
+          onClick={() => console.log("Exportar clientes")}
+          text="Exportar"
+        />
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>
