@@ -65,8 +65,6 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
     nombreImagen: "",
     rutaImagen: "",
     fecVencimiento: "",
-    fecRegistro: "",
-    eliminado: ""
   });
 
   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,6 +119,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
   const handleCloseModal = () => {
     onClose();
     handleLimpiarFormulario();
+    window.location.reload();
   }
 
   const handleLimpiarFormulario = () => {
@@ -135,8 +134,6 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       nombreImagen: "",
       rutaImagen: "",
       fecVencimiento: "",
-      fecRegistro: "",
-      eliminado: ""
     });
     setCategoriaSeleccionada(0);
     setMarcaSeleccionada(0);
@@ -147,10 +144,12 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
     e.preventDefault();
 
-    const { idProducto, fecVencimiento, ...data } = formData;
+    const { idProducto, fecVencimiento, nombreImagen, rutaImagen, ...data } = formData;
     const dataToSend = {
       ...data,
       fecVencimiento: fecVencimiento === "" ? null : fecVencimiento,
+      nombreImagen: nombreImagen === "" ? null : nombreImagen,
+      rutaImagen: rutaImagen === "" ? null : rutaImagen
     }
 
     try {
@@ -178,7 +177,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       alto={580}
     >
       <TituloModal titulo="Registrar Producto"/>
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -261,17 +260,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
             <TextField
               fullWidth
               type="date"
-              label="Fecha de registro"
-              variant="outlined"
-              value={formData.fecRegistro}
-              onChange={(e) => setFormData({ ...formData, fecRegistro: e.target.value })}
-              InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2}}
-            />
-            <TextField
-              fullWidth
-              type="date"
-              label="Fecha de vencimiento"
+              label="Fecha de vencimiento (Opcional)"
               variant="outlined"
               value={formData.fecVencimiento}
               onChange={(e) => setFormData({ ...formData, fecVencimiento: e.target.value })}
@@ -281,7 +270,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
             <TextField
               fullWidth
               type="file"
-              label="Imagen"
+              label="Imagen (Opcional)"
               variant="outlined"
               onChange={handleImagen}
               InputLabelProps={{ shrink: true }}

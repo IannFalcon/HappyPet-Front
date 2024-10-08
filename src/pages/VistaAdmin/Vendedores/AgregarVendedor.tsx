@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ContenedorModal from '../../../components/VistaAdmin/ContenedorModal';
 import TituloModal from '../../../components/VistaAdmin/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import BotonesModal from '../../../components/VistaAdmin/BotonesModal';
+import axios from 'axios';
 
 interface ModalProps {
   open: boolean;
@@ -32,6 +33,44 @@ interface Vendedor {
 
 const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
 
+  const [formData, setFormData] = useState({
+    idUsuario: "",
+    nombre: "",
+    apellidoPaterno: "",
+    apellidoMaterno: "",
+    idTipoDocumento: "",
+    nroDocumento: "",
+    telefono: "",
+    direccion: "",
+    correo: "",
+  });
+
+  const handleRegistrarVendedor = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault(); // Evitar recargar la página
+
+    const { idUsuario, ...dataToSend } = formData; // Eliminar idUsuario del objeto a enviar
+
+    try {
+
+      // Enviar datos al servidor
+      const response = await axios.post("http://192.168.0.3:5045/api/Vendedor", dataToSend);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        onClose();
+      } else {
+        alert("Error al registrar vendedor");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el vendedor");
+    }
+
+  }
+
   return (
     <ContenedorModal
       open={open}
@@ -40,6 +79,7 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
       alto={600}
     >
       <TituloModal titulo="Agregar Vendedor"/>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -47,29 +87,35 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               fullWidth
               label="Nombre"
               variant="outlined"
+              value={formData.nombre}
+              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
               label="Apellido Paterno"
               variant="outlined"
+              value={formData.apellidoPaterno}
+              onChange={(e) => setFormData({ ...formData, apellidoPaterno: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
               label="Apellido Materno"
               variant="outlined"
+              value={formData.apellidoMaterno}
+              onChange={(e) => setFormData({ ...formData, apellidoMaterno: e.target.value })}
               sx={{ mb: 2 }}
             />
             <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel id="tipo-usuario">Tipo de usuario</InputLabel>
+              <InputLabel id="tipo-documento">Tipo de documento</InputLabel>
               <Select
                 fullWidth
-                labelId="tipo-usuario"
+                labelId="tipo-documento"
                 label="Tipo de documento"
                 variant="outlined"
-                // value={}
-                // onChange={}
+                value={formData.idTipoDocumento}
+                onChange={(e) => setFormData({ ...formData, idTipoDocumento: e.target.value })}
               >
                 <MenuItem value={0} selected>Seleccionar</MenuItem>
                 <MenuItem value={1}>DNI</MenuItem>
@@ -81,6 +127,8 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               fullWidth
               label="Nro. Documento"
               variant="outlined"
+              value={formData.nroDocumento}
+              onChange={(e) => setFormData({ ...formData, nroDocumento: e.target.value })}
               sx={{ mb: 2 }}
             />
           </Grid>
@@ -89,12 +137,16 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               fullWidth
               label="Teléfono"
               variant="outlined"
+              value={formData.telefono}
+              onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
               label="Dirección"
               variant="outlined"
+              value={formData.direccion}
+              onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -102,14 +154,8 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               type="email"
               label="Correo"
               variant="outlined"
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              type="date"
-              label="Fecha de registro"
-              variant="outlined"
-              InputLabelProps={{ shrink: true }}
+              value={formData.correo}
+              onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
               sx={{ mb: 2 }}
             />
           </Grid>
@@ -117,7 +163,7 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
       </Box>
       <BotonesModal 
         cerrar={onClose}
-        registrar={onClose}
+        registrar={handleRegistrarVendedor}
       />
     </ContenedorModal>
   );
