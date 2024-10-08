@@ -3,12 +3,12 @@ import Login from "../pages/Autenticacion/Login";
 import PrincipalAdmin from "../layout/PrincipalAdmin";
 import Resumen from "../pages/VistaAdmin/Resumen";
 import Productos from "../pages/VistaAdmin/Productos/Productos";
-import Vendedores from "../pages/VistaAdmin/Vendedores";
+import Vendedores from "../pages/VistaAdmin/Vendedores/Vendedores";
 import Ventas from "../pages/VistaAdmin/Ventas";
-import Clientes from "../pages/VistaAdmin/Clientes";
 import Categorias from "../pages/VistaAdmin/Categorias/Categorias";
 import Marcas from "../pages/VistaAdmin/Marcas/Marcas";
 import Usuarios from "../pages/VistaAdmin/Usuarios";
+import Clientes from "../pages/VistaAdmin/Clientes/Clientes";
 
 export const router = createBrowserRouter([
   {

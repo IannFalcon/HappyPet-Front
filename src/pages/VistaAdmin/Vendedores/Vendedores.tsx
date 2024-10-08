@@ -1,11 +1,12 @@
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import Contenedor from "../../components/VistaAdmin/Contenedor";
-import ContenedorBotones from "../../components/VistaAdmin/ContenedorBotones";
-import axios from "axios";
-import { useEffect, useState } from "react";
-import ContenedorTabla from "../../components/VistaAdmin/ContenedorTabla";
-import { formatoFecha } from "../../utils/utils";
-import { BotonAgregar, BotonExportar } from "../../components/VistaAdmin/Botones";
+import React, { useEffect, useState } from 'react'
+import Contenedor from '../../../components/VistaAdmin/Contenedor';
+import ContenedorBotones from '../../../components/VistaAdmin/ContenedorBotones';
+import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import ContenedorTabla from '../../../components/VistaAdmin/ContenedorTabla';
+import axios from 'axios';
+import { formatoFecha } from '../../../utils/utils';
+import { BotonAgregar, BotonExportar } from '../../../components/VistaAdmin/Botones';
+import AgregarVendedor from './AgregarVendedor';
 
 interface Data {
   idUsuario: number;
@@ -48,13 +49,23 @@ const columnas: Columna[] = [
   { id: "acciones", label: "Acciones", minWidth: 50 },
 ]
 
-const Clientes: React.FC = () => {
+const Vendedores: React.FC = () => {
 
-  const [clientes, setClientes] = useState<Data[]>([]);
+  const [vendedores, setVendedores] = useState<Data[]>([]);
 
-  const obtenerClientes = async () => {
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  }
+
+  const obtenerVendedores = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Cliente");
+      const response = await axios.get("http://192.168.0.3:5045/api/Vendedor");
       const data = response.data.data.map((item: Data) => ({
         idUsuario: item.idUsuario,
         nombre: item.nombre,
@@ -74,27 +85,36 @@ const Clientes: React.FC = () => {
           descripcion: item.usuTipoUsu.descripcion,
         }  
       }));
-      setClientes(data);
+      setVendedores(data);
     } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    obtenerClientes();
+    obtenerVendedores();
   }, []);
 
   return (
     <Contenedor>
       <ContenedorBotones>
+
         <BotonAgregar
-          onClick={() => console.log("Agregar cliente")}
-          text="Agregar cliente"
+          onClick={handleOpenModal}
+          text="Agregar vendedor"
         />
+
+        <AgregarVendedor
+          open={openModal}
+          onClose={handleCloseModal}
+          vendedor={null}
+        />
+
         <BotonExportar
-          onClick={() => console.log("Exportar clientes")}
+          onClick={() => console.log("Exportar")}
           text="Exportar"
         />
+
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>
@@ -109,14 +129,14 @@ const Clientes: React.FC = () => {
           ))}
         </TableHead>
         <TableBody>
-          {clientes.map((cliente) => (
+          {vendedores.map((vendedor) => (
             <TableRow>
               {columnas.map((columna) => {
-                const value = columna.id === "acciones" ? "" : (cliente as any)[columna.id];
+                const value = columna.id === "acciones" ? "" : (vendedor as any)[columna.id];
                 return (
                   <TableCell key={columna.id} align={columna.align}>
                     {columna.id === "usuTipoDoc" ?
-                      cliente.usuTipoDoc.descripcion
+                      vendedor.usuTipoDoc.descripcion
                     : columna.id === "acciones" ? (
                       <Box>
                         <Button variant="contained" color="primary">Editar</Button>
@@ -134,4 +154,4 @@ const Clientes: React.FC = () => {
   )
 }
 
-export default Clientes;
+export default Vendedores;
