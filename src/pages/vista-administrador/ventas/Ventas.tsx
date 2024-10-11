@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import Contenedor from '../../../components/VistaAdmin/Contenedor'
-import ContenedorBotones from '../../../components/VistaAdmin/ContenedorBotones';
+import Contenedor from '../../../components/admin-components/Contenedor'
+import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import { BotonExportar } from '../../../components/VistaAdmin/Botones';
-import ContenedorTabla from '../../../components/VistaAdmin/ContenedorTabla';
+import { BotonExportar } from '../../../components/admin-components/Botones';
+import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
 
 interface Data {

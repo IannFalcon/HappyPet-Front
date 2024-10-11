@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import ContenedorModal from '../../../components/VistaAdmin/ContenedorModal';
-import TituloModal from '../../../components/VistaAdmin/TituloModal';
+import ContenedorModal from '../../../components/admin-components/ContenedorModal';
+import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import BotonesModal from '../../../components/VistaAdmin/BotonesModal';
+import BotonesModal from '../../../components/admin-components/BotonesModal';
 import { CleaningServices } from '@mui/icons-material';
 import axios from 'axios';
 

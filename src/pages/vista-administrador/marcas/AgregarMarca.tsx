@@ -1,7 +1,7 @@
 import { Box, TextField } from "@mui/material";
-import ContenedorModal from "../../../components/VistaAdmin/ContenedorModal";
-import TituloModal from "../../../components/VistaAdmin/TituloModal";
-import BotonesModal from "../../../components/VistaAdmin/BotonesModal";
+import ContenedorModal from "../../../components/admin-components/ContenedorModal";
+import TituloModal from "../../../components/admin-components/TituloModal";
+import BotonesModal from "../../../components/admin-components/BotonesModal";
 import { useState } from "react";
 import axios from "axios";
 

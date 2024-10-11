@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import Contenedor from '../../../components/VistaAdmin/Contenedor';
-import ContenedorBotones from '../../../components/VistaAdmin/ContenedorBotones';
+import Contenedor from '../../../components/admin-components/Contenedor';
+import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
-import ContenedorTabla from '../../../components/VistaAdmin/ContenedorTabla';
+import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
 import { formatoFecha } from '../../../utils/utils';
-import { BotonAgregar, BotonExportar } from '../../../components/VistaAdmin/Botones';
+import { BotonAgregar, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarVendedor from './AgregarVendedor';
 
 interface Data {

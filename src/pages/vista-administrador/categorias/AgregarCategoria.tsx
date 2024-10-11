@@ -1,7 +1,7 @@
 import { Box, TextField } from "@mui/material";
-import ContenedorModal from "../../../components/VistaAdmin/ContenedorModal";
-import TituloModal from "../../../components/VistaAdmin/TituloModal";
-import BotonesModal from "../../../components/VistaAdmin/BotonesModal";
+import ContenedorModal from "../../../components/admin-components/ContenedorModal";
+import TituloModal from "../../../components/admin-components/TituloModal";
+import BotonesModal from "../../../components/admin-components/BotonesModal";
 import axios from "axios";
 import { useState } from "react";
 
@@ -22,12 +22,6 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
     idCategoria: "",
     nombre: "",
   });
-
-  const handleCloseModal = () => {
-    onClose();
-    handleLimpiarFormulario();
-    window.location.reload();
-  };
 
   const handleLimpiarFormulario = () => {
     setFormData({
@@ -61,6 +55,12 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
     }
 
   }
+
+  const handleCloseModal = () => {
+    onClose();
+    handleLimpiarFormulario();
+    window.location.reload();
+  };
 
   return (
     <ContenedorModal

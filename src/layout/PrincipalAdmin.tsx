@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import { useState } from "react";
-import Header from "../components/VistaAdmin/Header";
+import Header from "../components/admin-components/Header";
 import { Outlet } from "react-router-dom";
 
 const PrincipalAdmin = () => {

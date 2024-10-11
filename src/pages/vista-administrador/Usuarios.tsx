@@ -1,6 +1,6 @@
 import { Box, Divider } from "@mui/material";
-import Contenedor from "../../components/VistaAdmin/Contenedor";
-import { ElementosResumen } from "../../components/VistaAdmin/ElementosResumen";
+import Contenedor from "../../components/admin-components/Contenedor";
+import { ElementosResumen } from "../../components/admin-components/ElementosResumen";
 import { Engineering, NoAccounts, Person, PersonOff } from "@mui/icons-material";
 
 const Usuarios: React.FC =() => {

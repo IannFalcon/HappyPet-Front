@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import ContenedorModal from '../../../components/VistaAdmin/ContenedorModal';
-import TituloModal from '../../../components/VistaAdmin/TituloModal';
+import ContenedorModal from '../../../components/admin-components/ContenedorModal';
+import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import BotonesModal from '../../../components/VistaAdmin/BotonesModal';
+import BotonesModal from '../../../components/admin-components/BotonesModal';
 import axios from 'axios';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
-  cliente: Cliente | null;
+  vendedor: Vendedor | null;
 }
 
-interface Cliente {
+interface Vendedor {
   idUsuario: number;
   nombre: string;
   apellidoPaterno: string;
@@ -31,7 +31,7 @@ interface Cliente {
   }
 }
 
-const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
+const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
 
   const [formData, setFormData] = useState({
     idUsuario: "",
@@ -45,27 +45,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     correo: "",
   });
 
-  const handleCloseModal = () => {
-    onClose();
-    handleLimpiarFormulario();
-    window.location.reload();
-  }
-
-  const handleLimpiarFormulario = () => {
-    setFormData({
-      idUsuario: "",
-      nombre: "",
-      apellidoPaterno: "",
-      apellidoMaterno: "",
-      idTipoDocumento: "",
-      nroDocumento: "",
-      telefono: "",
-      direccion: "",
-      correo: "",
-    });
-  }
-
-  const handleRegistrarCliente = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRegistrarVendedor = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault(); // Evitar recargar la página
 
@@ -74,17 +54,19 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Cliente", dataToSend);
-      if (response.status === 200) {
+      const response = await axios.post("http://192.168.0.3:5045/api/Vendedor", dataToSend);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
         alert(response.data.mensaje);
-        handleCloseModal();
+        onClose();
       } else {
-        alert("Error al registrar cliente");
+        alert("Error al registrar vendedor");
       }
 
     } catch (error) {
       console.error("Error: ", error);
-      alert("Ocurrió un error al registrar el cliente");
+      alert("Ocurrió un error al registrar el vendedor");
     }
 
   }
@@ -96,7 +78,8 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
       ancho={700}
       alto={600}
     >
-      <TituloModal titulo="Agregar Cliente"/>
+      <TituloModal titulo="Agregar Vendedor"/>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -125,10 +108,10 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
               sx={{ mb: 2 }}
             />
             <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
-              <InputLabel id="tipo-usuario">Tipo de usuario</InputLabel>
+              <InputLabel id="tipo-documento">Tipo de documento</InputLabel>
               <Select
                 fullWidth
-                labelId="tipo-usuario"
+                labelId="tipo-documento"
                 label="Tipo de documento"
                 variant="outlined"
                 value={formData.idTipoDocumento}
@@ -178,13 +161,13 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
           </Grid>
         </Grid>
       </Box>
-      <BotonesModal
-        registrar={handleRegistrarCliente}
+      <BotonesModal 
         cerrar={onClose}
+        registrar={handleRegistrarVendedor}
       />
     </ContenedorModal>
   );
 
 }
 
-export default AgregarCliente;
+export default AgregarVendedor;

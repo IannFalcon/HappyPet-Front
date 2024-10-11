@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import Contenedor from "../../../components/VistaAdmin/Contenedor"
-import axios from "axios";
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
-import ContenedorBotones from "../../../components/VistaAdmin/ContenedorBotones";
-import ContenedorTabla from "../../../components/VistaAdmin/ContenedorTabla";
-import { BotonAgregar } from "../../../components/VistaAdmin/Botones";
-import AgregarMarca from "./AgregarMarca";
+import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import Contenedor from '../../../components/admin-components/Contenedor'
+import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
+import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { BotonAgregar } from '../../../components/admin-components/Botones';
+import AgregarCategoria from './AgregarCategoria';
 
 interface Data {
-  idMarca: number;
+  idCategoria: number;
   nombre: string;
 }
 
@@ -20,18 +20,18 @@ interface Columna {
 }
 
 const columnas: Columna[] = [
-  { id: "idMarca", label: "#", minWidth: 10 },
+  { id: "idCategoria", label: "#", minWidth: 10 },
   { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },  
+  { id: "acciones", label: "Acciones", minWidth: 50 },
 ]
 
-const Marcas: React.FC = () => {
+const Categorias: React.FC = () => {
 
-  const [marcas, setMarcas] = useState<Data[]>([]);
+  const [categorias, setCategorias] = useState<Data[]>([]);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (marca?: Data) => {
+  const handleOpenModal = (categoria?: Data) => {
     setOpenModal(true);
   }
 
@@ -39,37 +39,36 @@ const Marcas: React.FC = () => {
     setOpenModal(false);
   }
 
-  const obtenerMarcas = async () => {
+  const obtenerCategorias = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Marca");
+      const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
       const data = response.data.data.map((item: Data) => ({
-        idMarca: item.idMarca,
+        idCategoria: item.idCategoria,
         nombre: item.nombre,
       }));
-      setMarcas(data);
+      setCategorias(data);
     } catch (error) {
       console.error(error);
     }
   }
 
   useEffect(() => {
-    obtenerMarcas();
+    obtenerCategorias();
   }, []);
 
   return (
     <Contenedor>
       <ContenedorBotones>
-        
+
         <BotonAgregar
           onClick={() => handleOpenModal()}
-          text="Agregar marca"
+          text="Agregar categoría"
         />
 
-        {/* Modal */}
-        <AgregarMarca
+        <AgregarCategoria
           open={openModal}
           onClose={handleCloseModal}
-          marca={null}
+          categoria={null}
         />
 
       </ContenedorBotones>
@@ -86,18 +85,26 @@ const Marcas: React.FC = () => {
           ))}
         </TableHead>
         <TableBody>
-          {marcas.map((marca) => (
+          {categorias.map((categoria) => (
             <TableRow>
               {columnas.map((columna) => {
-                const value = columna.id === "acciones" ? "" : (marca as any)[columna.id];
+                const value = columna.id === "acciones" ? "" : (categoria as any)[columna.id];
                 return (
                   <TableCell key={columna.id} align={columna.align}>
                     {columna.id === "acciones" ? (
                       <Box>
-                        <Button variant="contained" color="primary">Editar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="primary"
+                          onClick={() => handleOpenModal(categoria)}
+                        >
+                          Editar
+                        </Button>
                         <Button variant="contained" color="error">Eliminar</Button>
                       </Box>
-                    ) : value}
+                    ) : (
+                      value
+                    )}
                   </TableCell>
                 )
               })}
@@ -109,4 +116,4 @@ const Marcas: React.FC = () => {
   )
 }
 
-export default Marcas;
+export default Categorias;
