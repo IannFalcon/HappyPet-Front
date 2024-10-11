@@ -77,7 +77,7 @@ const Productos: React.FC = () => {
         stock: item.stock,
         nombreImagen: item.nombreImagen,
         rutaImagen: item.rutaImagen,
-        fecVencimiento: formatoFecha(item.fecVencimiento),
+        fecVencimiento: item.fecVencimiento ? formatoFecha(item.fecVencimiento) : null,
         fecRegistro: formatoFecha(item.fecRegistro),
         productoCategoria: item.productoCategoria,
         productoMarca: item.productoMarca,
@@ -101,7 +101,7 @@ const Productos: React.FC = () => {
           text="Agregar producto"
         />
 
-        <AgregarProductos 
+        <AgregarProductos
           open={openModal}
           onClose={handleCloseModal}
           producto={null}
@@ -140,6 +140,8 @@ const Productos: React.FC = () => {
                   ? (producto.productoCategoria.nombre) 
                   : columna.id === "productoMarca"
                   ? (producto.productoMarca.nombre)
+                  : columna.id === "fecVencimiento"
+                  ? (producto.fecVencimiento ?? "No aplica")
                   : columna.id === "acciones" ? (
                     <Box>
                       <Button variant="contained" color="primary">Editar</Button>

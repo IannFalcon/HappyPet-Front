@@ -4,8 +4,8 @@ import ContenedorBotones from '../../../components/VistaAdmin/ContenedorBotones'
 import ContenedorTabla from '../../../components/VistaAdmin/ContenedorTabla';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import AgregarCategoria from './AgregarCategoria';
 import { BotonAgregar } from '../../../components/VistaAdmin/Botones';
+import AgregarCategoria from './AgregarCategoria';
 
 interface Data {
   idCategoria: number;
