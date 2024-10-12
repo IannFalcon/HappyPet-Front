@@ -4,7 +4,7 @@ import ContenedorBotones from '../../../components/admin-components/ContenedorBo
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
-import { formatoFecha } from '../../../utils/utils';
+import { formatoFecha } from '../../../utils/dateFormat';
 import { BotonAgregar, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarVendedor from './AgregarVendedor';
 
@@ -51,14 +51,17 @@ const columnas: Columna[] = [
 const Vendedores: React.FC = () => {
 
   const [vendedores, setVendedores] = useState<Data[]>([]);
+  const [editarVendedor, setEditarVendedor] = useState<Data | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (vendedor?: Data) => {
+    setEditarVendedor(vendedor || null);
     setOpenModal(true);
   }
 
   const handleCloseModal = () => {
+    setEditarVendedor(null);
     setOpenModal(false);
   }
 
@@ -99,14 +102,14 @@ const Vendedores: React.FC = () => {
       <ContenedorBotones>
 
         <BotonAgregar
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal}
           text="Agregar vendedor"
         />
 
         <AgregarVendedor
           open={openModal}
           onClose={handleCloseModal}
-          vendedor={null}
+          vendedor={editarVendedor}
         />
 
         <BotonExportar
@@ -138,7 +141,13 @@ const Vendedores: React.FC = () => {
                       vendedor.usuTipoDoc.descripcion
                     : columna.id === "acciones" ? (
                       <Box>
-                        <Button variant="contained" color="primary">Editar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="primary"
+                          onClick={() => handleOpenModal(vendedor)}
+                        >
+                          Editar
+                        </Button>
                         <Button variant="contained" color="error">Eliminar</Button>
                       </Box>
                     ) : value}

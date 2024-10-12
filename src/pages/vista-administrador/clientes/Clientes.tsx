@@ -1,6 +1,6 @@
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useEffect, useState } from "react";
-import { formatoFecha } from "../../../utils/utils";
+import { formatoFecha } from "../../../utils/dateFormat";
 import Contenedor from "../../../components/admin-components/Contenedor";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
@@ -51,14 +51,17 @@ const columnas: Columna[] = [
 const Clientes: React.FC = () => {
 
   const [clientes, setClientes] = useState<Data[]>([]);
+  const [editarCliente, setEditarCliente] = useState<Data | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = () => {
+  const handleOpenModal = (cliente?: Data) => {
+    setEditarCliente(cliente || null);
     setOpenModal(true);
   }
 
   const handleCloseModal = () => {
+    setEditarCliente(null);
     setOpenModal(false);
   }
 
@@ -99,14 +102,14 @@ const Clientes: React.FC = () => {
       <ContenedorBotones>
 
         <BotonAgregar
-          onClick={handleOpenModal}
+          onClick={() => handleOpenModal}
           text="Agregar cliente"
         />
 
         <AgregarCliente
           open={openModal}
           onClose={handleCloseModal}
-          cliente={null}
+          cliente={editarCliente}
         />
 
         <BotonExportar
@@ -138,7 +141,13 @@ const Clientes: React.FC = () => {
                       cliente.usuTipoDoc.descripcion
                     : columna.id === "acciones" ? (
                       <Box>
-                        <Button variant="contained" color="primary">Editar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="primary"
+                          onClick={() => handleOpenModal(cliente)}
+                        >
+                          Editar
+                        </Button>
                         <Button variant="contained" color="error">Eliminar</Button>
                       </Box>
                     ) : value}

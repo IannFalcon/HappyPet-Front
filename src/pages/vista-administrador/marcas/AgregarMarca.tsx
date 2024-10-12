@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import ContenedorModal from "../../../components/admin-components/ContenedorModal";
 import TituloModal from "../../../components/admin-components/TituloModal";
 import BotonesModal from "../../../components/admin-components/BotonesModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 interface ModalProps {
@@ -23,17 +23,26 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
     nombre: "",
   });
 
-  const handleCloseModal = () => {
-    onClose();
-    handleLimpiarFormulario();
-    window.location.reload();
-  }
-
   const handleLimpiarFormulario = () => {
     setFormData({
       idMarca: "",
       nombre: "",
     });
+  }
+
+  useEffect(() => {
+    if(marca) {
+      setFormData({
+        idMarca: marca.idMarca.toString(),
+        nombre: marca.nombre,
+      });
+    }
+  }, [marca]);
+
+  const handleCloseModal = () => {
+    onClose();
+    handleLimpiarFormulario();
+    window.location.reload();
   }
 
   const handleRegistrarMarca = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -62,6 +71,32 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
 
   }
 
+  const handleActualizarMarca = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault(); // Evitar recargar la página
+
+    const { ...dataToSend } = formData;
+
+    try {
+
+      // Enviar datos al servidor
+      const response = await axios.put("http://192.168.0.3:5045/api/Marca", dataToSend);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        handleCloseModal();
+      } else {
+        alert("Error al actualizar marca");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al actualizar la marca");
+    }
+
+  }
+
   return (
     <ContenedorModal
       open={open}
@@ -81,7 +116,11 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
         />
       </Box>
       <BotonesModal
-        registrar={handleRegistrarMarca}
+        registrar={
+          marca 
+          ? handleActualizarMarca
+          : handleRegistrarMarca
+        }
         cerrar={handleCloseModal}
       />
     </ContenedorModal>

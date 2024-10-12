@@ -5,6 +5,7 @@ import { Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextF
 import BotonesModal from '../../../components/admin-components/BotonesModal';
 import { CleaningServices } from '@mui/icons-material';
 import axios from 'axios';
+import { reFormatoFecha } from '../../../utils/dateFormat';
 
 interface ModalProps {
   open: boolean;
@@ -67,6 +68,24 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
     fecVencimiento: "",
   });
 
+  const handleLimpiarFormulario = () => {
+    setFormData({
+      idProducto: "",
+      nombre: "",
+      idCategoria: "",
+      idMarca: "",
+      descripcion: "",
+      precioUnitario: "",
+      stock: "",
+      nombreImagen: "",
+      rutaImagen: "",
+      fecVencimiento: "",
+    });
+    setCategoriaSeleccionada(0);
+    setMarcaSeleccionada(0);
+    setImagenPrevia(null);
+  }
+
   const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -82,6 +101,26 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       reader.readAsDataURL(file);
     }
   }
+
+  useEffect(() => {
+    if(producto) {
+      setFormData({
+        idProducto: producto.idProducto.toString(),
+        nombre: producto.nombre,
+        idCategoria: producto.idCategoria.toString(),
+        idMarca: producto.idMarca.toString(),
+        descripcion: producto.descripcion,
+        precioUnitario: producto.precioUnitario.toString(),
+        stock: producto.stock.toString(),
+        nombreImagen: producto.nombreImagen,
+        rutaImagen: producto.rutaImagen,
+        fecVencimiento: producto.fecVencimiento ? reFormatoFecha(producto.fecVencimiento) : "",
+      });
+      setCategoriaSeleccionada(producto.idCategoria);
+      setMarcaSeleccionada(producto.idMarca);
+      setImagenPrevia(producto.rutaImagen);
+    }
+  }, [producto]);
 
   useEffect(() => {
 
@@ -116,28 +155,11 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
   }, []);
 
+
   const handleCloseModal = () => {
     onClose();
     handleLimpiarFormulario();
     window.location.reload();
-  }
-
-  const handleLimpiarFormulario = () => {
-    setFormData({
-      idProducto: "",
-      nombre: "",
-      idCategoria: "",
-      idMarca: "",
-      descripcion: "",
-      precioUnitario: "",
-      stock: "",
-      nombreImagen: "",
-      rutaImagen: "",
-      fecVencimiento: "",
-    });
-    setCategoriaSeleccionada(0);
-    setMarcaSeleccionada(0);
-    setImagenPrevia(null);
   }
 
   const handleRegistrarProducto = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -169,6 +191,35 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
   }
 
+  const handleActualizarProducto = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault();
+
+    const { fecVencimiento, nombreImagen, rutaImagen, ...data } = formData;
+    const dataToSend = {
+      ...data,
+      fecVencimiento: fecVencimiento === "" ? null : fecVencimiento,
+      nombreImagen: nombreImagen === "" ? null : nombreImagen,
+      rutaImagen: rutaImagen === "" ? null : rutaImagen
+    }
+
+    try {
+
+      const response = await axios.put("http://192.168.0.3:5045/api/Producto", dataToSend);
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        handleCloseModal();
+      } else {
+        alert("Error al registrar producto");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el producto");
+    }
+
+  }
+
   return (
     <ContenedorModal
       open={open}
@@ -177,7 +228,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       alto={580}
     >
       <TituloModal titulo="Registrar Producto"/>
-      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
+      <pre>{JSON.stringify(formData, null, 2)}</pre>
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
@@ -309,7 +360,11 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
         </Grid>
       </Box>
       <BotonesModal
-        registrar={handleRegistrarProducto}
+        registrar={
+          producto
+          ? handleActualizarProducto
+          : handleRegistrarProducto
+        }
         cerrar={onClose}
       />
     </ContenedorModal>

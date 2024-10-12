@@ -28,14 +28,17 @@ const columnas: Columna[] = [
 const Marcas: React.FC = () => {
 
   const [marcas, setMarcas] = useState<Data[]>([]);
+  const [editarMarca, setEditarMarca] = useState<Data | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = (marca?: Data) => {
+    setEditarMarca(marca || null);
     setOpenModal(true);
   }
 
   const handleCloseModal = () => {
+    setEditarMarca(null);
     setOpenModal(false);
   }
 
@@ -69,7 +72,7 @@ const Marcas: React.FC = () => {
         <AgregarMarca
           open={openModal}
           onClose={handleCloseModal}
-          marca={null}
+          marca={editarMarca}
         />
 
       </ContenedorBotones>
@@ -94,7 +97,13 @@ const Marcas: React.FC = () => {
                   <TableCell key={columna.id} align={columna.align}>
                     {columna.id === "acciones" ? (
                       <Box>
-                        <Button variant="contained" color="primary">Editar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="primary"
+                          onClick={() => handleOpenModal(marca)}
+                        >
+                          Editar
+                        </Button>
                         <Button variant="contained" color="error">Eliminar</Button>
                       </Box>
                     ) : value}

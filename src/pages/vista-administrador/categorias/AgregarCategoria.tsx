@@ -3,7 +3,7 @@ import ContenedorModal from "../../../components/admin-components/ContenedorModa
 import TituloModal from "../../../components/admin-components/TituloModal";
 import BotonesModal from "../../../components/admin-components/BotonesModal";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface ModalProps {
   open: boolean;
@@ -29,6 +29,17 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
       nombre: "",
     });
   };
+
+  useEffect(() => {
+    if(categoria) {
+      setFormData({
+        idCategoria: categoria.idCategoria.toString(),
+        nombre: categoria.nombre,
+      });
+    } else {
+      handleLimpiarFormulario();
+    }
+  }, [categoria]);
 
   const handleRegistrarCategoria = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
@@ -56,6 +67,31 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
 
   }
 
+  const handleActualizarCategoria = async (e: React.MouseEvent<HTMLButtonElement>) => {
+      
+    e.preventDefault(); // Evitar recargar la página
+  
+    const { ...dataToSend } = formData;
+
+    try {
+  
+      // Enviar datos al servidor
+      const response = await axios.put("http://192.168.0.3:5045/api/Categoria", dataToSend);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        handleCloseModal();
+      } else {
+        alert("Error al actualizar categoría");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al actualizar la categoría");
+    }
+  }
+
   const handleCloseModal = () => {
     onClose();
     handleLimpiarFormulario();
@@ -70,6 +106,7 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
       alto={400}
     >
       <TituloModal titulo="Registrar Categoría"/>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <TextField
           fullWidth
@@ -80,7 +117,11 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
         />
       </Box>
       <BotonesModal
-        registrar={handleRegistrarCategoria}
+        registrar={
+          categoria 
+          ? handleActualizarCategoria 
+          : handleRegistrarCategoria
+        }
         cerrar={handleCloseModal}
       />
     </ContenedorModal>

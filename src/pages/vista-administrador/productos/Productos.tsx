@@ -4,15 +4,15 @@ import ContenedorBotones from "../../../components/admin-components/ContenedorBo
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import { formatoFecha } from "../../../utils/utils";
+import { formatoFecha } from "../../../utils/dateFormat";
 import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarProductos from "./AgregarProducto";
 
 interface Data {
   idProducto: number;
   nombre: string;
-  idcategoria: number;
-  idmarca: number;
+  idCategoria: number;
+  idMarca: number;
   descripcion: string;
   precioUnitario: number;
   stock: number;
@@ -53,14 +53,17 @@ const columnas: Columna[] = [
 const Productos: React.FC = () => {
 
   const [productos, setProductos] = useState<Data[]>([]);
+  const [editarProducto, setEditarProducto] = useState<Data | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = (producto?: Data) => {
+    setEditarProducto(producto || null);
     setOpenModal(true);
   };
 
   const handleCloseModal = () => {
+    setEditarProducto(null);
     setOpenModal(false);
   };
 
@@ -70,8 +73,8 @@ const Productos: React.FC = () => {
       const data = response.data.data.map((item: Data) => ({
         idProducto: item.idProducto,
         nombre: item.nombre,
-        idCategoria: item.idcategoria,
-        idMarca: item.idmarca,
+        idCategoria: item.idCategoria,
+        idMarca: item.idMarca,
         descripcion: item.descripcion,
         precioUnitario: item.precioUnitario,
         stock: item.stock,
@@ -104,7 +107,7 @@ const Productos: React.FC = () => {
         <AgregarProductos
           open={openModal}
           onClose={handleCloseModal}
-          producto={null}
+          producto={editarProducto}
         />
 
         <BotonExportar
@@ -144,7 +147,13 @@ const Productos: React.FC = () => {
                   ? (producto.fecVencimiento ?? "No aplica")
                   : columna.id === "acciones" ? (
                     <Box>
-                      <Button variant="contained" color="primary">Editar</Button>
+                      <Button 
+                        variant="contained" 
+                        color="primary"
+                        onClick={() => handleOpenModal(producto)}
+                      >
+                        Editar
+                      </Button>
                       <Button variant="contained" color="error">Eliminar</Button>
                     </Box>
                   ) : (

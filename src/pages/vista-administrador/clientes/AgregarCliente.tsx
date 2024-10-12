@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import ContenedorModal from '../../../components/admin-components/ContenedorModal';
 import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
@@ -45,12 +45,6 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     correo: "",
   });
 
-  const handleCloseModal = () => {
-    onClose();
-    handleLimpiarFormulario();
-    window.location.reload();
-  }
-
   const handleLimpiarFormulario = () => {
     setFormData({
       idUsuario: "",
@@ -65,6 +59,28 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     });
   }
 
+  useEffect(() => {
+    if (cliente) {
+      setFormData({
+        idUsuario: cliente.idUsuario.toString(),
+        nombre: cliente.nombre,
+        apellidoPaterno: cliente.apellidoPaterno,
+        apellidoMaterno: cliente.apellidoMaterno,
+        idTipoDocumento: cliente.usuTipoDoc.idTipoDocumento.toString(),
+        nroDocumento: cliente.nroDocumento,
+        telefono: cliente.telefono,
+        direccion: cliente.direccion,
+        correo: cliente.correo,
+      });
+    }
+  }, [cliente]);
+
+  const handleCloseModal = () => {
+    onClose();
+    handleLimpiarFormulario();
+    window.location.reload();
+  }
+
   const handleRegistrarCliente = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault(); // Evitar recargar la página
@@ -75,6 +91,30 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
 
       // Enviar datos al servidor
       const response = await axios.post("http://192.168.0.3:5045/api/Cliente", dataToSend);
+      if (response.status === 200) {
+        alert(response.data.mensaje);
+        handleCloseModal();
+      } else {
+        alert("Error al registrar cliente");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el cliente");
+    }
+
+  }
+
+  const handleActualizarCliente = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault(); // Evitar recargar la página
+
+    const { ...dataToSend } = formData;
+
+    try {
+
+      // Enviar datos al servidor
+      const response = await axios.put("http://192.168.0.3:5045/api/Cliente", dataToSend);
       if (response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();
@@ -179,7 +219,11 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
         </Grid>
       </Box>
       <BotonesModal
-        registrar={handleRegistrarCliente}
+        registrar={
+          cliente 
+          ? handleActualizarCliente
+          : handleRegistrarCliente
+        }
         cerrar={onClose}
       />
     </ContenedorModal>

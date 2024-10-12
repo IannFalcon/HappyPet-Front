@@ -28,14 +28,17 @@ const columnas: Columna[] = [
 const Categorias: React.FC = () => {
 
   const [categorias, setCategorias] = useState<Data[]>([]);
+  const [editarCategoria, setEditarCategoria] = useState<Data | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
   const handleOpenModal = (categoria?: Data) => {
+    setEditarCategoria(categoria || null);
     setOpenModal(true);
   }
 
   const handleCloseModal = () => {
+    setEditarCategoria(null);
     setOpenModal(false);
   }
 
@@ -68,7 +71,7 @@ const Categorias: React.FC = () => {
         <AgregarCategoria
           open={openModal}
           onClose={handleCloseModal}
-          categoria={null}
+          categoria={editarCategoria}
         />
 
       </ContenedorBotones>
