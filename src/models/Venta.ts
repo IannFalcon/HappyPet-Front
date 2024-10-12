@@ -1,3 +1,5 @@
+import { Cliente } from "./Cliente";
+
 export interface Venta {
   idVenta: number;
   idUsuario: number;
@@ -5,10 +7,5 @@ export interface Venta {
   montoTotal: number;
   idTransaccion: string;
   fecVenta: string;
-  usuarioVenta: {
-    idUsuario: number;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno: string;
-  }
+  usuarioVenta: Cliente;
 }

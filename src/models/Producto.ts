@@ -1,3 +1,6 @@
+import { Categoria } from "./Categoria";
+import { Marca } from "./Marca";
+
 export interface Producto {
   idProducto: number;
   nombre: string;
@@ -10,12 +13,6 @@ export interface Producto {
   rutaImagen: string;
   fecVencimiento: string;
   fecRegistro: string;
-  productoCategoria: {
-    idCategoria: number;
-    nombre: string;
-  };
-  productoMarca: {
-    idMarca: number;
-    nombre: string;
-  };
+  productoCategoria: Categoria;
+  productoMarca: Marca;
 }

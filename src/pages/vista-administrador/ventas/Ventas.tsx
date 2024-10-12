@@ -6,6 +6,7 @@ import { BotonExportar } from '../../../components/admin-components/Botones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
 import { Venta } from '../../../models/Venta';
+import VerDetalleVenta from './VerDetalleVenta';
 
 interface Columna {
   id: keyof Venta | "acciones";
@@ -26,6 +27,20 @@ const columnas: Columna[] = [
 const Ventas: React.FC = () => {
 
   const [ventas, setVentas] = useState<Venta[]>([]);
+  const [ventaSeleccionada, setVentaSeleccionada] = useState<number | null>(null);
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = (idVenta?: number) => {
+    setVentaSeleccionada(idVenta || null);
+    setOpenModal(true);
+  }
+
+  const handleCloseModal = () => {
+    setVentaSeleccionada(null);
+    setOpenModal(false);
+  }
+
 
   const obtenerVentas = async () => {
     try {
@@ -62,6 +77,13 @@ const Ventas: React.FC = () => {
           onClick={() => console.log("Exportar")}
           text="Exportar"
         />
+
+        <VerDetalleVenta
+          open={openModal}
+          onClose={handleCloseModal}
+          idVenta={ventaSeleccionada}
+        />
+
       </ContenedorBotones>
       <ContenedorTabla>
         <TableHead>
@@ -88,7 +110,13 @@ const Ventas: React.FC = () => {
                     ? `S/. ${value}`
                     : columna.id === "acciones" ? (
                       <Box>
-                        <Button variant="contained" color="info">Ver detalle</Button>
+                        <Button 
+                          variant="contained" 
+                          color="info"
+                          onClick={() => handleOpenModal(venta.idVenta)}
+                        >
+                          Ver detalle
+                        </Button>
                       </Box>
                     ) : value}
                   </TableCell>
