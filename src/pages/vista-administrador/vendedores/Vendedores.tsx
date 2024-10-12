@@ -93,6 +93,28 @@ const Vendedores: React.FC = () => {
     }
   }
 
+  const eliminarVendedor = async (idUsuario: number) => {
+
+    try {
+  
+      // Enviar datos al servidor
+      const response = await axios.delete(`http://192.168.0.3:5045/api/Vendedor/${idUsuario}`);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        window.location.reload();
+      } else {
+        alert("Error al eliminar al vendedor");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la eliminación del vendedor");
+    }
+
+  }
+
   useEffect(() => {
     obtenerVendedores();
   }, []);
@@ -102,7 +124,7 @@ const Vendedores: React.FC = () => {
       <ContenedorBotones>
 
         <BotonAgregar
-          onClick={() => handleOpenModal}
+          onClick={() => handleOpenModal()}
           text="Agregar vendedor"
         />
 
@@ -148,7 +170,13 @@ const Vendedores: React.FC = () => {
                         >
                           Editar
                         </Button>
-                        <Button variant="contained" color="error">Eliminar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="error"
+                          onClick={() => eliminarVendedor(vendedor.idUsuario)}
+                        >
+                          Eliminar
+                        </Button>
                       </Box>
                     ) : value}
                   </TableCell>

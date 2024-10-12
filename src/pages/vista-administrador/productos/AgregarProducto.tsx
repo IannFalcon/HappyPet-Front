@@ -228,7 +228,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       alto={580}
     >
       <TituloModal titulo="Registrar Producto"/>
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>

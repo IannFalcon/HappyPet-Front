@@ -55,6 +55,28 @@ const Categorias: React.FC = () => {
     }
   }
 
+  const eliminarCategoria = async (idCategoria: number) => {
+
+    try {
+  
+      // Enviar datos al servidor
+      const response = await axios.delete(`http://192.168.0.3:5045/api/Categoria/${idCategoria}`);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        window.location.reload();
+      } else {
+        alert("Error al eliminar la categoría");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al eliminar la categoría");
+    }
+
+  }
+
   useEffect(() => {
     obtenerCategorias();
   }, []);
@@ -103,7 +125,13 @@ const Categorias: React.FC = () => {
                         >
                           Editar
                         </Button>
-                        <Button variant="contained" color="error">Eliminar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="error"
+                          onClick={() => eliminarCategoria(categoria.idCategoria)}
+                        >
+                          Eliminar
+                        </Button>
                       </Box>
                     ) : (
                       value

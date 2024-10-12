@@ -105,7 +105,7 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
       alto={400}
     >
       <TituloModal titulo="Registrar Marca"/>
-      <pre>{JSON.stringify(formData, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ p: 2 }}>
         <TextField
           fullWidth

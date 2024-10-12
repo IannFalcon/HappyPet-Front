@@ -92,6 +92,28 @@ const Productos: React.FC = () => {
     }
   }
 
+  const eliminarProducto = async (idProducto: number) => {
+
+    try {
+  
+      // Enviar datos al servidor
+      const response = await axios.delete(`http://192.168.0.3:5045/api/Producto/${idProducto}`);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        window.location.reload();
+      } else {
+        alert("Error al eliminar el producto");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la eliminación del producto");
+    }
+
+  }
+
   useEffect(() => {
     obtenerProductos();
   }, []);
@@ -154,7 +176,13 @@ const Productos: React.FC = () => {
                       >
                         Editar
                       </Button>
-                      <Button variant="contained" color="error">Eliminar</Button>
+                      <Button 
+                        variant="contained" 
+                        color="error"
+                        onClick={() => eliminarProducto(producto.idProducto)}
+                      >
+                        Eliminar
+                      </Button>
                     </Box>
                   ) : (
                     value

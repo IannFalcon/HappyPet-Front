@@ -55,6 +55,28 @@ const Marcas: React.FC = () => {
     }
   }
 
+  const eliminarMarca = async (idMarca: number) => {
+
+    try {
+  
+      // Enviar datos al servidor
+      const response = await axios.delete(`http://192.168.0.3:5045/api/Marca/${idMarca}`);
+
+      // Mostrar mensaje de éxito o error
+      if(response.status === 200) {
+        alert(response.data.mensaje);
+        window.location.reload();
+      } else {
+        alert("Error al eliminar la marca");
+      }
+
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al eliminar la marca");
+    }
+
+  }
+
   useEffect(() => {
     obtenerMarcas();
   }, []);
@@ -104,7 +126,13 @@ const Marcas: React.FC = () => {
                         >
                           Editar
                         </Button>
-                        <Button variant="contained" color="error">Eliminar</Button>
+                        <Button 
+                          variant="contained" 
+                          color="error"
+                          onClick={() => eliminarMarca(marca.idMarca)}
+                        >
+                          Eliminar
+                        </Button>
                       </Box>
                     ) : value}
                   </TableCell>
