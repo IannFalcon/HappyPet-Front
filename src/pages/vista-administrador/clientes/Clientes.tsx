@@ -7,29 +7,10 @@ import { BotonAgregar, BotonExportar } from "../../../components/admin-component
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
 import axios from "axios";
 import AgregarCliente from "./AgregarCliente";
-
-interface Data {
-  idUsuario: number;
-  nombre: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-  nroDocumento: string;
-  telefono: string;
-  direccion: string;
-  correo: string;
-  fecRegistro: string;
-  usuTipoDoc: {
-    idTipoDocumento: number;
-    descripcion: string;
-  }
-  usuTipoUsu: {
-    idTipoUsuario: number;
-    descripcion: string;
-  }
-}
+import { Cliente } from "../../../models/Cliente";
 
 interface Columna {
-  id: keyof Data | "acciones";
+  id: keyof Cliente | "acciones";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -50,12 +31,12 @@ const columnas: Columna[] = [
 
 const Clientes: React.FC = () => {
 
-  const [clientes, setClientes] = useState<Data[]>([]);
-  const [editarCliente, setEditarCliente] = useState<Data | null>(null);
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [editarCliente, setEditarCliente] = useState<Cliente | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (cliente?: Data) => {
+  const handleOpenModal = (cliente?: Cliente) => {
     setEditarCliente(cliente || null);
     setOpenModal(true);
   }
@@ -68,7 +49,7 @@ const Clientes: React.FC = () => {
   const obtenerClientes = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Cliente");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Cliente) => ({
         idUsuario: item.idUsuario,
         nombre: item.nombre,
         apellidoPaterno: item.apellidoPaterno,

@@ -4,16 +4,12 @@ import TituloModal from "../../../components/admin-components/TituloModal";
 import BotonesModal from "../../../components/admin-components/BotonesModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Marca } from "../../../models/Marca";
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   marca: Marca | null;
-}
-
-interface Marca {
-  idMarca: number;
-  nombre: string;
 }
 
 const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {

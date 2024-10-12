@@ -4,31 +4,12 @@ import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import BotonesModal from '../../../components/admin-components/BotonesModal';
 import axios from 'axios';
+import { Cliente } from '../../../models/Cliente';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   cliente: Cliente | null;
-}
-
-interface Cliente {
-  idUsuario: number;
-  nombre: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-  nroDocumento: string;
-  telefono: string;
-  direccion: string;
-  correo: string;
-  fecRegistro: string;
-  usuTipoDoc: {
-    idTipoDocumento: number;
-    descripcion: string;
-  }
-  usuTipoUsu: {
-    idTipoUsuario: number;
-    descripcion: string;
-  }
 }
 
 const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {

@@ -4,16 +4,12 @@ import TituloModal from "../../../components/admin-components/TituloModal";
 import BotonesModal from "../../../components/admin-components/BotonesModal";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Categoria } from "../../../models/Categoria";
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   categoria: Categoria | null;
-}
-
-interface Categoria {
-  idCategoria: number;
-  nombre: string;
 }
 
 const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) => {

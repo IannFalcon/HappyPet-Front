@@ -7,29 +7,10 @@ import axios from 'axios';
 import { formatoFecha } from '../../../utils/dateFormat';
 import { BotonAgregar, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarVendedor from './AgregarVendedor';
-
-interface Data {
-  idUsuario: number;
-  nombre: string;
-  apellidoPaterno: string;
-  apellidoMaterno: string;
-  nroDocumento: string;
-  telefono: string;
-  direccion: string;
-  correo: string;
-  fecRegistro: string;
-  usuTipoDoc: {
-    idTipoDocumento: number;
-    descripcion: string;
-  }
-  usuTipoUsu: {
-    idTipoUsuario: number;
-    descripcion: string;
-  }
-}
+import { Vendedor } from '../../../models/Vendedor';
 
 interface Columna {
-  id: keyof Data | "acciones";
+  id: keyof Vendedor | "acciones";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -50,12 +31,12 @@ const columnas: Columna[] = [
 
 const Vendedores: React.FC = () => {
 
-  const [vendedores, setVendedores] = useState<Data[]>([]);
-  const [editarVendedor, setEditarVendedor] = useState<Data | null>(null);
+  const [vendedores, setVendedores] = useState<Vendedor[]>([]);
+  const [editarVendedor, setEditarVendedor] = useState<Vendedor | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (vendedor?: Data) => {
+  const handleOpenModal = (vendedor?: Vendedor) => {
     setEditarVendedor(vendedor || null);
     setOpenModal(true);
   }
@@ -68,7 +49,7 @@ const Vendedores: React.FC = () => {
   const obtenerVendedores = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Vendedor");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Vendedor) => ({
         idUsuario: item.idUsuario,
         nombre: item.nombre,
         apellidoPaterno: item.apellidoPaterno,

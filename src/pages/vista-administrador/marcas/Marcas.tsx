@@ -6,14 +6,10 @@ import ContenedorBotones from "../../../components/admin-components/ContenedorBo
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
 import { BotonAgregar } from "../../../components/admin-components/Botones";
 import AgregarMarca from "./AgregarMarca";
-
-interface Data {
-  idMarca: number;
-  nombre: string;
-}
+import { Marca } from "../../../models/Marca";
 
 interface Columna {
-  id: keyof Data | "acciones";
+  id: keyof Marca | "acciones";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -27,12 +23,12 @@ const columnas: Columna[] = [
 
 const Marcas: React.FC = () => {
 
-  const [marcas, setMarcas] = useState<Data[]>([]);
-  const [editarMarca, setEditarMarca] = useState<Data | null>(null);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
+  const [editarMarca, setEditarMarca] = useState<Marca | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (marca?: Data) => {
+  const handleOpenModal = (marca?: Marca) => {
     setEditarMarca(marca || null);
     setOpenModal(true);
   }
@@ -45,7 +41,7 @@ const Marcas: React.FC = () => {
   const obtenerMarcas = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Marca");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Marca) => ({
         idMarca: item.idMarca,
         nombre: item.nombre,
       }));

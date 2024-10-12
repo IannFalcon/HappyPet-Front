@@ -6,14 +6,10 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BotonAgregar } from '../../../components/admin-components/Botones';
 import AgregarCategoria from './AgregarCategoria';
-
-interface Data {
-  idCategoria: number;
-  nombre: string;
-}
+import { Categoria } from '../../../models/Categoria';
 
 interface Columna {
-  id: keyof Data | "acciones";
+  id: keyof Categoria | "acciones";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -27,12 +23,12 @@ const columnas: Columna[] = [
 
 const Categorias: React.FC = () => {
 
-  const [categorias, setCategorias] = useState<Data[]>([]);
-  const [editarCategoria, setEditarCategoria] = useState<Data | null>(null);
+  const [categorias, setCategorias] = useState<Categoria[]>([]);
+  const [editarCategoria, setEditarCategoria] = useState<Categoria | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (categoria?: Data) => {
+  const handleOpenModal = (categoria?: Categoria) => {
     setEditarCategoria(categoria || null);
     setOpenModal(true);
   }
@@ -45,7 +41,7 @@ const Categorias: React.FC = () => {
   const obtenerCategorias = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Categoria) => ({
         idCategoria: item.idCategoria,
         nombre: item.nombre,
       }));

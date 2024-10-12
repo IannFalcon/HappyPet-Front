@@ -5,24 +5,10 @@ import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/mat
 import { BotonExportar } from '../../../components/admin-components/Botones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
-
-interface Data {
-  idVenta: number;
-  idUsuario: number;
-  totalProductos: number;
-  montoTotal: number;
-  idTransaccion: string;
-  fecVenta: string;
-  usuarioVenta: {
-    idUsuario: number;
-    nombre: string;
-    apellidoPaterno: string;
-    apellidoMaterno: string;
-  }
-}
+import { Venta } from '../../../models/Venta';
 
 interface Columna {
-  id: string | "acciones";
+  id: keyof Venta | "acciones";
   label: string;
   minWidth?: number;
   align?: 'right';
@@ -39,12 +25,12 @@ const columnas: Columna[] = [
 
 const Ventas: React.FC = () => {
 
-  const [ventas, setVentas] = useState<Data[]>([]);
+  const [ventas, setVentas] = useState<Venta[]>([]);
 
   const obtenerVentas = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Venta");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Venta) => ({
         idVenta: item.idVenta,
         idUsuario: item.idUsuario,
         totalProductos: item.totalProductos,

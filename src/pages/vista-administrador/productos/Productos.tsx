@@ -7,31 +7,10 @@ import ContenedorTabla from "../../../components/admin-components/ContenedorTabl
 import { formatoFecha } from "../../../utils/dateFormat";
 import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarProductos from "./AgregarProducto";
-
-interface Data {
-  idProducto: number;
-  nombre: string;
-  idCategoria: number;
-  idMarca: number;
-  descripcion: string;
-  precioUnitario: number;
-  stock: number;
-  nombreImagen: string;
-  rutaImagen: string;
-  fecVencimiento: string;
-  fecRegistro: string;
-  productoCategoria: {
-    idCategoria: number;
-    nombre: string;
-  };
-  productoMarca: {
-    idMarca: number;
-    nombre: string;
-  };
-}
+import { Producto } from "../../../models/Producto";
 
 interface Columna {
-  id: keyof Data | "acciones";
+  id: keyof Producto | "acciones";
   label: string;
   minWidth?: number;
   align?: "left";
@@ -52,12 +31,12 @@ const columnas: Columna[] = [
 
 const Productos: React.FC = () => {
 
-  const [productos, setProductos] = useState<Data[]>([]);
-  const [editarProducto, setEditarProducto] = useState<Data | null>(null);
+  const [productos, setProductos] = useState<Producto[]>([]);
+  const [editarProducto, setEditarProducto] = useState<Producto | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
 
-  const handleOpenModal = (producto?: Data) => {
+  const handleOpenModal = (producto?: Producto) => {
     setEditarProducto(producto || null);
     setOpenModal(true);
   };
@@ -70,7 +49,7 @@ const Productos: React.FC = () => {
   const obtenerProductos = async () => {
     try {
       const response = await axios.get("http://192.168.0.3:5045/api/Producto");
-      const data = response.data.data.map((item: Data) => ({
+      const data = response.data.data.map((item: Producto) => ({
         idProducto: item.idProducto,
         nombre: item.nombre,
         idCategoria: item.idCategoria,

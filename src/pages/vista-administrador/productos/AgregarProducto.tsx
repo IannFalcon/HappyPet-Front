@@ -6,43 +6,14 @@ import BotonesModal from '../../../components/admin-components/BotonesModal';
 import { CleaningServices } from '@mui/icons-material';
 import axios from 'axios';
 import { reFormatoFecha } from '../../../utils/dateFormat';
+import { Producto } from '../../../models/Producto';
+import { Marca } from '../../../models/Marca';
+import { Categoria } from '../../../models/Categoria';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
   producto: Producto | null;
-}
-
-interface Producto {
-  idProducto: number;
-  nombre: string;
-  idCategoria: number;
-  idMarca: number;
-  descripcion: string;
-  precioUnitario: number;
-  stock: number;
-  nombreImagen: string;
-  rutaImagen: string;
-  fecVencimiento: string;
-  fecRegistro: string;
-  productoCategoria: {
-    idCategoria: number;
-    nombre: string;
-  };
-  productoMarca: {
-    idMarca: number;
-    nombre: string;
-  };
-}
-
-interface Marca {
-  idMarca: number;
-  nombre: string;
-}
-
-interface Categoria {
-  idCategoria: number;
-  nombre: string;
 }
 
 const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => {
