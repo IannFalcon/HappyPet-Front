@@ -1,12 +1,8 @@
 import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
-import axios from "axios";
 import { useState } from "react"
-import { useNavigate } from "react-router-dom";
+import { iniciarSesion } from "../../services/autenticacion-service";
 
 const Login: React.FC = () => {
-
-  // Hook para redireccionar a otra página
-  const navigate = useNavigate();
 
   // Formulario para enviar los datos del login
   const [loginRequest, setLoginRequest] = useState({
@@ -18,38 +14,8 @@ const Login: React.FC = () => {
   const ValidarLogin = async (e : React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault();
-    
-    const dataToSent = loginRequest;
-    
-    try {
-
-      // Enviar los datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Autenticacion/login", dataToSent);
-
-      // Si la respuesta es correcta y el IdUsuario es diferente de 0
-      if (response.status === 200 && response.data.IdUsuario !== 0) {
-        alert(response.data.mensaje);
-        navigate("/Admin/Home");
-      } else {
-        alert(response.data.mensaje);
-      }
-
-    } catch (error) {
-
-      // Si el error es de tipo AxiosError y tiene una respuesta
-      if (axios.isAxiosError(error) && error.response) {
-        const { status, data } = error.response;
-        if(status === 400) {
-          alert(data.mensaje);
-        } else {
-          alert(data.mensaje);
-        }
-      } else {
-        console.log("Error:", error);
-        alert("Ocurrió un error durante el inicio de sesión. Intentelo nuevamente más tarde.")
-      }
-
-    }
+    const dataToSend = loginRequest;
+    iniciarSesion(dataToSend);
 
   }
 

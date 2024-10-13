@@ -3,6 +3,7 @@ import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typogr
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { cerrarSesion } from '../../services/autenticacion-service';
 
 // Interfaz para tipar las propiedades del menú
 interface MenuProps {
@@ -261,6 +262,7 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
         {/* Cerrar sesión */}
         <ListItemButton
           sx={estilosSeleccionado("/", {})}
+          onClick={() => cerrarSesion()}
         >
           <ListItemIcon sx={estilosIconos}>
             <Logout />

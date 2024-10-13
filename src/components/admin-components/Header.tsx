@@ -3,6 +3,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { AppBar, Box, CssBaseline, Drawer, Grid, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
+import { cerrarSesion } from "../../services/autenticacion-service";
 
 interface HeaderProps {
   open: boolean;
@@ -12,6 +13,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
   
   const [menuUsuarioEstado, setMenuUsuarioEstado] = useState<null | HTMLElement>(null);
+  const nombreUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.nombreUsuario : "";
 
   const abrirMenuUsuario = (event: React.MouseEvent<HTMLElement>) => {
     setMenuUsuarioEstado(event.currentTarget);
@@ -84,7 +86,7 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
           >
             <Person sx={{ w: 30, h: 30, mr: 2, color: "black" }}/>
             <Typography sx={{ color: "#000", fontWeight: "bold" }}>
-              Nombre Usuario
+              { nombreUsuario }
             </Typography>
             {Boolean(menuUsuarioEstado) ? <ExpandLess sx={{ ml: 1, color: "black" }}/> : <ExpandMore sx={{ ml: 1, color: "black" }}/>}
             <ExpandMore />
@@ -108,7 +110,7 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
             }}
           >
             <MenuItem>Mi perfil</MenuItem>
-            <MenuItem>Cerrar sesión</MenuItem>
+            <MenuItem onClick={() => cerrarSesion()}>Cerrar sesión</MenuItem>
           </Menu>
         </Toolbar>
         <Drawer

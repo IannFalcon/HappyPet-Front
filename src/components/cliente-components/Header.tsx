@@ -1,10 +1,12 @@
 import { ExpandLess, ExpandMore, Person, Pets, ShoppingCart } from '@mui/icons-material';
 import { AppBar, Box, CssBaseline, Grid, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
 import React, { useState } from 'react'
+import { cerrarSesion } from '../../services/autenticacion-service';
 
 const Header = () => {
 
   const [menuUsuarioEstado, setMenuUsuarioEstado] = useState<null | HTMLElement>(null);
+  const nombreUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.nombreUsuario : "";
 
   const abrirMenuUsuario = (event: React.MouseEvent<HTMLElement>) => {
     setMenuUsuarioEstado(event.currentTarget);
@@ -84,7 +86,7 @@ const Header = () => {
             >
               <Person sx={{ w: 30, h: 30, mr: 1 }}/>
               <Typography sx={{ color: "#fff", fontWeight: "bold" }}>
-                Iann Falcon
+                { nombreUsuario }
               </Typography>
               {Boolean(menuUsuarioEstado) ? <ExpandLess sx={{ ml: 2 }}/> : <ExpandMore sx={{ ml: 2 }}/>}
             </Box>
@@ -108,7 +110,7 @@ const Header = () => {
               }}
             >
               <MenuItem>Mi perfil</MenuItem>
-              <MenuItem>Cerrar sesión</MenuItem>
+              <MenuItem onClick={() => cerrarSesion()}>Cerrar sesión</MenuItem>
             </Menu>
           </Box>
         </Toolbar>

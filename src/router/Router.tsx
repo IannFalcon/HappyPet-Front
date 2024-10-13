@@ -11,6 +11,7 @@ import Usuarios from "../pages/vista-administrador/Usuarios";
 import Clientes from "../pages/vista-administrador/clientes/Clientes";
 import Home from "../pages/vista-cliente/Home";
 import PrincipalCliente from "../layout/PrincipalCliente";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const router = createBrowserRouter([
   {
@@ -18,8 +19,12 @@ export const router = createBrowserRouter([
     element: <Login />
   },
   {
-    path: "/HappyPet/",
-    element: <PrincipalCliente />,
+    path: "/happyPet",
+    element: (
+      <ProtectedRoute>
+        <PrincipalCliente />
+      </ProtectedRoute> 
+    ),
     children: [
       {
         index: true,
@@ -29,7 +34,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/admin/home",
-    element: <PrincipalAdmin />,
+    element: (
+      <ProtectedRoute>
+        <PrincipalAdmin />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
