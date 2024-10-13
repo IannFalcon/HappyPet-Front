@@ -1,6 +1,6 @@
-import { ArrowBackIosNew, ExpandMore } from "@mui/icons-material";
+import { ArrowBackIosNew, ExpandLess, ExpandMore, Person } from "@mui/icons-material";
 import MenuIcon from '@mui/icons-material/Menu';
-import { AppBar, Avatar, Box, CssBaseline, Drawer, Grid, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, CssBaseline, Drawer, Grid, IconButton, Menu, MenuItem, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 
@@ -82,12 +82,11 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
             }}
             onClick={abrirMenuUsuario}
           >
-            <Avatar 
-              sx={{ w: 30, h: 30, mr: 2 }}
-            />
+            <Person sx={{ w: 30, h: 30, mr: 2, color: "black" }}/>
             <Typography sx={{ color: "#000", fontWeight: "bold" }}>
               Nombre Usuario
             </Typography>
+            {Boolean(menuUsuarioEstado) ? <ExpandLess sx={{ ml: 1, color: "black" }}/> : <ExpandMore sx={{ ml: 1, color: "black" }}/>}
             <ExpandMore />
           </Box>
           <Menu
@@ -99,6 +98,7 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
                 mt: 2,
                 p: 0,
                 width: "210px",
+                color: "#000",
               },
               "& .MuiMenuItem-root": {
                 "&:hover": {

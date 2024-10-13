@@ -9,11 +9,23 @@ import Categorias from "../pages/vista-administrador/categorias/Categorias";
 import Marcas from "../pages/vista-administrador/marcas/Marcas";
 import Usuarios from "../pages/vista-administrador/Usuarios";
 import Clientes from "../pages/vista-administrador/clientes/Clientes";
+import Home from "../pages/vista-cliente/Home";
+import PrincipalCliente from "../layout/PrincipalCliente";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Login />
+  },
+  {
+    path: "/HappyPet/",
+    element: <PrincipalCliente />,
+    children: [
+      {
+        index: true,
+        element: <Home />
+      },
+    ]
   },
   {
     path: "/admin/home",
