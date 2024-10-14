@@ -1,12 +1,27 @@
 import { ExpandLess, ExpandMore, Person, Pets, ShoppingCart } from '@mui/icons-material';
 import { AppBar, Box, CssBaseline, Grid, Menu, MenuItem, Toolbar, Typography } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { cerrarSesion } from '../../services/autenticacion-service';
+import { useNavigate } from 'react-router-dom';
+import { cantidadProductosCarrito } from '../../services/carrito-service';
 
 const Header = () => {
 
   const [menuUsuarioEstado, setMenuUsuarioEstado] = useState<null | HTMLElement>(null);
+  const [cantidadProductos, setCantidadProductos] = useState<number>(0);
+  const idUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.idUsuario : 0;
   const nombreUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.nombreUsuario : "";
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const obtenerCantidadProductosCarrito = async () => {
+      const cantidad = await cantidadProductosCarrito(idUsuario);
+      setCantidadProductos(cantidad);
+    };
+  
+    obtenerCantidadProductosCarrito();
+  }, [idUsuario]);
 
   const abrirMenuUsuario = (event: React.MouseEvent<HTMLElement>) => {
     setMenuUsuarioEstado(event.currentTarget);
@@ -34,6 +49,8 @@ const Header = () => {
                 flexDirection="row" 
                 alignItems="center" 
                 gap={1}
+                sx={{ cursor: "pointer" }}
+                onClick={() => navigate("/happyPet")}
               >
                 <Pets sx={{ width: "2.5rem", height: "2.5rem" }} />
                 <Typography
@@ -68,9 +85,10 @@ const Header = () => {
                 cursor: "pointer",
                 boxSizing: "border-box",
               }}
+              onClick={() => navigate("/happyPet/carrito")}
             >
               <ShoppingCart />
-              <Typography sx={{ ml: 1 }}>0</Typography>
+              <Typography sx={{ ml: 1 }}>{cantidadProductos}</Typography>
             </Box>
             <Box
               sx={{

@@ -12,6 +12,7 @@ import Clientes from "../pages/vista-administrador/clientes/Clientes";
 import Home from "../pages/vista-cliente/Home";
 import PrincipalCliente from "../layout/PrincipalCliente";
 import ProtectedRoute from "./ProtectedRoute";
+import Carrito from "../pages/vista-cliente/Carrito";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ export const router = createBrowserRouter([
         index: true,
         element: <Home />
       },
+      {
+        path: "carrito",
+        element: <Carrito />
+      }
     ]
   },
   {
