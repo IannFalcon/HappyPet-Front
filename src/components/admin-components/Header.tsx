@@ -4,6 +4,7 @@ import { AppBar, Box, CssBaseline, Drawer, Grid, IconButton, Menu, MenuItem, Too
 import { useState } from "react";
 import Sidebar from "./Sidebar";
 import { cerrarSesion } from "../../services/autenticacion-service";
+import { obtenerNombreUsuario } from "../../utils/localStorage";
 
 interface HeaderProps {
   open: boolean;
@@ -13,7 +14,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
   
   const [menuUsuarioEstado, setMenuUsuarioEstado] = useState<null | HTMLElement>(null);
-  const nombreUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.nombreUsuario : "";
+  const nombreUsuario = obtenerNombreUsuario();
 
   const abrirMenuUsuario = (event: React.MouseEvent<HTMLElement>) => {
     setMenuUsuarioEstado(event.currentTarget);

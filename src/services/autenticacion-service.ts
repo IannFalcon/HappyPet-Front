@@ -11,7 +11,7 @@ export const iniciarSesion = async (dataToSend: any) => {
     // Si la respuesta es correcta y el IdUsuario es diferente de 0
     if (response.status === 200 && response.data.data.IdUsuario !== 0) {
       alert(response.data.mensaje);
-      // Guardar datos de la sesión en el LocalStorage
+      // Guardar datos de la sesión en el localStorage
       localStorage.setItem("usuario", JSON.stringify(response.data));
       // Redireccionar a la página correspondiente
       switch (response.data.data.idTipoUsuario) {

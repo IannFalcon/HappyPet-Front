@@ -4,7 +4,8 @@ import { Carrito } from '../../models/Carrito';
 import ContenedorTabla from '../../components/admin-components/ContenedorTabla';
 import { Producto } from '../../models/Producto';
 import { Add, Remove } from '@mui/icons-material';
-import { obtenerProductos } from '../../services/carrito-service';
+import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
+import { useOutletContext } from 'react-router-dom';
 
 interface Columnas {
   id: keyof Producto | "idCarrito" | "cantidad" | "precioTotal";
@@ -22,18 +23,35 @@ const columnas: Columnas[] = [
   { id: "precioTotal", label: "Precio Total", minWidth: 50 },
 ];
 
+interface OutletContext {
+  actualizarCantidadProductos: () => void;
+};
+
 const VistaCarrito: React.FC = () => {
 
-  const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
-  const idUsuario = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")!).data.idUsuario : 0;
+  const { actualizarCantidadProductos } = useOutletContext<OutletContext>();
 
-  const obtenerProductosCarrito = async () => {
-    const productos = await obtenerProductos(idUsuario);
+  const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
+
+  const listarProductosCarrito = async () => {
+    const productos = await obtenerProductosCarrito();
     setProductosCarrito(productos);
-  }
+  };
+
+  const aumentarCantidadProducto = async (idProducto: number) => {
+    await accionesCarrito(idProducto, false);
+    await listarProductosCarrito();
+    actualizarCantidadProductos();
+  };
+
+  const restarCantidadProducto = async (idProducto: number) => {
+    await accionesCarrito(idProducto, true);
+    await listarProductosCarrito();
+    actualizarCantidadProductos();
+  };
 
   useEffect(() => {
-    obtenerProductosCarrito();
+    listarProductosCarrito();
   }, []);
 
   return (
@@ -97,7 +115,12 @@ const VistaCarrito: React.FC = () => {
                           display="flex"
                           justifyContent="center"
                         >
-                          <IconButton size="small" onClick={() => {}}><Add /></IconButton>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => restarCantidadProducto(producto.idProducto)}
+                          >
+                            <Remove />
+                          </IconButton>
                           <TextField
                             disabled
                             size="small"
@@ -107,7 +130,12 @@ const VistaCarrito: React.FC = () => {
                             }}
                             value={producto.cantidad}>
                           </TextField>
-                          <IconButton size="small" onClick={() => {}}><Remove /></IconButton>
+                          <IconButton 
+                            size="small" 
+                            onClick={() => aumentarCantidadProducto(producto.idProducto)}
+                          >
+                            <Add />
+                          </IconButton>
                         </Box>
                       ) : columna.id === "precioTotal" ? (
                         producto.cantidad *
@@ -129,7 +157,7 @@ const VistaCarrito: React.FC = () => {
               <TableCell colSpan={1} align="left">
                 <Typography variant="body2">
                   {productosCarrito.reduce(
-                    (acc, item) => acc + (item.productosCarrito as any).precioUnitario * item.cantidad, 0)}
+                    (acc, item) => acc + (item.productosCarrito as any).precioUnitario * item.cantidad, 0).toFixed(2)}
                 </Typography>
               </TableCell>
             </TableRow>
