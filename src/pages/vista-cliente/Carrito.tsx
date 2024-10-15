@@ -1,11 +1,13 @@
-import { Box, IconButton, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { Carrito } from '../../models/Carrito';
 import ContenedorTabla from '../../components/admin-components/ContenedorTabla';
 import { Producto } from '../../models/Producto';
-import { Add, Remove } from '@mui/icons-material';
+import { Add, Payment, Remove } from '@mui/icons-material';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { obtenerNombreUsuario } from '../../utils/localStorage';
+import { manejarRedireccion, realizarPago } from '../../services/pago-service';
 
 interface Columnas {
   id: keyof Producto | "idCarrito" | "cantidad" | "precioTotal";
@@ -27,27 +29,49 @@ interface OutletContext {
   actualizarCantidadProductos: () => void;
 };
 
+declare global {
+  interface Window {
+    redireccionManejada?: boolean;
+  }
+}
+
 const VistaCarrito: React.FC = () => {
 
   const { actualizarCantidadProductos } = useOutletContext<OutletContext>();
-
   const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
+
+  const navigate = useNavigate();
+
+  window.onload = () => {
+    if (!window.redireccionManejada) {
+      window.redireccionManejada = true;
+      manejarRedireccion();
+    }
+  };
+
+  const calcularTotal = () => {
+    return productosCarrito.reduce(
+      (acc, item) =>
+        acc + (item.productosCarrito as any).precioUnitario * item.cantidad,
+      0
+    );
+  }
 
   const listarProductosCarrito = async () => {
     const productos = await obtenerProductosCarrito();
     setProductosCarrito(productos);
+    actualizarCantidadProductos();
   };
 
   const aumentarCantidadProducto = async (idProducto: number) => {
     await accionesCarrito(idProducto, false);
     await listarProductosCarrito();
-    actualizarCantidadProductos();
+    
   };
 
   const restarCantidadProducto = async (idProducto: number) => {
     await accionesCarrito(idProducto, true);
     await listarProductosCarrito();
-    actualizarCantidadProductos();
   };
 
   useEffect(() => {
@@ -65,16 +89,19 @@ const VistaCarrito: React.FC = () => {
         width: "100vw",
       }}
     >
+      {/* Contenedor carrito */}
       <Box
         sx={{
+          p: 2,
           width: "70%",
         }}
       >
         <Typography
           variant="h4"
           sx={{
-            fontWeight: "bold",
             mb: 2,
+            px: 2,
+            fontWeight: "bold",
           }}
         >
           Carrito
@@ -94,7 +121,8 @@ const VistaCarrito: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productosCarrito.map((producto) => (
+            {productosCarrito.length 
+            ? productosCarrito.map((producto) => (
               <TableRow>
                 {columnas.map((columna) => {
                   const value =
@@ -110,13 +138,13 @@ const VistaCarrito: React.FC = () => {
                           style={{ width: "50px", height: "50px" }}
                         />
                       ) : columna.id === "cantidad" ? (
-                        <Box 
+                        <Box
                           width="100%"
                           display="flex"
                           justifyContent="center"
                         >
-                          <IconButton 
-                            size="small" 
+                          <IconButton
+                            size="small"
                             onClick={() => restarCantidadProducto(producto.idProducto)}
                           >
                             <Remove />
@@ -124,14 +152,16 @@ const VistaCarrito: React.FC = () => {
                           <TextField
                             disabled
                             size="small"
-                            sx={{ 
+                            sx={{
                               width: "50px",
-                              textAlign: "center",
+                              "& .MuiInputBase-input": {
+                                textAlign: "center",
+                              },
                             }}
-                            value={producto.cantidad}>
-                          </TextField>
-                          <IconButton 
-                            size="small" 
+                            value={producto.cantidad}
+                          />
+                          <IconButton
+                            size="small"
                             onClick={() => aumentarCantidadProducto(producto.idProducto)}
                           >
                             <Add />
@@ -147,7 +177,15 @@ const VistaCarrito: React.FC = () => {
                   );
                 })}
               </TableRow>
-            ))}
+            ))
+            : <TableCell 
+                colSpan={6}
+                sx={{ p: 3, textAlign: "center" }}
+              >
+                <Typography variant="body2">
+                  Aun no se han agregado productos al carrito 
+                </Typography>
+              </TableCell>}
             <TableRow>
               <TableCell colSpan={5} align="right">
                 <Typography variant="body2" sx={{ fontWeight: "bold" }}>
@@ -156,13 +194,134 @@ const VistaCarrito: React.FC = () => {
               </TableCell>
               <TableCell colSpan={1} align="left">
                 <Typography variant="body2">
-                  {productosCarrito.reduce(
-                    (acc, item) => acc + (item.productosCarrito as any).precioUnitario * item.cantidad, 0).toFixed(2)}
+                  {calcularTotal().toFixed(2)}
                 </Typography>
               </TableCell>
             </TableRow>
           </TableBody>
         </ContenedorTabla>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{
+            mt: 2,
+            p: 1,
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#388e3c",
+            },
+          }}
+          onClick={() => navigate("/happyPet")}
+        >
+          Seguir Comprando
+        </Button>
+      </Box>
+      {/* Contenedor pago */}
+      <Box
+        sx={{
+          p: 2,
+          width: "30%",
+        }}
+      >
+        <Typography
+          variant="h4"
+          sx={{
+            mb: 2,
+            px: 2,
+            fontWeight: "bold",
+          }}
+        >
+          Realizar Pago
+        </Typography>
+        <Box
+          sx={{
+            p: 2,
+            border: "1px solid",
+          }}
+        >
+          <Typography variant="h6" sx={{ p: 1, fontWeight: "bold" }}>
+            Detalles del pago
+          </Typography>
+          <Divider sx={{ mt: 1 }} />
+          <Box
+            sx={{
+              p: 2,
+              display: "flex",
+              flexDirection: "row",
+            }}
+          >
+            <Typography variant="body2" fontWeight="bold">
+              Nombre del cliente:{" "}
+            </Typography>
+            <Typography variant="body2" sx={{ ml: 1 }}>
+              {obtenerNombreUsuario()}
+            </Typography>
+          </Box>
+          <Divider />
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: "bold", textAlign: "left" }}>
+                  Producto
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                  Cantidad
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                  Precio Total
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {productosCarrito.length 
+              ? productosCarrito.map((producto) => (
+                <TableRow>
+                  <TableCell>{producto.productosCarrito.nombre}</TableCell>
+                  <TableCell align="center">{producto.cantidad}</TableCell>
+                  <TableCell align="center">
+                    {( producto.productosCarrito.precioUnitario * producto.cantidad).toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))
+              : <TableCell colSpan={3}>
+                  <Typography variant="body2" sx={{ textAlign: "center" }}>
+                    Aun no se han agregado productos al carrito
+                  </Typography>
+                </TableCell>
+              }
+              <TableRow>
+                <TableCell colSpan={1} align="right" />
+                <TableCell colSpan={1} align="center">
+                  <Typography variant="body1" fontWeight="bold">
+                    Total:
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="body1" fontWeight="bold">
+                    {calcularTotal().toFixed(2)}
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+          <Button
+            fullWidth
+            variant="contained"
+            sx={{
+              mt: 2,
+              p: 1,
+              backgroundColor: "#4caf50",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#388e3c",
+              },
+            }}
+            startIcon={<Payment />}
+            onClick={() => realizarPago(calcularTotal())}
+          >
+            Realizar Pago
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
