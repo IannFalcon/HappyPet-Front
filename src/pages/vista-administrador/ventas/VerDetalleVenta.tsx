@@ -5,6 +5,7 @@ import ContenedorTabla from '../../../components/admin-components/ContenedorTabl
 import { Button, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { DetalleVenta } from '../../../models/DetalleVenta';
 import axios from 'axios';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
 
 interface ModalProps {
   open: boolean;
@@ -32,7 +33,7 @@ const VerDetalleVenta: React.FC<ModalProps> = ({ open, onClose, idVenta }) => {
 
   const obtenerDetallesVenta = async (id: number) => {
     try {
-      const response = await axios.get(`http://192.168.0.3:5045/api/DetalleVenta/${id}`);
+      const response = await axios.get(`${apiBaseUrl}/DetalleVenta/${id}`);
       setDetallesVenta(response.data.data);
     } catch (error) {
       console.log(error);

@@ -4,10 +4,11 @@ import ContenedorBotones from '../../../components/admin-components/ContenedorBo
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import axios from 'axios';
-import { formatoFecha } from '../../../utils/dateFormat';
 import { BotonAgregar, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarVendedor from './AgregarVendedor';
 import { Vendedor } from '../../../models/Vendedor';
+import { obtenerVendedores } from '../../../services/vendedor-service';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
 
 interface Columna {
   id: keyof Vendedor | "acciones";
@@ -46,28 +47,9 @@ const Vendedores: React.FC = () => {
     setOpenModal(false);
   }
 
-  const obtenerVendedores = async () => {
+  const listarVendedores = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Vendedor");
-      const data = response.data.data.map((item: Vendedor) => ({
-        idUsuario: item.idUsuario,
-        nombre: item.nombre,
-        apellidoPaterno: item.apellidoPaterno,
-        apellidoMaterno: item.apellidoMaterno,
-        nroDocumento: item.nroDocumento,
-        telefono: item.telefono,
-        direccion: item.direccion,
-        correo: item.correo,
-        fecRegistro: formatoFecha(item.fecRegistro),
-        usuTipoDoc: {
-          idTipoDocumento: item.usuTipoDoc.idTipoDocumento,
-          descripcion: item.usuTipoDoc.descripcion,
-        },
-        usuTipoUsu: {
-          idTipoUsuario: item.usuTipoUsu.idTipoUsuario,
-          descripcion: item.usuTipoUsu.descripcion,
-        }  
-      }));
+      const data = await obtenerVendedores();
       setVendedores(data);
     } catch (error) {
       console.error(error);
@@ -79,7 +61,7 @@ const Vendedores: React.FC = () => {
     try {
   
       // Enviar datos al servidor
-      const response = await axios.delete(`http://192.168.0.3:5045/api/Vendedor/${idUsuario}`);
+      const response = await axios.delete(`${apiBaseUrl}/Vendedor/${idUsuario}`);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -97,7 +79,7 @@ const Vendedores: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerVendedores();
+    listarVendedores();
   }, []);
 
   return (

@@ -7,6 +7,8 @@ import axios from 'axios';
 import { BotonAgregar } from '../../../components/admin-components/Botones';
 import AgregarCategoria from './AgregarCategoria';
 import { Categoria } from '../../../models/Categoria';
+import { obtenerCategorias } from '../../../services/categoria-service';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
 
 interface Columna {
   id: keyof Categoria | "acciones";
@@ -38,13 +40,9 @@ const Categorias: React.FC = () => {
     setOpenModal(false);
   }
 
-  const obtenerCategorias = async () => {
+  const listarCategorias = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
-      const data = response.data.data.map((item: Categoria) => ({
-        idCategoria: item.idCategoria,
-        nombre: item.nombre,
-      }));
+      const data = await obtenerCategorias();
       setCategorias(data);
     } catch (error) {
       console.error(error);
@@ -56,7 +54,7 @@ const Categorias: React.FC = () => {
     try {
   
       // Enviar datos al servidor
-      const response = await axios.delete(`http://192.168.0.3:5045/api/Categoria/${idCategoria}`);
+      const response = await axios.delete(`${apiBaseUrl}/Categoria/${idCategoria}`);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -74,7 +72,7 @@ const Categorias: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerCategorias();
+    listarCategorias();
   }, []);
 
   return (

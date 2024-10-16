@@ -9,6 +9,10 @@ import axios from 'axios';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useOutletContext } from 'react-router-dom';
 import { Carrito } from '../../models/Carrito';
+import { obtenerCategorias } from '../../services/categoria-service';
+import { obtenerMarcas } from '../../services/marca-service';
+import { obtenerProductos } from '../../services/producto-service';
+import { apiBaseUrl } from '../../services/apiBaseUrl';
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
@@ -27,28 +31,28 @@ const Home: React.FC = () => {
   const [idMarca, setIdMarca] = useState<number | null>(null);
   const [nomProducto, setNomProducto] = useState<string | null>(null);
 
-  const obtenerCategorias = async () => {
+  const listarCategorias = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
-      setCategorias(response.data.data);
+      const data = await obtenerCategorias();
+      setCategorias(data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const obtenerMarcas = async () => {
+  const listarMarcas = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Marca");
-      setMarcas(response.data.data);
+      const data = await obtenerMarcas();
+      setMarcas(data);
     } catch (error) {
       console.log(error);
     }
   }
 
-  const obtenerProductos = async () => {
+  const listarProductos = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Producto");
-      setProductos(response.data.data);
+      const data = await obtenerProductos();
+      setProductos(data);
     } catch (error) {
       console.log(error);
     }
@@ -71,7 +75,7 @@ const Home: React.FC = () => {
 
   const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: number, nombre?: string) => {
     try {
-      const url = buildUrlWithParams("http://192.168.0.3:5045/api/Producto", {
+      const url = buildUrlWithParams(`${apiBaseUrl}/Producto`, {
         id_categoria: idCategoria,
         id_marca: idMarca,
         nombre: nombre
@@ -109,9 +113,9 @@ const Home: React.FC = () => {
   };
 
   useEffect(() => {
-    obtenerCategorias();
-    obtenerMarcas();
-    obtenerProductos();
+    listarCategorias();
+    listarMarcas();
+    listarProductos();
     listaProductosCarrito();
   }, []);
 

@@ -9,6 +9,9 @@ import { reFormatoFecha } from '../../../utils/dateFormat';
 import { Producto } from '../../../models/Producto';
 import { Marca } from '../../../models/Marca';
 import { Categoria } from '../../../models/Categoria';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
+import { obtenerCategorias } from '../../../services/categoria-service';
+import { obtenerMarcas } from '../../../services/marca-service';
 
 interface ModalProps {
   open: boolean;
@@ -95,34 +98,26 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
   useEffect(() => {
 
-    const obtenerMarcas = async () => {
+    const listarMarcas = async () => {
       try {
-        const response = await axios.get("http://192.168.0.3:5045/api/Marca");
-        const data = response.data.data.map((item: any) => ({
-          idMarca: item.idMarca,
-          nombre: item.nombre
-        }));
+        const data = await obtenerMarcas();
         setMarcas(data);
       } catch (error) {
         console.error(error);
       }
     }
 
-    const obtenerCategorias = async () => {
+    const listarCategorias = async () => {
       try {
-        const response = await axios.get("http://192.168.0.3:5045/api/Categoria");
-        const data = response.data.data.map((item: any) => ({
-          idCategoria: item.idCategoria,
-          nombre: item.nombre
-        }));
+        const data = await obtenerCategorias();
         setCategorias(data);
       } catch (error) {
         console.error(error);
       }
     }
 
-    obtenerMarcas();
-    obtenerCategorias();
+    listarMarcas();
+    listarCategorias();
 
   }, []);
 
@@ -147,7 +142,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
     try {
 
-      const response = await axios.post("http://192.168.0.3:5045/api/Producto", dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Producto`, dataToSend);
       if(response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();
@@ -176,7 +171,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
     try {
 
-      const response = await axios.put("http://192.168.0.3:5045/api/Producto", dataToSend);
+      const response = await axios.put(`${apiBaseUrl}/Producto`, dataToSend);
       if(response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();

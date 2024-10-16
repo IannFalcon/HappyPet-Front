@@ -5,6 +5,7 @@ import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from 
 import BotonesModal from '../../../components/admin-components/BotonesModal';
 import axios from 'axios';
 import { Vendedor } from '../../../models/Vendedor';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
 
 interface ModalProps {
   open: boolean;
@@ -51,7 +52,7 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Vendedor", dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Vendedor`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -77,7 +78,7 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.put("http://192.168.0.3:5045/api/Vendedor", dataToSend);
+      const response = await axios.put(`${apiBaseUrl}/Vendedor`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {

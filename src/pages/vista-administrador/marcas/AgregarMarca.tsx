@@ -5,6 +5,7 @@ import BotonesModal from "../../../components/admin-components/BotonesModal";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Marca } from "../../../models/Marca";
+import { apiBaseUrl } from "../../../services/apiBaseUrl";
 
 interface ModalProps {
   open: boolean;
@@ -50,7 +51,7 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Marca", dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Marca`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -76,7 +77,7 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.put("http://192.168.0.3:5045/api/Marca", dataToSend);
+      const response = await axios.put(`${apiBaseUrl}/Marca`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {

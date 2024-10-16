@@ -4,10 +4,11 @@ import ContenedorBotones from "../../../components/admin-components/ContenedorBo
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import { formatoFecha } from "../../../utils/dateFormat";
 import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarProductos from "./AgregarProducto";
 import { Producto } from "../../../models/Producto";
+import { obtenerProductos } from "../../../services/producto-service";
+import { apiBaseUrl } from "../../../services/apiBaseUrl";
 
 interface Columna {
   id: keyof Producto | "acciones";
@@ -46,24 +47,9 @@ const Productos: React.FC = () => {
     setOpenModal(false);
   };
 
-  const obtenerProductos = async () => {
+  const listarProductos = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Producto");
-      const data = response.data.data.map((item: Producto) => ({
-        idProducto: item.idProducto,
-        nombre: item.nombre,
-        idCategoria: item.idCategoria,
-        idMarca: item.idMarca,
-        descripcion: item.descripcion,
-        precioUnitario: item.precioUnitario,
-        stock: item.stock,
-        nombreImagen: item.nombreImagen,
-        rutaImagen: item.rutaImagen,
-        fecVencimiento: item.fecVencimiento ? formatoFecha(item.fecVencimiento) : null,
-        fecRegistro: formatoFecha(item.fecRegistro),
-        productoCategoria: item.productoCategoria,
-        productoMarca: item.productoMarca,
-      }));
+      const data = await obtenerProductos();
       setProductos(data);
     } catch (error) {
       console.error(error);
@@ -76,7 +62,7 @@ const Productos: React.FC = () => {
     try {
   
       // Enviar datos al servidor
-      const response = await axios.delete(`http://192.168.0.3:5045/api/Producto/${idProducto}`);
+      const response = await axios.delete(`${apiBaseUrl}/Producto/${idProducto}`);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -94,7 +80,7 @@ const Productos: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerProductos();
+    listarProductos();
   }, []);
 
   return (

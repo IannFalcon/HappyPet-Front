@@ -5,6 +5,7 @@ import BotonesModal from "../../../components/admin-components/BotonesModal";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Categoria } from "../../../models/Categoria";
+import { apiBaseUrl } from "../../../services/apiBaseUrl";
 
 interface ModalProps {
   open: boolean;
@@ -46,7 +47,7 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Categoria", dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Categoria`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -72,7 +73,7 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
     try {
   
       // Enviar datos al servidor
-      const response = await axios.put("http://192.168.0.3:5045/api/Categoria", dataToSend);
+      const response = await axios.put(`${apiBaseUrl}/Categoria`, dataToSend);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {

@@ -5,6 +5,7 @@ import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from 
 import BotonesModal from '../../../components/admin-components/BotonesModal';
 import axios from 'axios';
 import { Cliente } from '../../../models/Cliente';
+import { apiBaseUrl } from '../../../services/apiBaseUrl';
 
 interface ModalProps {
   open: boolean;
@@ -71,7 +72,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post("http://192.168.0.3:5045/api/Cliente", dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Cliente`, dataToSend);
       if (response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();
@@ -95,7 +96,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.put("http://192.168.0.3:5045/api/Cliente", dataToSend);
+      const response = await axios.put(`${apiBaseUrl}/Cliente`, dataToSend);
       if (response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();

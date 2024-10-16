@@ -4,9 +4,9 @@ import ContenedorBotones from '../../../components/admin-components/ContenedorBo
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { BotonExportar } from '../../../components/admin-components/Botones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
-import axios from 'axios';
 import { Venta } from '../../../models/Venta';
 import VerDetalleVenta from './VerDetalleVenta';
+import { obtenerVentas } from '../../../services/venta-service';
 
 interface Columna {
   id: keyof Venta | "acciones";
@@ -42,23 +42,9 @@ const Ventas: React.FC = () => {
   }
 
 
-  const obtenerVentas = async () => {
+  const listarVentas = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Venta");
-      const data = response.data.data.map((item: Venta) => ({
-        idVenta: item.idVenta,
-        idUsuario: item.idUsuario,
-        totalProductos: item.totalProductos,
-        montoTotal: item.montoTotal,
-        idTransaccion: item.idTransaccion,
-        fecVenta: item.fecVenta,
-        usuarioVenta: {
-          idUsuario: item.usuarioVenta.idUsuario,
-          nombre: item.usuarioVenta.nombre,
-          apellidoPaterno: item.usuarioVenta.apellidoPaterno,
-          apellidoMaterno: item.usuarioVenta.apellidoMaterno,
-        }
-      }));
+      const data = await obtenerVentas();
       setVentas(data);
     } catch (error) {
       console.error("Error: ", error);
@@ -66,7 +52,7 @@ const Ventas: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerVentas();
+    listarVentas();
   }, [])
 
   return (

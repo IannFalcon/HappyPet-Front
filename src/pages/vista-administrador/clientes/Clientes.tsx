@@ -1,6 +1,5 @@
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useEffect, useState } from "react";
-import { formatoFecha } from "../../../utils/dateFormat";
 import Contenedor from "../../../components/admin-components/Contenedor";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
@@ -8,6 +7,8 @@ import ContenedorTabla from "../../../components/admin-components/ContenedorTabl
 import axios from "axios";
 import AgregarCliente from "./AgregarCliente";
 import { Cliente } from "../../../models/Cliente";
+import { obtenerClientes } from "../../../services/cliente-service";
+import { apiBaseUrl } from "../../../services/apiBaseUrl";
 
 interface Columna {
   id: keyof Cliente | "acciones";
@@ -46,28 +47,9 @@ const Clientes: React.FC = () => {
     setOpenModal(false);
   }
 
-  const obtenerClientes = async () => {
+  const listarClientes = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Cliente");
-      const data = response.data.data.map((item: Cliente) => ({
-        idUsuario: item.idUsuario,
-        nombre: item.nombre,
-        apellidoPaterno: item.apellidoPaterno,
-        apellidoMaterno: item.apellidoMaterno,
-        nroDocumento: item.nroDocumento,
-        telefono: item.telefono,
-        direccion: item.direccion,
-        correo: item.correo,
-        fecRegistro: formatoFecha(item.fecRegistro),
-        usuTipoDoc: {
-          idTipoDocumento: item.usuTipoDoc.idTipoDocumento,
-          descripcion: item.usuTipoDoc.descripcion,
-        },
-        usuTipoUsu: {
-          idTipoUsuario: item.usuTipoUsu.idTipoUsuario,
-          descripcion: item.usuTipoUsu.descripcion,
-        }  
-      }));
+      const data = await obtenerClientes();
       setClientes(data);
     } catch (error) {
       console.error(error);
@@ -79,7 +61,7 @@ const Clientes: React.FC = () => {
     try {
   
       // Enviar datos al servidor
-      const response = await axios.delete(`http://192.168.0.3:5045/api/Cliente/${idUsuario}`);
+      const response = await axios.delete(`${apiBaseUrl}/Cliente/${idUsuario}`);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -97,7 +79,7 @@ const Clientes: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerClientes();
+    listarClientes();
   }, []);
 
   return (

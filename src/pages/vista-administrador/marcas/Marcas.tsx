@@ -7,6 +7,8 @@ import ContenedorTabla from "../../../components/admin-components/ContenedorTabl
 import { BotonAgregar } from "../../../components/admin-components/Botones";
 import AgregarMarca from "./AgregarMarca";
 import { Marca } from "../../../models/Marca";
+import { apiBaseUrl } from "../../../services/apiBaseUrl";
+import { obtenerMarcas } from "../../../services/marca-service";
 
 interface Columna {
   id: keyof Marca | "acciones";
@@ -38,13 +40,9 @@ const Marcas: React.FC = () => {
     setOpenModal(false);
   }
 
-  const obtenerMarcas = async () => {
+  const listarMarcas = async () => {
     try {
-      const response = await axios.get("http://192.168.0.3:5045/api/Marca");
-      const data = response.data.data.map((item: Marca) => ({
-        idMarca: item.idMarca,
-        nombre: item.nombre,
-      }));
+      const data = await obtenerMarcas();
       setMarcas(data);
     } catch (error) {
       console.error(error);
@@ -56,7 +54,7 @@ const Marcas: React.FC = () => {
     try {
   
       // Enviar datos al servidor
-      const response = await axios.delete(`http://192.168.0.3:5045/api/Marca/${idMarca}`);
+      const response = await axios.delete(`${apiBaseUrl}/Marca/${idMarca}`);
 
       // Mostrar mensaje de éxito o error
       if(response.status === 200) {
@@ -74,7 +72,7 @@ const Marcas: React.FC = () => {
   }
 
   useEffect(() => {
-    obtenerMarcas();
+    listarMarcas();
   }, []);
 
   return (
