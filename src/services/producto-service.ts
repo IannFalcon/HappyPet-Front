@@ -2,6 +2,7 @@ import axios from "axios";
 import { Producto } from "../models/Producto";
 import { formatoFecha } from "../utils/dateFormat";
 import { apiBaseUrl } from "./apiBaseUrl";
+import { buildUrlWithParams } from "../utils/buildUrlWithParams";
 
 export const obtenerProductos = async () => {
   try {
@@ -29,5 +30,23 @@ export const obtenerProductos = async () => {
   } catch (error) {
     console.error(error);
     alert("Ocurrió un error al obtener los productos");
+  }
+}
+
+export const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: number, nombre?: string) => {
+  try {
+    const url = buildUrlWithParams(`${apiBaseUrl}/Producto`, {
+      id_categoria: idCategoria,
+      id_marca: idMarca,
+      nombre: nombre
+    });
+    const response = await axios.get(url);
+    if (response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("Error al obtener los productos");
+    }
+  } catch (error) {
+    console.log(error);
   }
 }

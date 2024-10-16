@@ -5,14 +5,12 @@ import { Add, Pets, Remove, ShoppingCart } from '@mui/icons-material';
 import { Marca } from '../../models/Marca';
 import { Categoria } from '../../models/Categoria';
 import { Producto } from '../../models/Producto';
-import axios from 'axios';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useOutletContext } from 'react-router-dom';
 import { Carrito } from '../../models/Carrito';
 import { obtenerCategorias } from '../../services/categoria-service';
 import { obtenerMarcas } from '../../services/marca-service';
-import { obtenerProductos } from '../../services/producto-service';
-import { apiBaseUrl } from '../../services/apiBaseUrl';
+import { obtenerProductosFiltrados } from '../../services/producto-service';
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
@@ -22,11 +20,13 @@ const Home: React.FC = () => {
 
   const { actualizarCantidadProductos } = useOutletContext<OutletContext>();
 
+  // Para obtener las categorias, marcas, productos y productos del carrito
   const [categorias, setCategorias] = useState<Categoria[]>([]);
   const [marcas, setMarcas] = useState<Marca[]>([]);
   const [productos, setProductos] = useState<Producto[]>([]);
   const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
 
+  // Para los filtros
   const [idCategoria, setIdCategoria] = useState<number | null>(null);
   const [idMarca, setIdMarca] = useState<number | null>(null);
   const [nomProducto, setNomProducto] = useState<string | null>(null);
@@ -49,39 +49,10 @@ const Home: React.FC = () => {
     }
   }
 
-  const listarProductos = async () => {
+  const listarProductosFiltrados = async (idCategoria?: number, idMarca?: number, nombre?: string) => {
     try {
-      const data = await obtenerProductos();
+      const data = await obtenerProductosFiltrados(idCategoria, idMarca, nombre);
       setProductos(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const buildUrlWithParams = (baseUrl: string, params: { [key: string]: any }) => {
-    // Construir URL con parámetros
-    const url = new URL(baseUrl);
-    // Agregar parámetros a la URL
-    Object.keys(params).forEach(key => {
-      // Si el valor del parámetro no es nulo ni indefinido
-      if (params[key] !== undefined && params[key] !== null) {
-        // Agregar parámetro a la URL
-        url.searchParams.append(key, params[key]);
-      }
-    });
-    // Retornamos la URL construida
-    return url.toString();
-  };
-
-  const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: number, nombre?: string) => {
-    try {
-      const url = buildUrlWithParams(`${apiBaseUrl}/Producto`, {
-        id_categoria: idCategoria,
-        id_marca: idMarca,
-        nombre: nombre
-      });
-      const response = await axios.get(url);
-      setProductos(response.data.data); 
     } catch (error) {
       console.log(error);
     }
@@ -99,23 +70,18 @@ const Home: React.FC = () => {
   const actualizarListadoProductos = async () => {
     actualizarCantidadProductos();
     await listaProductosCarrito();
-    await obtenerProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
+    await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
   }
 
-  const agregarAlCarrito = async (idProducto: number) => {
-    await accionesCarrito(idProducto, false);
-    await actualizarListadoProductos();
-  };
-
-  const restarCantidadProducto = async (idProducto: number) => {
-    await accionesCarrito(idProducto, true);
+  const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
+    await accionesCarrito(idProducto, accion);
     await actualizarListadoProductos();
   };
 
   useEffect(() => {
     listarCategorias();
     listarMarcas();
-    listarProductos();
+    listarProductosFiltrados();
     listaProductosCarrito();
   }, []);
 
@@ -216,7 +182,7 @@ const Home: React.FC = () => {
                 label="Todas las categorías"
                 onChange={() => {
                   setIdCategoria(null);
-                  obtenerProductosFiltrados(
+                  listarProductosFiltrados(
                     undefined,
                     idMarca ?? undefined,
                     nomProducto ?? undefined
@@ -231,7 +197,7 @@ const Home: React.FC = () => {
                   label={categoria.nombre}
                   onChange={() => {
                     setIdCategoria(categoria.idCategoria);
-                    obtenerProductosFiltrados(
+                    listarProductosFiltrados(
                       categoria.idCategoria,
                       idMarca ?? undefined,
                       nomProducto ?? undefined
@@ -260,7 +226,7 @@ const Home: React.FC = () => {
                 label="Todas las marcas"
                 onChange={() => {
                   setIdMarca(null);
-                  obtenerProductosFiltrados(
+                  listarProductosFiltrados(
                     idCategoria ?? undefined,
                     undefined,
                     nomProducto ?? undefined
@@ -275,7 +241,7 @@ const Home: React.FC = () => {
                   label={marca.nombre}
                   onChange={() => {
                     setIdMarca(marca.idMarca);
-                    obtenerProductosFiltrados(
+                    listarProductosFiltrados(
                       idCategoria ?? undefined,
                       marca.idMarca,
                       nomProducto ?? undefined
@@ -293,7 +259,7 @@ const Home: React.FC = () => {
               sx={{ mt: 2 }}
               onChange={(e) => {
                 setNomProducto(e.target.value);
-                obtenerProductosFiltrados(
+                listarProductosFiltrados(
                   idCategoria ?? undefined,
                   idMarca ?? undefined,
                   e.target.value
@@ -404,7 +370,7 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() => restarCantidadProducto(producto.idProducto)}
+                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, true)}
                         >
                           <Remove sx={{ padding: 0 }} />
                         </IconButton>
@@ -433,7 +399,7 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() => agregarAlCarrito(producto.idProducto)}
+                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
                         >
                           <Add sx={{ padding: 0 }} />
                         </IconButton>
@@ -471,7 +437,7 @@ const Home: React.FC = () => {
                             color: "#ffc107",
                           },
                         }}
-                        onClick={() => agregarAlCarrito(producto.idProducto)}
+                        onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
                       >
                         <ShoppingCart sx={{ padding: 0 }} />
                       </IconButton>

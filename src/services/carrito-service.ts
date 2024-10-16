@@ -9,14 +9,7 @@ export const obtenerProductosCarrito = async () => {
   try {
     const response = await axios.get(`${apiBaseUrl}/Carrito/${idUsuario}`);
     if (response.status === 200) {
-      const data = response.data.data.map((item: Carrito) => ({
-        idCarrito: item.idCarrito,
-        idUsuario: item.idUsuario,
-        idProducto: item.idProducto,
-        cantidad: item.cantidad,
-        productosCarrito: item.productosCarrito,
-      }));
-      return data;
+      return response.data.data;
     } else {
       console.error(response);
       alert("Error al obtener los productos del carrito");
@@ -65,10 +58,9 @@ export const accionesCarrito = async (idProducto: number, accion: boolean) => {
           alert("No hay suficiente stock del producto");
           break;
         default:
-          alert("Error al agregar o eliminar un producto del carrito");
+          alert("El producto no ha sido añadido al carrito");
           break;
       }
-      
       return;
     } else {
       console.error(response);
