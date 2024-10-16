@@ -76,7 +76,7 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
         display: "flex",
         alignItems: "center", // Alinear verticalmente
         pt: 4,
-        pl: 2
+        pl: 3
       }}>
 
         {/* Logo */}

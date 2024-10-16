@@ -50,10 +50,11 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
               <Grid item xs={12}>
                 <Typography
                   sx={{
+                    ml: open ? "14vw" : "2vw",
                     color: "#000",
                     fontSize: "1.8rem",
                     fontWeight: "bold",
-                    ml: open ? "14vw" : "2vw",
+                    textTransform: "uppercase",
                   }}
                 >
                   ¡Bienvenido!
@@ -63,9 +64,10 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
                 <Typography
                   variant="h6"
                   sx={{
+                    ml: open ? "14vw" : "2vw",
                     color: "#000",
                     fontWeight: "bold",
-                    ml: open ? "14vw" : "2vw",
+                    textTransform: "uppercase",
                   }}
                   >
                     Panel de administración
@@ -75,13 +77,16 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
           </Box>
           <Box
             sx={{
+              boxSizing: "border-box",
+              padding: "10px 20px",
+              bgcolor: "#EAEAEA",
               color: "#fff",
+              borderRadius: "10px",
+              borderBottomLeftRadius: Boolean(menuUsuarioEstado) ? "0" : "10px",
+              borderBottomRightRadius: Boolean(menuUsuarioEstado) ? "0" : "10px",
               display: "flex",
               alignItems: "center",
-              padding: "0 10px",
-              borderRadius: "5px",
               cursor: "pointer",
-              boxSizing: "border-box",
             }}
             onClick={abrirMenuUsuario}
           >
@@ -90,7 +95,6 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
               { nombreUsuario }
             </Typography>
             {Boolean(menuUsuarioEstado) ? <ExpandLess sx={{ ml: 1, color: "black" }}/> : <ExpandMore sx={{ ml: 1, color: "black" }}/>}
-            <ExpandMore />
           </Box>
           <Menu
             anchorEl={menuUsuarioEstado} // Posiciona el menú en la posición del avatar
@@ -98,16 +102,19 @@ const Header: React.FC<HeaderProps> = ({ open, alternarDrawer }) => {
             onClose={cerrarMenuUsuario} // Cierra el menú
             sx={{
               "& .MuiPaper-root": {
-                mt: 2,
-                p: 0,
-                width: "210px",
+                borderTop: "1px solid gray",
+                borderTopLeftRadius: "0",
+                borderTopRightRadius: "0",
+                
+                width: "250px",
                 color: "#000",
+                bgcolor: "#fff",
               },
               "& .MuiMenuItem-root": {
                 "&:hover": {
                   bgcolor: "#EAEAEA",
                 }
-              }
+              },
             }}
           >
             <MenuItem>Mi perfil</MenuItem>
