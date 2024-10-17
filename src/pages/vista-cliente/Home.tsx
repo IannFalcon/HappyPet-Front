@@ -14,11 +14,12 @@ import { obtenerProductosFiltrados } from '../../services/producto-service';
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
+  session: boolean;
 };
 
 const Home: React.FC = () => {
 
-  const { actualizarCantidadProductos } = useOutletContext<OutletContext>();
+  const { actualizarCantidadProductos, session } = useOutletContext<OutletContext>();
 
   // Para obtener las categorias, marcas, productos y productos del carrito
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -64,13 +65,20 @@ const Home: React.FC = () => {
   }
 
   const validarProductoCarrito = (idProducto: number) => {
-    return productosCarrito.some(producto => producto.idProducto === idProducto);
+    if (session) {
+      return productosCarrito.some(producto => producto.idProducto === idProducto);
+    }
   }
 
   const actualizarListadoProductos = async () => {
-    actualizarCantidadProductos();
-    await listaProductosCarrito();
-    await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
+    if (session) {
+      actualizarCantidadProductos();
+      await listaProductosCarrito();
+      await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
+    } else {
+      await listaProductosCarrito();
+      await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
+    }
   }
 
   const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
@@ -370,7 +378,9 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, true)}
+                          onClick={() =>
+                            ejecutarAccionesCarrito(producto.idProducto, true)
+                          }
                         >
                           <Remove sx={{ padding: 0 }} />
                         </IconButton>
@@ -386,7 +396,11 @@ const Home: React.FC = () => {
                             borderRadius: "8px",
                           }}
                         >
-                          {productosCarrito.find((item) => item.idProducto === producto.idProducto)?.cantidad}
+                          {
+                            productosCarrito.find(
+                              (item) => item.idProducto === producto.idProducto
+                            )?.cantidad
+                          }
                         </Typography>
                         <IconButton
                           sx={{
@@ -399,7 +413,9 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
+                          onClick={() =>
+                            ejecutarAccionesCarrito(producto.idProducto, false)
+                          }
                         >
                           <Add sx={{ padding: 0 }} />
                         </IconButton>
@@ -426,25 +442,27 @@ const Home: React.FC = () => {
                         mt: "auto",
                       }}
                     >
-                      <IconButton
-                        sx={{
-                          bgcolor: "#ffc107",
-                          color: "black",
-                          borderRadius: "5px",
-                          transition: "all 0.3s",
-                          "&:hover": {
-                            bgcolor: "#000",
-                            color: "#ffc107",
-                          },
-                        }}
-                        onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
-                      >
-                        <ShoppingCart sx={{ padding: 0 }} />
-                      </IconButton>
+                      {session && (
+                        <IconButton
+                          sx={{
+                            bgcolor: "#ffc107",
+                            color: "black",
+                            borderRadius: "5px",
+                            transition: "all 0.3s",
+                            "&:hover": {
+                              bgcolor: "#000",
+                              color: "#ffc107",
+                            },
+                          }}
+                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
+                        >
+                          <ShoppingCart sx={{ padding: 0 }} />
+                        </IconButton>
+                      )}
                       <Button
                         variant="contained"
                         sx={{
-                          width: "80%",
+                          width: session ? "80%" : "100%",
                           bgcolor: "#0d6efd",
                         }}
                       >

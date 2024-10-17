@@ -7,7 +7,8 @@ const ProtectedRoute: React.FC<{ children: JSX.Element }> = ({ children }) => {
   if (usuario) {
     return children;
   } else {
-    window.location.replace("/");
+    alert("Debes iniciar sesión para acceder a esta página.");
+    window.location.replace("/login");
     return null;
   }
 

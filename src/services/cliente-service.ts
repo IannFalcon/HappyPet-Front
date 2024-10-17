@@ -34,3 +34,35 @@ export const obtenerClientes = async () => {
     console.error(error);
   }
 }
+
+export const obtenerDatosCliente = async (idUsuario: number) => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Cliente/${idUsuario}`);
+    if (response.status === 200) {
+      const data = response.data.data;
+      return {
+        idUsuario: data.idUsuario,
+        nombre: data.nombre,
+        apellidoPaterno: data.apellidoPaterno,
+        apellidoMaterno: data.apellidoMaterno,
+        nroDocumento: data.nroDocumento,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        correo: data.correo,
+        fecRegistro: formatoFecha(data.fecRegistro),
+        usuTipoDoc: {
+          idTipoDocumento: data.usuTipoDoc.idTipoDocumento,
+          descripcion: data.usuTipoDoc.descripcion,
+        },
+        usuTipoUsu: {
+          idTipoUsuario: data.usuTipoUsu.idTipoUsuario,
+          descripcion: data.usuTipoUsu.descripcion,
+        }
+      };
+    } else {
+      throw new Error("Error al obtener los datos del cliente");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}

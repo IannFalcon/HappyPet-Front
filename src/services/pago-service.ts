@@ -36,7 +36,7 @@ export const manejarRedireccion = async () => {
     } catch (error) {
       manejarError(error);
     } finally {
-      window.location.replace("http://localhost:3000/happyPet/carrito");
+      window.location.replace("http://localhost:3000/carrito");
     }
   }
   return;

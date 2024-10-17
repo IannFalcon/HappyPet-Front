@@ -16,15 +16,13 @@ import Carrito from "../pages/vista-cliente/Carrito";
 
 export const router = createBrowserRouter([
   {
-    path: "/",
-    element: <Login />
+    path: "/login",
+    element: <Login />,
   },
   {
-    path: "/happyPet",
+    path: "/",
     element: (
-      <ProtectedRoute>
-        <PrincipalCliente />
-      </ProtectedRoute> 
+      <PrincipalCliente />
     ),
     children: [
       {
@@ -33,8 +31,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "carrito",
-        element: <Carrito />
-      }
+        element: (
+          <ProtectedRoute>
+            <Carrito />
+          </ProtectedRoute>
+        )
+      },
     ]
   },
   {

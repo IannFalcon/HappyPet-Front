@@ -6,8 +6,10 @@ import { Producto } from '../../models/Producto';
 import { Add, Payment, Remove } from '@mui/icons-material';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { obtenerNombreUsuario } from '../../utils/localStorage';
+import { obtenerIdUsuario, obtenerNombreUsuario } from '../../utils/localStorage';
 import { manejarRedireccion, realizarPago } from '../../services/pago-service';
+import { Cliente } from '../../models/Cliente';
+import { obtenerDatosCliente } from '../../services/cliente-service';
 
 interface Columnas {
   id: keyof Producto | "idCarrito" | "cantidad" | "precioTotal";
@@ -27,6 +29,7 @@ const columnas: Columnas[] = [
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
+  session: boolean;
 };
 
 declare global {
@@ -37,7 +40,11 @@ declare global {
 
 const VistaCarrito: React.FC = () => {
 
-  const { actualizarCantidadProductos } = useOutletContext<OutletContext>();
+  const { actualizarCantidadProductos, session } = useOutletContext<OutletContext>();
+  
+  const idUsuario = obtenerIdUsuario();
+  const [datosCliente, setDatosCliente] = useState<Cliente | null>(null);
+
   const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
 
   const navigate = useNavigate();
@@ -48,6 +55,15 @@ const VistaCarrito: React.FC = () => {
       manejarRedireccion();
     }
   };
+
+  const obtenerInformacionContacto = async () => {
+    const datos = await obtenerDatosCliente(idUsuario);
+    if (datos) {
+      setDatosCliente(datos);
+    } else {
+      return null;
+    }
+  }
 
   const calcularTotal = () => {
     return productosCarrito.reduce(
@@ -60,21 +76,18 @@ const VistaCarrito: React.FC = () => {
   const listarProductosCarrito = async () => {
     const productos = await obtenerProductosCarrito();
     setProductosCarrito(productos);
-    actualizarCantidadProductos();
+    if (session) {
+      actualizarCantidadProductos();
+    }
   };
 
-  const aumentarCantidadProducto = async (idProducto: number) => {
-    await accionesCarrito(idProducto, false);
-    await listarProductosCarrito();
-    
-  };
-
-  const restarCantidadProducto = async (idProducto: number) => {
-    await accionesCarrito(idProducto, true);
+  const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
+    await accionesCarrito(idProducto, accion);
     await listarProductosCarrito();
   };
 
   useEffect(() => {
+    obtenerInformacionContacto();
     listarProductosCarrito();
   }, []);
 
@@ -145,7 +158,7 @@ const VistaCarrito: React.FC = () => {
                         >
                           <IconButton
                             size="small"
-                            onClick={() => restarCantidadProducto(producto.idProducto)}
+                            onClick={() => ejecutarAccionesCarrito(producto.idProducto, true)}
                           >
                             <Remove />
                           </IconButton>
@@ -162,14 +175,13 @@ const VistaCarrito: React.FC = () => {
                           />
                           <IconButton
                             size="small"
-                            onClick={() => aumentarCantidadProducto(producto.idProducto)}
+                            onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
                           >
                             <Add />
                           </IconButton>
                         </Box>
                       ) : columna.id === "precioTotal" ? (
-                        producto.cantidad *
-                        producto.productosCarrito.precioUnitario
+                        producto.cantidad * producto.productosCarrito.precioUnitario
                       ) : (
                         value
                       )}
@@ -211,7 +223,7 @@ const VistaCarrito: React.FC = () => {
               backgroundColor: "#388e3c",
             },
           }}
-          onClick={() => navigate("/happyPet")}
+          onClick={() => navigate("/")}
         >
           Seguir Comprando
         </Button>
@@ -239,71 +251,93 @@ const VistaCarrito: React.FC = () => {
             border: "1px solid",
           }}
         >
-          <Typography variant="h6" sx={{ p: 1, fontWeight: "bold" }}>
-            Detalles del pago
-          </Typography>
-          <Divider sx={{ mt: 1 }} />
-          <Box
-            sx={{
-              p: 2,
-              display: "flex",
-              flexDirection: "row",
-            }}
-          >
-            <Typography variant="body2" fontWeight="bold">
-              Nombre del cliente:{" "}
+          <Box>
+            <Divider sx={{ mb: 1 }}/>
+            <Typography variant="h6" sx={{ p: 1, fontWeight: "bold" }}>
+              Informacion de contacto
             </Typography>
-            <Typography variant="body2" sx={{ ml: 1 }}>
-              {obtenerNombreUsuario()}
-            </Typography>
+            <Divider sx={{ mt: 1 }} />
+            <Box
+              sx={{
+                p: 2,
+                display: "flex",
+                flexDirection: "column",
+                gap: 1,
+              }}
+            >
+              <Typography variant="body2">
+                <strong>Nombre:</strong>
+                {` ${obtenerNombreUsuario()}`}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Correo:</strong>
+                {` ${datosCliente?.correo}`}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Telefono:</strong>
+                {` ${datosCliente?.telefono}`}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Direccion:</strong>
+                {` ${datosCliente?.direccion}`}
+              </Typography>
+              <Typography sx={{ mt: 1, fontSize: "12px" }}>
+                Nota: En caso de que la información de contacto sea incorrecta, por favor actualizala en la sección de perfil.
+              </Typography>
+            </Box>
+            <Divider sx={{ mb: 1 }}/>
           </Box>
-          <Divider />
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "left" }}>
-                  Producto
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Cantidad
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
-                  Precio Total
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {productosCarrito.length 
-              ? productosCarrito.map((producto) => (
+          <Box>
+            <Typography variant="h6" sx={{ p: 1, fontWeight: "bold" }}>
+              Detalles del pago
+            </Typography>
+            <Divider sx={{ mt: 1 }} />
+            <Table>
+              <TableHead>
                 <TableRow>
-                  <TableCell>{producto.productosCarrito.nombre}</TableCell>
-                  <TableCell align="center">{producto.cantidad}</TableCell>
-                  <TableCell align="center">
-                    {( producto.productosCarrito.precioUnitario * producto.cantidad).toFixed(2)}
+                  <TableCell sx={{ fontWeight: "bold", textAlign: "left" }}>
+                    Productos seleccionados
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    Cantidad
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    Precio Total
                   </TableCell>
                 </TableRow>
-              ))
-              : <TableCell colSpan={3}>
-                  <Typography variant="body2" sx={{ textAlign: "center" }}>
-                    Aun no se han agregado productos al carrito
-                  </Typography>
-                </TableCell>
-              }
-              <TableRow>
-                <TableCell colSpan={1} align="right" />
-                <TableCell colSpan={1} align="center">
-                  <Typography variant="body1" fontWeight="bold">
-                    Total:
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="body1" fontWeight="bold">
-                    {calcularTotal().toFixed(2)}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {productosCarrito.length 
+                ? productosCarrito.map((producto) => (
+                  <TableRow>
+                    <TableCell>{producto.productosCarrito.nombre}</TableCell>
+                    <TableCell align="center">{producto.cantidad}</TableCell>
+                    <TableCell align="center">
+                      {( producto.productosCarrito.precioUnitario * producto.cantidad).toFixed(2)}
+                    </TableCell>
+                  </TableRow>
+                ))
+                : <TableCell colSpan={3}>
+                    <Typography variant="body2" sx={{ textAlign: "center" }}>
+                      Aun no se han agregado productos al carrito
+                    </Typography>
+                  </TableCell>
+                }
+                <TableRow>
+                  <TableCell colSpan={2} align="right">
+                    <Typography variant="body2" fontWeight="bold">
+                      Total a pagar:
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="center">
+                    <Typography variant="body2" fontWeight="bold">
+                      {calcularTotal().toFixed(2)}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </Box>
           <Button
             fullWidth
             variant="contained"
