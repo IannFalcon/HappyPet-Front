@@ -12,11 +12,9 @@ const Login: React.FC = () => {
   });
 
   const ValidarLogin = async (e : React.MouseEvent<HTMLButtonElement>) => {
-
     e.preventDefault();
     const dataToSend = loginRequest;
     iniciarSesion(dataToSend);
-
   }
 
   return (
@@ -32,11 +30,13 @@ const Login: React.FC = () => {
       >
         <Box
           sx={{
-            width: "450px",
+            width: "400px",
             height: "500px",
             border: "1px solid",
             borderRadius: "15px",
-            p: "50px 50px"
+            p: "50px 50px",
+            display: "flex",
+            flexDirection: "column"
           }}
         >
           <Typography component="h1"
@@ -87,6 +87,7 @@ const Login: React.FC = () => {
             variant="contained"
             sx={{
               mt: 2,
+              mx: "auto",
               width: "200px",
               padding: "10px 20px",
               bgcolor: "#042940",
@@ -97,6 +98,13 @@ const Login: React.FC = () => {
           >
             Iniciar Sesión
           </Button>
+          <Typography 
+            component="a"
+            href="/registrate"
+            sx={{ mt: "auto", textAlign: "center" }}
+          >
+            ¿No tienes una cuenta? Regístrate
+          </Typography>
         </Box>
       </Box>
     </Container>

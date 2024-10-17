@@ -13,11 +13,25 @@ import Home from "../pages/vista-cliente/Home";
 import PrincipalCliente from "../layout/PrincipalCliente";
 import ProtectedRoute from "./ProtectedRoute";
 import Carrito from "../pages/vista-cliente/Carrito";
+import CambiarContrasenia from "../pages/vista-autenticacion/CambiarContrasenia";
+import Registrate from "../pages/vista-autenticacion/Registrate";
 
 export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/cambiar-contrasenia",
+    element: (
+      <ProtectedRoute>
+        <CambiarContrasenia />
+      </ProtectedRoute>
+    )
+  },
+  {
+    path: "/registrate",
+    element: <Registrate />,
   },
   {
     path: "/",

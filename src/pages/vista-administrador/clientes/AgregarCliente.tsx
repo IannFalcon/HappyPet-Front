@@ -72,7 +72,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     try {
 
       // Enviar datos al servidor
-      const response = await axios.post(`${apiBaseUrl}/Cliente/registrar-cliente-admin`, dataToSend);
+      const response = await axios.post(`${apiBaseUrl}/Cliente`, dataToSend);
       if (response.status === 200) {
         alert(response.data.mensaje);
         handleCloseModal();
