@@ -1,26 +1,24 @@
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import Contenedor from '../../../components/admin-components/Contenedor'
 import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { BotonAgregar } from '../../../components/admin-components/Botones';
+import { BotonAgregar, BotonesAccion } from '../../../components/admin-components/Botones';
 import AgregarCategoria from './AgregarCategoria';
 import { Categoria } from '../../../models/Categoria';
-import { obtenerCategorias } from '../../../services/categoria-service';
-import { apiBaseUrl } from '../../../services/apiBaseUrl';
+import { eliminarCategoria, obtenerCategorias } from '../../../services/categoria-service';
 
 interface Columna {
   id: keyof Categoria | "acciones";
   label: string;
-  minWidth?: number;
-  align?: "left";
+  width: number | "auto";
+  align: "left" | "center";
 }
 
 const columnas: Columna[] = [
-  { id: "idCategoria", label: "#", minWidth: 10 },
-  { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },
+  { id: "idCategoria", label: "#", width: 70, align: "center" },
+  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
+  { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
 
 const Categorias: React.FC = () => {
@@ -37,6 +35,7 @@ const Categorias: React.FC = () => {
 
   const handleCloseModal = () => {
     setEditarCategoria(null);
+    listarCategorias();
     setOpenModal(false);
   }
 
@@ -49,26 +48,13 @@ const Categorias: React.FC = () => {
     }
   }
 
-  const eliminarCategoria = async (idCategoria: number) => {
-
+  const handleEliminarCategoria = async (idCategoria: number) => {
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.delete(`${apiBaseUrl}/Categoria/${idCategoria}`);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        window.location.reload();
-      } else {
-        alert("Error al eliminar la categoría");
-      }
-
+      await eliminarCategoria(idCategoria);
+      listarCategorias();
     } catch (error) {
-      console.error("Error: ", error);
-      alert("Ocurrió un error al eliminar la categoría");
+      console.error(error);
     }
-
   }
 
   useEffect(() => {
@@ -97,7 +83,7 @@ const Categorias: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -105,28 +91,16 @@ const Categorias: React.FC = () => {
         </TableHead>
         <TableBody>
           {categorias.map((categoria) => (
-            <TableRow>
+            <TableRow key={categoria.idCategoria}>
               {columnas.map((columna) => {
                 const value = columna.id === "acciones" ? "" : (categoria as any)[columna.id];
                 return (
                   <TableCell key={columna.id} align={columna.align}>
                     {columna.id === "acciones" ? (
-                      <Box>
-                        <Button 
-                          variant="contained" 
-                          color="primary"
-                          onClick={() => handleOpenModal(categoria)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="contained" 
-                          color="error"
-                          onClick={() => eliminarCategoria(categoria.idCategoria)}
-                        >
-                          Eliminar
-                        </Button>
-                      </Box>
+                      <BotonesAccion 
+                        editar={() => handleOpenModal(categoria)}
+                        eliminar={() => handleEliminarCategoria(categoria.idCategoria)}
+                      />
                     ) : (
                       value
                     )}

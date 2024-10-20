@@ -50,3 +50,46 @@ export const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: 
     console.log(error);
   }
 }
+
+export const registrarProducto = async (dataToSend: any) => {
+  try {
+    const response = await axios.post(`${apiBaseUrl}/Producto`, dataToSend);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar producto");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el producto");
+  }
+}
+
+export const actualizarProducto = async (dataToSend: any) => {
+  try {
+    const response = await axios.put(`${apiBaseUrl}/Producto`, dataToSend);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar producto");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el producto");
+  }
+}
+
+export const eliminarProducto = async (idProducto: number) => {
+  try {
+    const response = await axios.delete(`${apiBaseUrl}/Producto/${idProducto}`);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+      window.location.reload();
+    } else {
+      alert("Error al eliminar el producto");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error durante la eliminación del producto");
+  }
+}

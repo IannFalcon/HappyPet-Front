@@ -1,26 +1,24 @@
 import { useEffect, useState } from "react";
 import Contenedor from "../../../components/admin-components/Contenedor"
-import axios from "axios";
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import { BotonAgregar } from "../../../components/admin-components/Botones";
+import { BotonAgregar, BotonesAccion } from "../../../components/admin-components/Botones";
 import AgregarMarca from "./AgregarMarca";
 import { Marca } from "../../../models/Marca";
-import { apiBaseUrl } from "../../../services/apiBaseUrl";
-import { obtenerMarcas } from "../../../services/marca-service";
+import { eliminarMarca, obtenerMarcas } from "../../../services/marca-service";
 
 interface Columna {
   id: keyof Marca | "acciones";
   label: string;
-  minWidth?: number;
-  align?: "left";
+  width: number | "auto";
+  align: "left" | "center";
 }
 
 const columnas: Columna[] = [
-  { id: "idMarca", label: "#", minWidth: 10 },
-  { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },  
+  { id: "idMarca", label: "#", width: 70, align: "center" },
+  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
+  { id: "acciones", label: "Acciones", width: 300, align: "center" },  
 ]
 
 const Marcas: React.FC = () => {
@@ -37,6 +35,7 @@ const Marcas: React.FC = () => {
 
   const handleCloseModal = () => {
     setEditarMarca(null);
+    listarMarcas();
     setOpenModal(false);
   }
 
@@ -49,21 +48,11 @@ const Marcas: React.FC = () => {
     }
   }
 
-  const eliminarMarca = async (idMarca: number) => {
+  const handleEliminarMarca = async (idMarca: number) => {
 
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.delete(`${apiBaseUrl}/Marca/${idMarca}`);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        window.location.reload();
-      } else {
-        alert("Error al eliminar la marca");
-      }
-
+      await eliminarMarca(idMarca);
+      listarMarcas();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al eliminar la marca");
@@ -98,7 +87,7 @@ const Marcas: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -112,22 +101,10 @@ const Marcas: React.FC = () => {
                 return (
                   <TableCell key={columna.id} align={columna.align}>
                     {columna.id === "acciones" ? (
-                      <Box>
-                        <Button 
-                          variant="contained" 
-                          color="primary"
-                          onClick={() => handleOpenModal(marca)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="contained" 
-                          color="error"
-                          onClick={() => eliminarMarca(marca.idMarca)}
-                        >
-                          Eliminar
-                        </Button>
-                      </Box>
+                      <BotonesAccion 
+                        editar={() => handleOpenModal(marca)}
+                        eliminar={() => handleEliminarMarca(marca.idMarca)}
+                      />
                     ) : value}
                   </TableCell>
                 )

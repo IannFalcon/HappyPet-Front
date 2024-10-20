@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import ContenedorModal from '../../../components/admin-components/ContenedorModal';
 import TituloModal from '../../../components/admin-components/TituloModal';
-import { Box, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import BotonesModal from '../../../components/admin-components/BotonesModal';
+import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { CleaningServices } from '@mui/icons-material';
-import axios from 'axios';
 import { reFormatoFecha } from '../../../utils/dateFormat';
 import { Producto } from '../../../models/Producto';
 import { Marca } from '../../../models/Marca';
 import { Categoria } from '../../../models/Categoria';
-import { apiBaseUrl } from '../../../services/apiBaseUrl';
 import { obtenerCategorias } from '../../../services/categoria-service';
 import { obtenerMarcas } from '../../../services/marca-service';
+import { BotonesModal } from '../../../components/admin-components/Botones';
+import { actualizarProducto, registrarProducto } from '../../../services/producto-service';
+import defaultImage from '../../../assets/default.jpg';
 
 interface ModalProps {
   open: boolean;
@@ -27,7 +27,7 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
   const [marcaSeleccionada, setMarcaSeleccionada] = useState<number>(0);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState<number>(0);
 
-  const [imagenPrevia, setImagenPrevia] = useState<string | null>(null);
+  const [imagenPrevia, setImagenPrevia] = useState<string>(defaultImage);
 
   const [formData, setFormData] = useState({
     idProducto: "",
@@ -57,24 +57,8 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
     });
     setCategoriaSeleccionada(0);
     setMarcaSeleccionada(0);
-    setImagenPrevia(null);
-  }
-
-  const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setImagenPrevia(reader.result as string);
-        setFormData({ 
-          ...formData, 
-          nombreImagen: file.name, 
-          rutaImagen: reader.result as string 
-        });
-      }
-      reader.readAsDataURL(file);
-    }
-  }
+    setImagenPrevia(defaultImage);
+  };
 
   useEffect(() => {
     if(producto) {
@@ -93,8 +77,26 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       setCategoriaSeleccionada(producto.idCategoria);
       setMarcaSeleccionada(producto.idMarca);
       setImagenPrevia(producto.rutaImagen);
+    } else {
+      handleLimpiarFormulario();
     }
   }, [producto]);
+
+  const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagenPrevia(reader.result as string);
+        setFormData({ 
+          ...formData, 
+          nombreImagen: file.name, 
+          rutaImagen: reader.result as string 
+        });
+      }
+      reader.readAsDataURL(file);
+    }
+  }
 
   useEffect(() => {
 
@@ -121,13 +123,6 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
   }, []);
 
-
-  const handleCloseModal = () => {
-    onClose();
-    handleLimpiarFormulario();
-    window.location.reload();
-  }
-
   const handleRegistrarProducto = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault();
@@ -141,15 +136,8 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
     }
 
     try {
-
-      const response = await axios.post(`${apiBaseUrl}/Producto`, dataToSend);
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al registrar producto");
-      }
-
+      await registrarProducto(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al registrar el producto");
@@ -170,15 +158,8 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
     }
 
     try {
-
-      const response = await axios.put(`${apiBaseUrl}/Producto`, dataToSend);
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al registrar producto");
-      }
-
+      await actualizarProducto(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al registrar el producto");
@@ -186,25 +167,44 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
 
   }
 
+  const handleCloseModal = () => {
+    onClose();
+    handleLimpiarFormulario();
+  }
+
   return (
-    <ContenedorModal
-      open={open}
-      onClose={onClose}
-      ancho={700}
+    <ContenedorModal 
+      open={open} 
+      onClose={onClose} 
+      ancho={1000} 
       alto={580}
     >
-      <TituloModal titulo="Registrar Producto"/>
+      <TituloModal titulo={producto ? "Editar información del producto" : "Registrar producto"}/>
       {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ px: 2, pt: 4 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField 
+          <Grid item xs={12} sm={4}>
+            <TextField
               fullWidth
               label="Nombre del producto"
               variant="outlined"
               value={formData.nombre}
-              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-              sx={{ mb: 2}}
+              onChange={(e) =>
+                setFormData({ ...formData, nombre: e.target.value })
+              }
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              multiline
+              rows={4}
+              label="Descripción"
+              variant="outlined"
+              value={formData.descripcion}
+              onChange={(e) =>
+                setFormData({ ...formData, descripcion: e.target.value })
+              }
+              sx={{ mb: 2 }}
             />
             <FormControl fullWidth>
               <InputLabel>Categoria</InputLabel>
@@ -215,13 +215,21 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
                 value={categoriaSeleccionada}
                 onChange={(e) => {
                   setCategoriaSeleccionada(Number(e.target.value));
-                  setFormData({ ...formData, idCategoria: e.target.value.toString() });
+                  setFormData({
+                    ...formData,
+                    idCategoria: e.target.value.toString(),
+                  });
                 }}
-                sx={{ mb: 2}}
+                sx={{ mb: 2 }}
               >
                 <MenuItem value={0}>Seleccionar</MenuItem>
                 {categorias.map((categoria) => (
-                  <MenuItem key={categoria.idCategoria} value={categoria.idCategoria}>{categoria.nombre}</MenuItem>
+                  <MenuItem
+                    key={categoria.idCategoria}
+                    value={categoria.idCategoria}
+                  >
+                    {categoria.nombre}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -234,36 +242,33 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
                 value={marcaSeleccionada}
                 onChange={(e) => {
                   setMarcaSeleccionada(Number(e.target.value));
-                  setFormData({ ...formData, idMarca: e.target.value.toString() });
+                  setFormData({
+                    ...formData,
+                    idMarca: e.target.value.toString(),
+                  });
                 }}
-                sx={{ mb: 2}}
+                sx={{ mb: 2 }}
               >
                 <MenuItem value={0}>Seleccionar</MenuItem>
                 {marcas.map((marca) => (
-                  <MenuItem key={marca.idMarca} value={marca.idMarca}>{marca.nombre}</MenuItem>
+                  <MenuItem key={marca.idMarca} value={marca.idMarca}>
+                    {marca.nombre}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <TextField
-              fullWidth
-              multiline
-              rows={4}
-              label="Descripción"
-              variant="outlined"
-              value={formData.descripcion}
-              onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-              sx={{ mb: 2}}
-            />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
               type="number"
               label="Precio Unitario"
               variant="outlined"
               value={formData.precioUnitario}
-              onChange={(e) => setFormData({ ...formData, precioUnitario: e.target.value })}
-              sx={{ mb: 2}}
+              onChange={(e) =>
+                setFormData({ ...formData, precioUnitario: e.target.value })
+              }
+              sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
@@ -271,8 +276,10 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
               label="Stock"
               variant="outlined"
               value={formData.stock}
-              onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-              sx={{ mb: 2}}
+              onChange={(e) =>
+                setFormData({ ...formData, stock: e.target.value })
+              }
+              sx={{ mb: 2 }}
             />
             <TextField
               fullWidth
@@ -280,10 +287,14 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
               label="Fecha de vencimiento (Opcional)"
               variant="outlined"
               value={formData.fecVencimiento}
-              onChange={(e) => setFormData({ ...formData, fecVencimiento: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, fecVencimiento: e.target.value })
+              }
               InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2}}
+              sx={{ mb: 2 }}
             />
+          </Grid>
+          <Grid item xs={12} sm={4}>
             <TextField
               fullWidth
               type="file"
@@ -291,46 +302,38 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
               variant="outlined"
               onChange={handleImagen}
               InputLabelProps={{ shrink: true }}
-              sx={{ mb: 2}}
+              sx={{ mb: 2 }}
             />
-          </Grid>
-          <Grid item xs={12} sm={12}>
-            {imagenPrevia && (
-              <Box 
-                sx={{ 
-                  mb: 2, 
-                  display: "flex", 
-                  flexDirection: "row", 
-                  justifyContent: "center", 
-                  alignItems: "center", 
-                  gap: 2 
+            <Box>
+              <img
+                src={imagenPrevia ? imagenPrevia : defaultImage}
+                alt="Imagen previa"
+                style={{
+                  width: "100%",
+                  height: "200px",
+                  border: "1px solid rgba(0, 0, 0, 0.2)",
                 }}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{ mt: 1 }}
+                onClick={() => {
+                  setImagenPrevia(defaultImage);
+                  setFormData({ ...formData, nombreImagen: "", rutaImagen: "" });
+                }}
+                startIcon={<CleaningServices />}
               >
-                <img src={imagenPrevia} alt="Imagen previa" style={{ width: "50%", border: "1px solid black" }}/>
-                <IconButton
-                  sx={{ 
-                    width: "40px", 
-                    height: "40px", 
-                    backgroundColor: "#d32f2f" 
-                  }}
-                  onClick={() => {
-                    setImagenPrevia(null);
-                    setFormData({ ...formData, nombreImagen: "", rutaImagen: "" });
-                  }}
-                >
-                  <CleaningServices sx={{ color: "white" }}/>
-                </IconButton>
-              </Box>
-            )}
+                Limpiar imagen
+              </Button>
+            </Box>
           </Grid>
         </Grid>
       </Box>
       <BotonesModal
-        registrar={
-          producto
-          ? handleActualizarProducto
-          : handleRegistrarProducto
-        }
+        objeto={producto}
+        accion={producto ? handleActualizarProducto : handleRegistrarProducto}
         cerrar={onClose}
       />
     </ContenedorModal>

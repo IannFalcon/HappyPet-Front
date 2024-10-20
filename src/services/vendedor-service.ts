@@ -1,10 +1,11 @@
 import axios from "axios";
 import { Vendedor } from "../models/Vendedor";
 import { formatoFecha } from "../utils/dateFormat";
+import { apiBaseUrl } from "./apiBaseUrl";
 
 export const obtenerVendedores = async () => {
   try {
-    const response = await axios.get("http://192.168.0.3:5045/api/Vendedor");
+    const response = await axios.get(`${apiBaseUrl}/Vendedor`);
     if (response.status === 200) {
       const data = response.data.data.map((item: Vendedor) => ({
         idUsuario: item.idUsuario,
@@ -31,5 +32,47 @@ export const obtenerVendedores = async () => {
     }
   } catch (error) {
     console.error(error);
+  }
+}
+
+export const registrarVendedor = async (dataToSend: any) => {
+  try {
+    const response = await axios.post(`${apiBaseUrl}/Vendedor`, dataToSend);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar vendedor");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el vendedor");
+  }
+}
+
+export const actualizarVendedor = async (dataToSend: any) => {
+  try {
+    const response = await axios.put(`${apiBaseUrl}/Vendedor`, dataToSend);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar vendedor");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el vendedor");
+  }
+}
+
+export const eliminarVendedor = async (idUsuario: number) => {
+  try {
+    const response = await axios.delete(`${apiBaseUrl}/Vendedor/${idUsuario}`);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al eliminar al vendedor");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error durante la eliminación del vendedor");
   }
 }

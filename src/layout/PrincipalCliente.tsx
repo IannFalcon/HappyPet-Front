@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom';
 import Header from '../components/cliente-components/Header';
 import { cantidadProductosCarrito } from '../services/carrito-service';
-import { obtenerUsuario } from '../utils/localStorage';
+import { obtenerRolUsuario, obtenerUsuario } from '../utils/localStorage';
 
 const PrincipalCliente: React.FC = () => {
 
   const [cantidadProductos, setCantidadProductos] = useState<number>(0);
   const [session, setSession] = useState<boolean>(false);
+  const tipoUsuario = obtenerRolUsuario();
 
   useEffect(() => {
     const validarSesion = () => {
@@ -17,6 +18,9 @@ const PrincipalCliente: React.FC = () => {
         setSession(false);
       } else {
         setSession(true);
+        if (tipoUsuario === 2 || tipoUsuario === 3) {
+          window.location.replace("/admin/home");
+        }
       }
     }
 

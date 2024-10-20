@@ -9,16 +9,17 @@ const TituloModal: React.FC<TituloModalProps> = ({ titulo }) => {
   return (
     <Box
       sx={{
+        px: 2,
+        pb: 2,
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        p: 2,
         borderBottom: "1px solid #ccc",
       }}
     >
       <Typography
         variant="h5"
-        component="h2"
+        sx={{ textTransform: "uppercase" }}
       >
         {titulo}
       </Typography>

@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import ContenedorModal from '../../../components/admin-components/ContenedorModal';
 import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import BotonesModal from '../../../components/admin-components/BotonesModal';
-import axios from 'axios';
 import { Vendedor } from '../../../models/Vendedor';
-import { apiBaseUrl } from '../../../services/apiBaseUrl';
+import { BotonesModal } from '../../../components/admin-components/Botones';
+import { actualizarVendedor, registrarVendedor } from '../../../services/vendedor-service';
 
 interface ModalProps {
   open: boolean;
@@ -27,6 +26,20 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
     correo: "",
   });
 
+  const handleLimpiarFormulario = () => {
+    setFormData({
+      idUsuario: "",
+      nombre: "",
+      apellidoPaterno: "",
+      apellidoMaterno: "",
+      idTipoDocumento: "",
+      nroDocumento: "",
+      telefono: "",
+      direccion: "",
+      correo: "",
+    });
+  };
+
   useEffect(() => {
     if(vendedor) {
       setFormData({
@@ -40,6 +53,8 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
         direccion: vendedor.direccion,
         correo: vendedor.correo,
       });
+    } else {
+      handleLimpiarFormulario();
     }
   }, [vendedor]);
 
@@ -50,24 +65,14 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
     const { idUsuario, ...dataToSend } = formData; // Eliminar idUsuario del objeto a enviar
 
     try {
-
-      // Enviar datos al servidor
-      const response = await axios.post(`${apiBaseUrl}/Vendedor`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        onClose();
-      } else {
-        alert("Error al registrar vendedor");
-      }
-
+      await registrarVendedor(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al registrar el vendedor");
     }
 
-  }
+  };
 
   const handleActualizarVendedor = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
@@ -76,24 +81,19 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
     const { ...dataToSend } = formData;
 
     try {
-
-      // Enviar datos al servidor
-      const response = await axios.put(`${apiBaseUrl}/Vendedor`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        onClose();
-      } else {
-        alert("Error al registrar vendedor");
-      }
-
+      await actualizarVendedor(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al registrar el vendedor");
     }
 
-  }
+  };
+
+  const handleCloseModal = () => {
+    onClose();
+    handleLimpiarFormulario();
+  };
 
   return (
     <ContenedorModal
@@ -102,9 +102,9 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
       ancho={700}
       alto={600}
     >
-      <TituloModal titulo="Agregar Vendedor"/>
+      <TituloModal titulo={vendedor ? "Editar informacion del vendedor" : "Registrar vendedor"}/>
       {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ px: 2, pt: 4 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -185,13 +185,14 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
           </Grid>
         </Grid>
       </Box>
-      <BotonesModal 
-        cerrar={onClose}
-        registrar={
+      <BotonesModal
+        objeto={vendedor}
+        accion={
           vendedor
           ? handleActualizarVendedor
           : handleRegistrarVendedor
         }
+        cerrar={onClose}
       />
     </ContenedorModal>
   );

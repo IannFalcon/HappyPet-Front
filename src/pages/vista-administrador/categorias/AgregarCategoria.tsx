@@ -1,11 +1,10 @@
 import { Box, TextField } from "@mui/material";
 import ContenedorModal from "../../../components/admin-components/ContenedorModal";
 import TituloModal from "../../../components/admin-components/TituloModal";
-import BotonesModal from "../../../components/admin-components/BotonesModal";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { Categoria } from "../../../models/Categoria";
-import { apiBaseUrl } from "../../../services/apiBaseUrl";
+import { BotonesModal } from "../../../components/admin-components/Botones";
+import { actualizarCategoria, registrarCategoria } from "../../../services/categoria-service";
 
 interface ModalProps {
   open: boolean;
@@ -40,59 +39,35 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
 
   const handleRegistrarCategoria = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
-    e.preventDefault(); // Evitar recargar la página
-
+    e.preventDefault();
     const { idCategoria, ...dataToSend } = formData; // Eliminar idCategoria del objeto a enviar
 
     try {
-
-      // Enviar datos al servidor
-      const response = await axios.post(`${apiBaseUrl}/Categoria`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al registrar categoría");
-      }
-
+      await registrarCategoria(dataToSend);
+      handleCloseModal();
     } catch (error) {
-      console.error("Error: ", error);
-      alert("Ocurrió un error al registrar la categoría");
+      console.error(error);
     }
 
-  }
+  };
 
   const handleActualizarCategoria = async (e: React.MouseEvent<HTMLButtonElement>) => {
-      
-    e.preventDefault(); // Evitar recargar la página
-  
+
+    e.preventDefault();
     const { ...dataToSend } = formData;
 
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.put(`${apiBaseUrl}/Categoria`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al actualizar categoría");
-      }
-
+      await actualizarCategoria(dataToSend);
+      handleCloseModal();
     } catch (error) {
-      console.error("Error: ", error);
-      alert("Ocurrió un error al actualizar la categoría");
+      console.error(error);
     }
-  }
+
+  };
 
   const handleCloseModal = () => {
     onClose();
     handleLimpiarFormulario();
-    window.location.reload();
   };
 
   return (
@@ -102,9 +77,9 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
       ancho={500}
       alto={400}
     >
-      <TituloModal titulo="Registrar Categoría"/>
+      <TituloModal titulo={categoria ? "Editar categoría" : "Registrar categoría"}/>
       {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ px: 2, pt: 4 }}>
         <TextField
           fullWidth
           label="Nombre"
@@ -114,7 +89,8 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
         />
       </Box>
       <BotonesModal
-        registrar={
+        objeto={categoria}
+        accion={
           categoria 
           ? handleActualizarCategoria 
           : handleRegistrarCategoria

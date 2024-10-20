@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react'
 import Contenedor from '../../../components/admin-components/Contenedor';
 import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
-import axios from 'axios';
-import { BotonAgregar, BotonExportar } from '../../../components/admin-components/Botones';
+import { BotonAgregar, BotonesAccion, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarVendedor from './AgregarVendedor';
 import { Vendedor } from '../../../models/Vendedor';
-import { obtenerVendedores } from '../../../services/vendedor-service';
-import { apiBaseUrl } from '../../../services/apiBaseUrl';
+import { eliminarVendedor, obtenerVendedores } from '../../../services/vendedor-service';
 
 interface Columna {
   id: keyof Vendedor | "acciones";
   label: string;
-  minWidth?: number;
-  align?: "left";
+  width: number | "auto";
+  align: "left" | "center";
 }
 
 const columnas: Columna[] = [
-  { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "apellidoPaterno", label: "Apellido Paterno", minWidth: 100 },
-  { id: "apellidoMaterno", label: "Apellido Materno", minWidth: 100 },
-  { id: "usuTipoDoc", label: "Tipo Doc.", minWidth: 100 },
-  { id: "nroDocumento", label: "Nro. Doc.", minWidth: 100 },
-  { id: "telefono", label: "Teléfono", minWidth: 100 },
-  { id: "direccion", label: "Dirección", minWidth: 100 },
-  { id: "correo", label: "Correo", minWidth: 100 },
-  { id: "fecRegistro", label: "Fecha Registro", minWidth: 100 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },
+  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
+  { id: "apellidoPaterno", label: "Apellido Paterno", width: "auto", align: "left" },
+  { id: "apellidoMaterno", label: "Apellido Materno", width: "auto", align: "left" },
+  { id: "usuTipoDoc", label: "Tipo Doc.", width: "auto", align: "center" },
+  { id: "nroDocumento", label: "Nro. Doc.", width: "auto", align: "center" },
+  { id: "telefono", label: "Teléfono", width: "auto", align: "center" },
+  { id: "direccion", label: "Dirección", width: "auto", align: "left" },
+  { id: "correo", label: "Correo", width: "auto", align: "left" },
+  { id: "fecRegistro", label: "Fecha Registro", width: "auto", align: "center" },
+  { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
 
 const Vendedores: React.FC = () => {
@@ -44,6 +42,7 @@ const Vendedores: React.FC = () => {
 
   const handleCloseModal = () => {
     setEditarVendedor(null);
+    listarVendedores();
     setOpenModal(false);
   }
 
@@ -56,26 +55,14 @@ const Vendedores: React.FC = () => {
     }
   }
 
-  const eliminarVendedor = async (idUsuario: number) => {
-
+  const handleEliminarVendedor = async (idUsuario: number) => {
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.delete(`${apiBaseUrl}/Vendedor/${idUsuario}`);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        window.location.reload();
-      } else {
-        alert("Error al eliminar al vendedor");
-      }
-
+      await eliminarVendedor(idUsuario);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error durante la eliminación del vendedor");
     }
-
   }
 
   useEffect(() => {
@@ -109,7 +96,7 @@ const Vendedores: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -125,22 +112,10 @@ const Vendedores: React.FC = () => {
                     {columna.id === "usuTipoDoc" ?
                       vendedor.usuTipoDoc.descripcion
                     : columna.id === "acciones" ? (
-                      <Box>
-                        <Button 
-                          variant="contained" 
-                          color="primary"
-                          onClick={() => handleOpenModal(vendedor)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="contained" 
-                          color="error"
-                          onClick={() => eliminarVendedor(vendedor.idUsuario)}
-                        >
-                          Eliminar
-                        </Button>
-                      </Box>
+                      <BotonesAccion 
+                        editar={() => handleOpenModal(vendedor)}
+                        eliminar={() => handleEliminarVendedor(vendedor.idUsuario)}
+                      />
                     ) : value}
                   </TableCell>
                 )

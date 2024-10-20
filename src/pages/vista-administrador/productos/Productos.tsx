@@ -1,33 +1,31 @@
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import Contenedor from "../../../components/admin-components/Contenedor";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
+import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarProductos from "./AgregarProducto";
 import { Producto } from "../../../models/Producto";
-import { obtenerProductos } from "../../../services/producto-service";
-import { apiBaseUrl } from "../../../services/apiBaseUrl";
+import { eliminarProducto, obtenerProductos } from "../../../services/producto-service";
 
 interface Columna {
   id: keyof Producto | "acciones";
   label: string;
-  minWidth?: number;
-  align?: "left";
+  width: number | "auto";
+  align: "left" | "center";
 }
 
 const columnas: Columna[] = [
-  { id: "rutaImagen", label: "Imagen", minWidth: 100 },
-  { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "descripcion", label: "Descripción", minWidth: 100 },
-  { id: "precioUnitario", label: "Precio", minWidth: 50 },
-  { id: "stock", label: "Stock", minWidth: 50 },
-  { id: "fecVencimiento", label: "Fecha Vencimiento", minWidth: 50 },
-  { id: "fecRegistro", label: "Fecha Registro", minWidth: 50 },
-  { id: "productoCategoria", label: "Categoría", minWidth: 50 },
-  { id: "productoMarca", label: "Marca", minWidth: 50 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },
+  { id: "rutaImagen", label: "Imagen", width: 140, align: "center" },
+  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
+  { id: "descripcion", label: "Descripción", width: "auto", align: "left" },
+  { id: "precioUnitario", label: "Precio", width: "auto", align: "center" },
+  { id: "stock", label: "Stock", width: "auto", align: "center" },
+  { id: "fecVencimiento", label: "Fecha Vencimiento", width: "auto", align: "center" },
+  { id: "fecRegistro", label: "Fecha Registro", width: "auto", align: "center" },
+  { id: "productoCategoria", label: "Categoría", width: "auto", align: "center" },
+  { id: "productoMarca", label: "Marca", width: "auto", align: "center" },
+  { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
 
 const Productos: React.FC = () => {
@@ -44,6 +42,7 @@ const Productos: React.FC = () => {
 
   const handleCloseModal = () => {
     setEditarProducto(null);
+    listarProductos();
     setOpenModal(false);
   };
 
@@ -57,26 +56,14 @@ const Productos: React.FC = () => {
     }
   }
 
-  const eliminarProducto = async (idProducto: number) => {
-
+  const handleEliminarProducto = async (idProducto: number) => {
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.delete(`${apiBaseUrl}/Producto/${idProducto}`);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        window.location.reload();
-      } else {
-        alert("Error al eliminar el producto");
-      }
-
+      await eliminarProducto(idProducto);
+      listarProductos();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error durante la eliminación del producto");
     }
-
   }
 
   useEffect(() => {
@@ -108,7 +95,7 @@ const Productos: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -125,30 +112,20 @@ const Productos: React.FC = () => {
                     align={columna.align}
                   >
                   { columna.id === "rutaImagen"
-                  ? <img src={producto.rutaImagen} alt={producto.nombre} style={{ width: 70, height: 60 }} />
+                  ? <img src={producto.rutaImagen} alt={producto.nombre} style={{ width: "100%", height: 100 }} />
                   : columna.id === "productoCategoria" 
                   ? (producto.productoCategoria.nombre) 
                   : columna.id === "productoMarca"
                   ? (producto.productoMarca.nombre)
                   : columna.id === "fecVencimiento"
                   ? (producto.fecVencimiento ?? "No aplica")
+                  : columna.id === "precioUnitario"
+                  ? (producto.precioUnitario.toFixed(2))
                   : columna.id === "acciones" ? (
-                    <Box>
-                      <Button 
-                        variant="contained" 
-                        color="primary"
-                        onClick={() => handleOpenModal(producto)}
-                      >
-                        Editar
-                      </Button>
-                      <Button 
-                        variant="contained" 
-                        color="error"
-                        onClick={() => eliminarProducto(producto.idProducto)}
-                      >
-                        Eliminar
-                      </Button>
-                    </Box>
+                    <BotonesAccion 
+                      editar={() => handleOpenModal(producto)}
+                      eliminar={() => handleEliminarProducto(producto.idProducto)}
+                    />
                   ) : (
                     value
                   )}

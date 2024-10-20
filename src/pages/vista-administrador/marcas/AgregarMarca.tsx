@@ -1,11 +1,10 @@
 import { Box, TextField } from "@mui/material";
 import ContenedorModal from "../../../components/admin-components/ContenedorModal";
 import TituloModal from "../../../components/admin-components/TituloModal";
-import BotonesModal from "../../../components/admin-components/BotonesModal";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Marca } from "../../../models/Marca";
-import { apiBaseUrl } from "../../../services/apiBaseUrl";
+import { BotonesModal } from "../../../components/admin-components/Botones";
+import { actualizarMarca, registrarMarca } from "../../../services/marca-service";
 
 interface ModalProps {
   open: boolean;
@@ -33,13 +32,14 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
         idMarca: marca.idMarca.toString(),
         nombre: marca.nombre,
       });
+    } else {
+      handleLimpiarFormulario();
     }
   }, [marca]);
 
   const handleCloseModal = () => {
     onClose();
     handleLimpiarFormulario();
-    window.location.reload();
   }
 
   const handleRegistrarMarca = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -49,18 +49,8 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
     const { idMarca, ...dataToSend } = formData; // Eliminar idMarca del objeto a enviar
 
     try {
-
-      // Enviar datos al servidor
-      const response = await axios.post(`${apiBaseUrl}/Marca`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al registrar marca");
-      }
-
+      await registrarMarca(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al registrar la marca");
@@ -75,18 +65,8 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
     const { ...dataToSend } = formData;
 
     try {
-
-      // Enviar datos al servidor
-      const response = await axios.put(`${apiBaseUrl}/Marca`, dataToSend);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        handleCloseModal();
-      } else {
-        alert("Error al actualizar marca");
-      }
-
+      await actualizarMarca(dataToSend);
+      handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error al actualizar la marca");
@@ -101,9 +81,9 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
       ancho={500}
       alto={400}
     >
-      <TituloModal titulo="Registrar Marca"/>
+      <TituloModal titulo={marca ? "Editar marca" : "Registrar marca"}/>
       {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ px: 2, pt: 4 }}>
         <TextField
           fullWidth
           label="Nombre"
@@ -113,7 +93,8 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
         />
       </Box>
       <BotonesModal
-        registrar={
+        objeto={marca}
+        accion={
           marca 
           ? handleActualizarMarca
           : handleRegistrarMarca

@@ -7,21 +7,22 @@ import ContenedorTabla from '../../../components/admin-components/ContenedorTabl
 import { Venta } from '../../../models/Venta';
 import VerDetalleVenta from './VerDetalleVenta';
 import { obtenerVentas } from '../../../services/venta-service';
+import { Article } from '@mui/icons-material';
 
 interface Columna {
   id: keyof Venta | "acciones";
   label: string;
-  minWidth?: number;
-  align?: 'right';
+  width: number | "auto";
+  align: "center" | "left";
 }
 
 const columnas: Columna[] = [
-  { id: 'idTransaccion', label: 'ID Transacción', minWidth: 100 },
-  { id: 'usuarioVenta', label: 'Nombre del Cliente', minWidth: 100 },
-  { id: 'fecVenta', label: 'Fecha Venta', minWidth: 100 },
-  { id: 'totalProductos', label: 'Cant. Productos', minWidth: 100 },
-  { id: 'montoTotal', label: 'Importe Total', minWidth: 100 },
-  { id: 'acciones', label: 'Acciones', minWidth: 100 },
+  { id: "idTransaccion", label: "ID Transacción", width: 280, align: "left" },
+  { id: "usuarioVenta", label: "Nombre del Cliente", width: "auto", align: "left" },
+  { id: "fecVenta", label: "Fecha Venta", width: "auto", align: "center" },
+  { id: "totalProductos", label: "Cant. Productos", width: "auto", align: "center" },
+  { id: "montoTotal", label: "Importe Total", width: "auto", align: "center" },
+  { id: "acciones", label: "Acciones", width: 200, align: "center" },
 ]
 
 const Ventas: React.FC = () => {
@@ -77,7 +78,7 @@ const Ventas: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -99,6 +100,7 @@ const Ventas: React.FC = () => {
                         <Button 
                           variant="contained" 
                           color="info"
+                          startIcon={<Article />}
                           onClick={() => handleOpenModal(venta.idVenta)}
                         >
                           Ver detalle

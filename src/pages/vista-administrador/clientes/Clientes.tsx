@@ -1,33 +1,31 @@
-import { Box, Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import { useEffect, useState } from "react";
 import Contenedor from "../../../components/admin-components/Contenedor";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
-import { BotonAgregar, BotonExportar } from "../../../components/admin-components/Botones";
+import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import axios from "axios";
 import AgregarCliente from "./AgregarCliente";
 import { Cliente } from "../../../models/Cliente";
-import { obtenerClientes } from "../../../services/cliente-service";
-import { apiBaseUrl } from "../../../services/apiBaseUrl";
+import { eliminarCliente, obtenerClientes } from "../../../services/cliente-service";
 
 interface Columna {
   id: keyof Cliente | "acciones";
   label: string;
-  minWidth?: number;
-  align?: "left";
+  width: number | "auto";
+  align: "left" | "center";
 }
 
 const columnas: Columna[] = [
-  { id: "nombre", label: "Nombre", minWidth: 100 },
-  { id: "apellidoPaterno", label: "Apellido Paterno", minWidth: 100 },
-  { id: "apellidoMaterno", label: "Apellido Materno", minWidth: 100 },
-  { id: "usuTipoDoc", label: "Tipo Doc.", minWidth: 100 },
-  { id: "nroDocumento", label: "Nro. Doc.", minWidth: 100 },
-  { id: "telefono", label: "Teléfono", minWidth: 100 },
-  { id: "direccion", label: "Dirección", minWidth: 100 },
-  { id: "correo", label: "Correo", minWidth: 100 },
-  { id: "fecRegistro", label: "Fecha Registro", minWidth: 100 },
-  { id: "acciones", label: "Acciones", minWidth: 50 },
+  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
+  { id: "apellidoPaterno", label: "Apellido Paterno", width: "auto", align: "left" },
+  { id: "apellidoMaterno", label: "Apellido Materno", width: "auto", align: "left" },
+  { id: "usuTipoDoc", label: "Tipo Doc.", width: "auto", align: "center" },
+  { id: "nroDocumento", label: "Nro. Doc.", width: "auto", align: "center" },
+  { id: "telefono", label: "Teléfono", width: "auto", align: "center" },
+  { id: "direccion", label: "Dirección", width: "auto", align: "left" },
+  { id: "correo", label: "Correo", width: "auto", align: "left" },
+  { id: "fecRegistro", label: "Fecha Registro", width: "auto", align: "center" },
+  { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
 
 const Clientes: React.FC = () => {
@@ -44,6 +42,7 @@ const Clientes: React.FC = () => {
 
   const handleCloseModal = () => {
     setEditarCliente(null);
+    listarClientes();
     setOpenModal(false);
   }
 
@@ -56,26 +55,14 @@ const Clientes: React.FC = () => {
     }
   }
 
-  const eliminarCliente = async (idUsuario: number) => {
-
+  const handleEliminarCliente = async (idUsuario: number) => {
     try {
-  
-      // Enviar datos al servidor
-      const response = await axios.delete(`${apiBaseUrl}/Cliente/${idUsuario}`);
-
-      // Mostrar mensaje de éxito o error
-      if(response.status === 200) {
-        alert(response.data.mensaje);
-        window.location.reload();
-      } else {
-        alert("Error al eliminar al cliente");
-      }
-
+      await eliminarCliente(idUsuario);
+      listarClientes();
     } catch (error) {
       console.error("Error: ", error);
       alert("Ocurrió un error durante la eliminación del cliente");
     }
-
   }
 
   useEffect(() => {
@@ -109,7 +96,7 @@ const Clientes: React.FC = () => {
             <TableCell
               key={columna.id}
               align={columna.align}
-              style={{ minWidth: columna.minWidth }}
+              style={{ width: columna.width }}
             >
               {columna.label}
             </TableCell>
@@ -125,22 +112,10 @@ const Clientes: React.FC = () => {
                     {columna.id === "usuTipoDoc" ?
                       cliente.usuTipoDoc.descripcion
                     : columna.id === "acciones" ? (
-                      <Box>
-                        <Button 
-                          variant="contained" 
-                          color="primary"
-                          onClick={() => handleOpenModal(cliente)}
-                        >
-                          Editar
-                        </Button>
-                        <Button 
-                          variant="contained" 
-                          color="error"
-                          onClick={() => eliminarCliente(cliente.idUsuario)}
-                        >
-                          Eliminar
-                        </Button>
-                      </Box>
+                      <BotonesAccion 
+                        editar={() => handleOpenModal(cliente)}
+                        eliminar={() => handleEliminarCliente(cliente.idUsuario)}
+                      />
                     ) : value}
                   </TableCell>
                 )

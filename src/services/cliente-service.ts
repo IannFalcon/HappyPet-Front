@@ -66,3 +66,45 @@ export const obtenerDatosCliente = async (idUsuario: number) => {
     console.error(error);
   }
 }
+
+export const registrarCliente = async (dataToSend: any) => {
+  try {
+    const response = await axios.post(`${apiBaseUrl}/Cliente`, dataToSend);
+    if (response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar cliente");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el cliente");
+  }
+}
+
+export const actualizarCliente = async (dataToSend: any) => {
+  try {
+    const response = await axios.put(`${apiBaseUrl}/Cliente`, dataToSend);
+    if (response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar cliente");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al registrar el cliente");
+  }
+}
+
+export const eliminarCliente = async (idUsuario: number) => {
+  try {
+    const response = await axios.delete(`${apiBaseUrl}/Cliente/${idUsuario}`);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al eliminar al cliente");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error durante la eliminación del cliente");
+  }
+}

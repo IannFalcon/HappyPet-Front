@@ -9,8 +9,7 @@ const ContenedorBotones: React.FC<ContenedorBotonesProps> = ({ children }) => {
     <Box
         display="flex"
         alignItems="center"
-        sx={{ width: "100%" }}
-        mb={2}
+        sx={{ mb: 2, width: "100%" }}
     >
 
       { children }
