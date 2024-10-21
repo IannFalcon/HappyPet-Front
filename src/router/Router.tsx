@@ -15,6 +15,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Carrito from "../pages/vista-cliente/Carrito";
 import CambiarContrasenia from "../pages/vista-autenticacion/CambiarContrasenia";
 import Registrate from "../pages/vista-autenticacion/Registrate";
+import DetallesProducto from "../pages/vista-cliente/DetallesProducto";
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />
+      },
+      {
+        path: "detalle-producto/:id",
+        element: <DetallesProducto />
       },
       {
         path: "carrito",

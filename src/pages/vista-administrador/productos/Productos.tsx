@@ -7,6 +7,7 @@ import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/
 import AgregarProductos from "./AgregarProducto";
 import { Producto } from "../../../models/Producto";
 import { eliminarProducto, obtenerProductos } from "../../../services/producto-service";
+import defaultImagen from '../../../assets/default.jpg';
 
 interface Columna {
   id: keyof Producto | "acciones";
@@ -112,7 +113,11 @@ const Productos: React.FC = () => {
                     align={columna.align}
                   >
                   { columna.id === "rutaImagen"
-                  ? <img src={producto.rutaImagen} alt={producto.nombre} style={{ width: "100%", height: 100 }} />
+                  ? <img 
+                      src={producto.rutaImagen ? producto.rutaImagen : defaultImagen} 
+                      alt={producto.nombre} 
+                      style={{ width: "100%", height: 100 }} 
+                    />
                   : columna.id === "productoCategoria" 
                   ? (producto.productoCategoria.nombre) 
                   : columna.id === "productoMarca"

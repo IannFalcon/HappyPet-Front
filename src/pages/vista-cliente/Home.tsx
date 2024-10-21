@@ -1,4 +1,4 @@
-import { Box, Button, FormControlLabel, IconButton, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControlLabel, IconButton, Radio, RadioGroup, TextField, Typography } from '@mui/material';
 import banner from '../../assets/banner.jpg';
 import React, { useEffect, useState } from 'react'
 import { Add, Pets, Remove, ShoppingCart } from '@mui/icons-material';
@@ -6,11 +6,12 @@ import { Marca } from '../../models/Marca';
 import { Categoria } from '../../models/Categoria';
 import { Producto } from '../../models/Producto';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
-import { useOutletContext } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 import { Carrito } from '../../models/Carrito';
 import { obtenerCategorias } from '../../services/categoria-service';
 import { obtenerMarcas } from '../../services/marca-service';
 import { obtenerProductosFiltrados } from '../../services/producto-service';
+import defaultImagen from '../../assets/default.jpg';
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
@@ -31,6 +32,8 @@ const Home: React.FC = () => {
   const [idCategoria, setIdCategoria] = useState<number | null>(null);
   const [idMarca, setIdMarca] = useState<number | null>(null);
   const [nomProducto, setNomProducto] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const listarCategorias = async () => {
     try {
@@ -64,21 +67,18 @@ const Home: React.FC = () => {
     setProductosCarrito(productos);
   }
 
-  const validarProductoCarrito = (idProducto: number) => {
-    if (session) {
-      return productosCarrito.some(producto => producto.idProducto === idProducto);
-    }
-  }
-
   const actualizarListadoProductos = async () => {
     if (session) {
       actualizarCantidadProductos();
       await listaProductosCarrito();
       await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
     } else {
-      await listaProductosCarrito();
       await listarProductosFiltrados(idCategoria ?? undefined, idMarca ?? undefined, nomProducto ?? undefined);
     }
+  }
+
+  const validarProductoCarrito = (idProducto: number) => {
+    return productosCarrito.some(producto => producto.idProducto === idProducto);
   }
 
   const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
@@ -90,8 +90,8 @@ const Home: React.FC = () => {
     listarCategorias();
     listarMarcas();
     listarProductosFiltrados();
-    listaProductosCarrito();
-  }, []);
+    actualizarListadoProductos();
+  }, [session]);
 
   return (
     <>
@@ -153,26 +153,50 @@ const Home: React.FC = () => {
         <Box
           sx={{
             width: "20%",
-            p: 2,
+            mr: 2,
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             border: "1px solid #000",
           }}
         >
+
           <Typography
             variant="h5"
             sx={{
               width: "100%",
+              py: 2,
+              bgcolor: "#2C2C2C",
+              color: "#fff",
               fontWeight: "bold",
               textAlign: "center",
-              mb: 3,
             }}
           >
             FILTROS
           </Typography>
+
+          {/* Buscar por nombre */}
+          <Box sx={{ pt: 1, pb: 2, px: 3 }}>
+            <TextField
+              fullWidth
+              label="Buscar producto por nombre"
+              variant="outlined"
+              sx={{ mt: 2 }}
+              onChange={(e) => {
+                setNomProducto(e.target.value);
+                listarProductosFiltrados(
+                  idCategoria ?? undefined,
+                  idMarca ?? undefined,
+                  e.target.value
+                );
+              }}
+            />
+          </Box>
+
+          <Divider sx={{ mt: 1, mb: 2, mx: 2 }} />
+
           {/* Categorias */}
-          <Box sx={{ mb: 2 }}>
+          <Box sx={{ pb: 2, px: 3 }}>
             <Typography
               variant="h6"
               sx={{
@@ -215,8 +239,9 @@ const Home: React.FC = () => {
               ))}
             </RadioGroup>
           </Box>
+
           {/* Marcas */}
-          <Box>
+          <Box sx={{ pb: 2, px: 3 }}>
             <Typography
               variant="h6"
               sx={{
@@ -259,37 +284,17 @@ const Home: React.FC = () => {
               ))}
             </RadioGroup>
           </Box>
-          <Box>
-            <TextField
-              fullWidth
-              label="Buscar producto por nombre"
-              variant="outlined"
-              sx={{ mt: 2 }}
-              onChange={(e) => {
-                setNomProducto(e.target.value);
-                listarProductosFiltrados(
-                  idCategoria ?? undefined,
-                  idMarca ?? undefined,
-                  e.target.value
-                );
-              }}
-            />
-          </Box>
+
         </Box>
 
         {/* Productos */}
-        <Box
-          sx={{
-            width: "80%",
-            pl: 2,
-            pr: 2,
-          }}
-        >
+        <Box sx={{ width: "80%", px: 2 }}>
+
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: 2,
+              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+              gap: 3,
             }}
           >
             {productos.map((producto) => (
@@ -298,7 +303,7 @@ const Home: React.FC = () => {
                   p: 2,
                   display: "flex",
                   flexDirection: "column",
-                  border: "1px solid #000",
+                  boxShadow: "0px 0px 5px 0px rgba(0,0,0,0.5)",
                   borderRadius: "10px",
                 }}
               >
@@ -312,9 +317,9 @@ const Home: React.FC = () => {
                   }}
                 >
                   <img
-                    src={producto.rutaImagen}
+                    src={producto.rutaImagen ? producto.rutaImagen : defaultImagen}
                     alt={producto.nombre}
-                    style={{ width: "100px", height: "100px" }}
+                    style={{ width: "100%", height: "180px", marginBottom: "10px", borderRadius: "10px" }}
                   />
                   <Typography
                     variant="body1"
@@ -338,8 +343,7 @@ const Home: React.FC = () => {
                   <Typography
                     variant="body1"
                     sx={{
-                      mt: 1,
-                      mb: 0,
+                      mt: 2,
                       fontWeight: "550",
                     }}
                   >
@@ -378,9 +382,7 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() =>
-                            ejecutarAccionesCarrito(producto.idProducto, true)
-                          }
+                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, true)}
                         >
                           <Remove sx={{ padding: 0 }} />
                         </IconButton>
@@ -396,11 +398,7 @@ const Home: React.FC = () => {
                             borderRadius: "8px",
                           }}
                         >
-                          {
-                            productosCarrito.find(
-                              (item) => item.idProducto === producto.idProducto
-                            )?.cantidad
-                          }
+                          {productosCarrito.find((item) => item.idProducto === producto.idProducto)?.cantidad}
                         </Typography>
                         <IconButton
                           sx={{
@@ -413,9 +411,7 @@ const Home: React.FC = () => {
                               color: "#dc3545",
                             },
                           }}
-                          onClick={() =>
-                            ejecutarAccionesCarrito(producto.idProducto, false)
-                          }
+                          onClick={() => ejecutarAccionesCarrito(producto.idProducto, false)}
                         >
                           <Add sx={{ padding: 0 }} />
                         </IconButton>
@@ -423,9 +419,8 @@ const Home: React.FC = () => {
                       <Button
                         fullWidth
                         variant="contained"
-                        sx={{
-                          bgcolor: "#0d6efd",
-                        }}
+                        sx={{ bgcolor: "#0d6efd" }}
+                        onClick={() => navigate(`/detalle-producto/${producto.idProducto}`)}
                       >
                         Ver detalles
                       </Button>
@@ -465,6 +460,7 @@ const Home: React.FC = () => {
                           width: session ? "80%" : "100%",
                           bgcolor: "#0d6efd",
                         }}
+                        onClick={() => navigate(`/detalle-producto/${producto.idProducto}`)}
                       >
                         Ver detalles
                       </Button>
@@ -474,6 +470,7 @@ const Home: React.FC = () => {
               </Box>
             ))}
           </Box>
+
         </Box>
       </Box>
     </>

@@ -25,7 +25,7 @@ const PrincipalCliente: React.FC = () => {
     }
 
     validarSesion();
-  }, []);
+  }, [tipoUsuario]);
 
   const actualizarCantidadProductos = async () => {
     try {

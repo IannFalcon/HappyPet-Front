@@ -10,16 +10,17 @@ import { obtenerIdUsuario, obtenerNombreUsuario } from '../../utils/localStorage
 import { manejarRedireccion, realizarPago } from '../../services/pago-service';
 import { Cliente } from '../../models/Cliente';
 import { obtenerDatosCliente } from '../../services/cliente-service';
+import defaultImagen from '../../assets/default.jpg';
 
 interface Columnas {
   id: keyof Producto | "idCarrito" | "cantidad" | "precioTotal";
   label: string;
   minWidth?: number;
-  align?: "right";
+  align?: "center";
 }
 
 const columnas: Columnas[] = [
-  { id: "rutaImagen", label: "Imagen", minWidth: 50 },
+  { id: "rutaImagen", label: "Imagen", minWidth: 50, align: "center" },
   { id: "nombre", label: "Nombre", minWidth: 100 },
   { id: "descripcion", label: "Descripción", minWidth: 100 },
   { id: "precioUnitario", label: "Precio", minWidth: 50 },
@@ -146,9 +147,9 @@ const VistaCarrito: React.FC = () => {
                     <TableCell key={columna.id} align={columna.align}>
                       {columna.id === "rutaImagen" ? (
                         <img
-                          src={producto.productosCarrito.rutaImagen}
+                          src={producto.productosCarrito.rutaImagen ? producto.productosCarrito.rutaImagen : defaultImagen}
                           alt={producto.productosCarrito.nombre}
-                          style={{ width: "50px", height: "50px" }}
+                          style={{ width: "80px", height: "80px" }}
                         />
                       ) : columna.id === "cantidad" ? (
                         <Box

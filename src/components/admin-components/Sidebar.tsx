@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import { cerrarSesion } from '../../services/autenticacion-service';
+import { obtenerRolUsuario } from '../../utils/localStorage';
 
 // Interfaz para tipar las propiedades del menú
 interface MenuProps {
@@ -16,6 +17,8 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
   // Estado para controlar el collapse del resumen
   const [collapseResumen, setCollapseResumen] = useState(false);
   const [collapseUsuarios, setCollapseUsuarios] = useState(false);
+
+  const rolUsuario = obtenerRolUsuario();
 
   // Hook para obtener la ubicación actual
   const location = useLocation(); 
@@ -191,27 +194,29 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
 
           </Collapse>
 
-          {/* Usuarios */}
-          <ListItemButton
-            component={Link}
-            to="/admin/home/usuarios"
-            sx={estilosSeleccionado("/admin/home/usuarios", {})}
-            onClick={() => {
-              if (location.pathname === "/admin/home/usuarios") {
-                setCollapseUsuarios(!collapseUsuarios)
-              }
-            }} 
-          >
-            <ListItemIcon sx={estilosIconos}>
-              <Group />
-            </ListItemIcon>
-            {open && (
-              <ListItemText
-                primary="Usuarios"
-              />
-            )}
-            {collapseUsuarios ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
+          {rolUsuario === 3 && (
+            // Usuarios
+            <ListItemButton
+              component={Link}
+              to="/admin/home/usuarios"
+              sx={estilosSeleccionado("/admin/home/usuarios", {})}
+              onClick={() => {
+                if (location.pathname === "/admin/home/usuarios") {
+                  setCollapseUsuarios(!collapseUsuarios)
+                }
+              }} 
+            >
+              <ListItemIcon sx={estilosIconos}>
+                <Group />
+              </ListItemIcon>
+              {open && (
+                <ListItemText
+                  primary="Usuarios"
+                />
+              )}
+              {collapseUsuarios ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+          )}
 
           <Collapse in={collapseUsuarios} timeout="auto" unmountOnExit>
             

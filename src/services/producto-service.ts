@@ -51,6 +51,20 @@ export const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: 
   }
 }
 
+export const obtenerProductoPorId = async (idProducto: number) => {
+  try{
+    const response = await axios.get(`${apiBaseUrl}/Producto/${idProducto}`);
+    if(response.status === 200) {
+      return response.data.data;
+    } else {
+      alert("Error al obtener el producto");
+    }
+  } catch (error) {
+    console.error("Error: ", error);
+    alert("Ocurrió un error al obtener el producto");
+  }
+}
+
 export const registrarProducto = async (dataToSend: any) => {
   try {
     const response = await axios.post(`${apiBaseUrl}/Producto`, dataToSend);
