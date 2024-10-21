@@ -108,3 +108,23 @@ export const eliminarCliente = async (idUsuario: number) => {
     alert("Ocurrió un error durante la eliminación del cliente");
   }
 }
+
+export const exportarListadoClientes = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Cliente/exportar`, { responseType: "blob" });
+    if (response.status === 200) {
+      alert("El listado de clientes se descargará en breve.");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      const date = new Date();
+      link.setAttribute("download", `Listado-clientes-${formatoFecha(date.toDateString())}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+    } else {
+      throw new Error("Error al exportar los clientes");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}

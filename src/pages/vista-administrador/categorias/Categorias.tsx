@@ -3,10 +3,10 @@ import Contenedor from '../../../components/admin-components/Contenedor'
 import ContenedorBotones from '../../../components/admin-components/ContenedorBotones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import { useEffect, useState } from 'react';
-import { BotonAgregar, BotonesAccion } from '../../../components/admin-components/Botones';
+import { BotonAgregar, BotonesAccion, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarCategoria from './AgregarCategoria';
 import { Categoria } from '../../../models/Categoria';
-import { eliminarCategoria, obtenerCategorias } from '../../../services/categoria-service';
+import { eliminarCategoria, exportarListadoCategorias, obtenerCategorias } from '../../../services/categoria-service';
 
 interface Columna {
   id: keyof Categoria | "acciones";
@@ -57,6 +57,14 @@ const Categorias: React.FC = () => {
     }
   }
 
+  const handleExportar = async () => {
+    try {
+      await exportarListadoCategorias();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     listarCategorias();
   }, []);
@@ -68,6 +76,11 @@ const Categorias: React.FC = () => {
         <BotonAgregar
           onClick={() => handleOpenModal()}
           text="Agregar categoría"
+        />
+
+        <BotonExportar 
+          onClick={() => handleExportar()}
+          text="Exportar"
         />
 
         <AgregarCategoria

@@ -3,10 +3,10 @@ import Contenedor from "../../../components/admin-components/Contenedor"
 import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
-import { BotonAgregar, BotonesAccion } from "../../../components/admin-components/Botones";
+import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarMarca from "./AgregarMarca";
 import { Marca } from "../../../models/Marca";
-import { eliminarMarca, obtenerMarcas } from "../../../services/marca-service";
+import { eliminarMarca, exportarListadoMarcas, obtenerMarcas } from "../../../services/marca-service";
 
 interface Columna {
   id: keyof Marca | "acciones";
@@ -60,6 +60,15 @@ const Marcas: React.FC = () => {
 
   }
 
+  const handleExportar = async () => {
+    try {
+      await exportarListadoMarcas();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al exportar las marcas");
+    }
+  }
+
   useEffect(() => {
     listarMarcas();
   }, []);
@@ -71,6 +80,11 @@ const Marcas: React.FC = () => {
         <BotonAgregar
           onClick={() => handleOpenModal()}
           text="Agregar marca"
+        />
+
+        <BotonExportar
+          onClick={() => handleExportar()}
+          text="Exportar"
         />
 
         {/* Modal */}

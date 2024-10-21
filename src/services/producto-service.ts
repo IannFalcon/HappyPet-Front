@@ -107,3 +107,23 @@ export const eliminarProducto = async (idProducto: number) => {
     alert("Ocurrió un error durante la eliminación del producto");
   }
 }
+
+export const exportarListadoProductos = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Producto/exportar`, { responseType: "blob" });
+    if (response.status === 200) {
+      alert("La lista de productos se descargará en breve.");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      const date = new Date();
+      link.setAttribute("download", `Listado-productos-${formatoFecha(date.toDateString())}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+    } else {
+      throw new Error("Error al exportar los productos");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}

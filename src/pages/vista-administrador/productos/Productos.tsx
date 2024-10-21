@@ -6,7 +6,7 @@ import ContenedorTabla from "../../../components/admin-components/ContenedorTabl
 import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarProductos from "./AgregarProducto";
 import { Producto } from "../../../models/Producto";
-import { eliminarProducto, obtenerProductos } from "../../../services/producto-service";
+import { eliminarProducto, exportarListadoProductos, obtenerProductos } from "../../../services/producto-service";
 import defaultImagen from '../../../assets/default.jpg';
 
 interface Columna {
@@ -67,6 +67,15 @@ const Productos: React.FC = () => {
     }
   }
 
+  const handleExportar = async () => {
+    try {
+      await exportarListadoProductos();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la exportación de productos");
+    }
+  }
+
   useEffect(() => {
     listarProductos();
   }, []);
@@ -86,7 +95,7 @@ const Productos: React.FC = () => {
         />
 
         <BotonExportar
-          onClick={() => console.log("Exportar productos")}
+          onClick={() => handleExportar()}
           text="Exportar"
         />
       </ContenedorBotones>

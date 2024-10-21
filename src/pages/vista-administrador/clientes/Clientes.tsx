@@ -6,7 +6,7 @@ import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
 import AgregarCliente from "./AgregarCliente";
 import { Cliente } from "../../../models/Cliente";
-import { eliminarCliente, obtenerClientes } from "../../../services/cliente-service";
+import { eliminarCliente, exportarListadoClientes, obtenerClientes } from "../../../services/cliente-service";
 
 interface Columna {
   id: keyof Cliente | "acciones";
@@ -65,6 +65,15 @@ const Clientes: React.FC = () => {
     }
   }
 
+  const handleExportar = async () => {
+    try {
+      await exportarListadoClientes();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la exportación del listado de clientes");
+    }
+  }
+
   useEffect(() => {
     listarClientes();
   }, []);
@@ -85,7 +94,7 @@ const Clientes: React.FC = () => {
         />
 
         <BotonExportar
-          onClick={() => console.log("Exportar clientes")}
+          onClick={() => handleExportar()}
           text="Exportar"
         />
 

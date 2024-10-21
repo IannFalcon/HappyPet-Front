@@ -6,7 +6,7 @@ import { BotonExportar } from '../../../components/admin-components/Botones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import { Venta } from '../../../models/Venta';
 import VerDetalleVenta from './VerDetalleVenta';
-import { obtenerVentas } from '../../../services/venta-service';
+import { exportarListadoVentas, obtenerVentas } from '../../../services/venta-service';
 import { Article } from '@mui/icons-material';
 
 interface Columna {
@@ -52,6 +52,15 @@ const Ventas: React.FC = () => {
     }
   }
 
+  const handleExportar = async () => {
+    try {
+      await exportarListadoVentas();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al exportar el listado de ventas");
+    }
+  }
+
   useEffect(() => {
     listarVentas();
   }, [])
@@ -61,7 +70,7 @@ const Ventas: React.FC = () => {
       <ContenedorBotones>
         <Box />
         <BotonExportar
-          onClick={() => console.log("Exportar")}
+          onClick={() => handleExportar()}
           text="Exportar"
         />
 

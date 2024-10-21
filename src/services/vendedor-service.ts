@@ -76,3 +76,23 @@ export const eliminarVendedor = async (idUsuario: number) => {
     alert("Ocurrió un error durante la eliminación del vendedor");
   }
 }
+
+export const exportarListadoVendedores = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Vendedor/exportar`, { responseType: "blob" });
+    if (response.status === 200) {
+      alert("El listado de vendedores se descargará en breve.");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      const date = new Date();
+      link.setAttribute("download", `Listado-vendedores-${formatoFecha(date.toDateString())}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+    } else {
+      throw new Error("Error al exportar los vendedores");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
