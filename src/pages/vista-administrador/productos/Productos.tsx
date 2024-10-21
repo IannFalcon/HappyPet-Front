@@ -20,12 +20,12 @@ const columnas: Columna[] = [
   { id: "rutaImagen", label: "Imagen", width: 140, align: "center" },
   { id: "nombre", label: "Nombre", width: "auto", align: "left" },
   { id: "descripcion", label: "Descripción", width: "auto", align: "left" },
+  { id: "productoCategoria", label: "Categoría", width: "auto", align: "center" },
+  { id: "productoMarca", label: "Marca", width: "auto", align: "center" },
   { id: "precioUnitario", label: "Precio", width: "auto", align: "center" },
   { id: "stock", label: "Stock", width: "auto", align: "center" },
   { id: "fecVencimiento", label: "Fecha Vencimiento", width: "auto", align: "center" },
   { id: "fecRegistro", label: "Fecha Registro", width: "auto", align: "center" },
-  { id: "productoCategoria", label: "Categoría", width: "auto", align: "center" },
-  { id: "productoMarca", label: "Marca", width: "auto", align: "center" },
   { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
 
