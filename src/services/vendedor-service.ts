@@ -44,8 +44,12 @@ export const registrarVendedor = async (dataToSend: any) => {
       alert("Error al registrar vendedor");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el vendedor");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el vendedor");
+    }
   }
 }
 
@@ -58,8 +62,12 @@ export const actualizarVendedor = async (dataToSend: any) => {
       alert("Error al registrar vendedor");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el vendedor");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el vendedor");
+    }
   }
 }
 
@@ -72,8 +80,12 @@ export const eliminarVendedor = async (idUsuario: number) => {
       alert("Error al eliminar al vendedor");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error durante la eliminación del vendedor");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la eliminación del vendedor");
+    }
   }
 }
 

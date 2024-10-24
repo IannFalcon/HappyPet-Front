@@ -24,8 +24,12 @@ export const registrarMarca = async (dataToSend: any) => {
       alert("Error al registrar marca");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar la marca");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar la marca");
+    }
   }
 }
 
@@ -38,8 +42,12 @@ export const actualizarMarca = async (dataToSend: any) => {
       alert("Error al actualizar marca");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al actualizar la marca");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al actualizar la marca");
+    }
   }
 }
 
@@ -52,8 +60,12 @@ export const eliminarMarca = async (idMarca: number) => {
       alert("Error al eliminar la marca");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al eliminar la marca");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al eliminar la marca");
+    }
   }
 }
 

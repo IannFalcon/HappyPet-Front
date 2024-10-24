@@ -76,8 +76,12 @@ export const registrarCliente = async (dataToSend: any) => {
       alert("Error al registrar cliente");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el cliente");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el cliente");
+    }
   }
 }
 
@@ -90,8 +94,11 @@ export const actualizarCliente = async (dataToSend: any) => {
       alert("Error al registrar cliente");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el cliente");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      alert("Ocurrió un error al registrar el cliente");
+    }
   }
 }
 
@@ -104,8 +111,12 @@ export const eliminarCliente = async (idUsuario: number) => {
       alert("Error al eliminar al cliente");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error durante la eliminación del cliente");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la eliminación del cliente");
+    }
   }
 }
 

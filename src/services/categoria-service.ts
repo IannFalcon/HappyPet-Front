@@ -24,8 +24,12 @@ export const registrarCategoria = async (dataToSend: any) => {
       alert("Error al registrar categoría");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar la categoría");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar la categoría");
+    }
   }
 }
 
@@ -38,8 +42,12 @@ export const actualizarCategoria = async (dataToSend: any) => {
       alert("Error al actualizar categoría");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al actualizar la categoría");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al actualizar la categoría");
+    }
   }
 }
 
@@ -53,8 +61,12 @@ export const eliminarCategoria = async (idCategoria: number) => {
       alert("Error al eliminar la categoría");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al eliminar la categoría");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al eliminar la categoría");
+    }
   }
 }
 

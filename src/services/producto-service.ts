@@ -74,8 +74,12 @@ export const registrarProducto = async (dataToSend: any) => {
       alert("Error al registrar producto");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el producto");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el producto");
+    }
   }
 }
 
@@ -88,8 +92,11 @@ export const actualizarProducto = async (dataToSend: any) => {
       alert("Error al registrar producto");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error al registrar el producto");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      alert("Ocurrió un error al registrar el producto");
+    }
   }
 }
 
@@ -103,8 +110,12 @@ export const eliminarProducto = async (idProducto: number) => {
       alert("Error al eliminar el producto");
     }
   } catch (error) {
-    console.error("Error: ", error);
-    alert("Ocurrió un error durante la eliminación del producto");
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error durante la eliminación del producto");
+    }
   }
 }
 

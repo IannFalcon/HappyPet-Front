@@ -34,15 +34,12 @@ export const iniciarSesion = async (dataToSend: any) => {
       alert(response.data.mensaje);
     }
   } catch (error) {
-    // Si el error es de tipo AxiosError y tiene una respuesta
     if (axios.isAxiosError(error) && error.response) {
       const { data } = error.response;
       alert(data.mensaje);
     } else {
       console.log("Error:", error);
-      alert(
-        "Ocurrió un error durante el inicio de sesión. Intentelo nuevamente más tarde."
-      );
+      alert("Ocurrió un error durante el inicio de sesión. Intentelo nuevamente más tarde.");
     }
   }
 };
@@ -71,9 +68,7 @@ export const cambiarContraseniaNuevoUsuario = async (dataToSend: any) => {
       alert(data.mensaje);
     } else {
       console.log("Error:", error);
-      alert(
-        "Ocurrió un error durante el cambio de contraseña. Intentelo nuevamente más tarde."
-      );
+      alert("Ocurrió un error durante el cambio de contraseña. Intentelo nuevamente más tarde.");
     }
   }
 };
