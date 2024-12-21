@@ -17,7 +17,7 @@ export const obtenerMarcas = async () => {
 
 export const registrarMarca = async (dataToSend: any) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/Marca`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Marca/registrar`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -33,9 +33,9 @@ export const registrarMarca = async (dataToSend: any) => {
   }
 }
 
-export const actualizarMarca = async (dataToSend: any) => {
+export const actualizarMarca = async (idMarca: number, dataToSend: any) => {
   try {
-    const response = await axios.put(`${apiBaseUrl}/Marca`, dataToSend);
+    const response = await axios.put(`${apiBaseUrl}/Marca/actualizar/${idMarca}`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -53,7 +53,7 @@ export const actualizarMarca = async (dataToSend: any) => {
 
 export const eliminarMarca = async (idMarca: number) => {
   try {
-    const response = await axios.delete(`${apiBaseUrl}/Marca/${idMarca}`);
+    const response = await axios.delete(`${apiBaseUrl}/Marca/eliminar/${idMarca}`);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {

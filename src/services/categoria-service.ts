@@ -17,7 +17,7 @@ export const obtenerCategorias = async () => {
 
 export const registrarCategoria = async (dataToSend: any) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/Categoria`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Categoria/registrar`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -33,9 +33,9 @@ export const registrarCategoria = async (dataToSend: any) => {
   }
 }
 
-export const actualizarCategoria = async (dataToSend: any) => {
+export const actualizarCategoria = async (idCategoria: number, dataToSend: any) => {
   try {
-    const response = await axios.put(`${apiBaseUrl}/Categoria`, dataToSend);
+    const response = await axios.put(`${apiBaseUrl}/Categoria/actualizar/${idCategoria}`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -53,7 +53,7 @@ export const actualizarCategoria = async (dataToSend: any) => {
 
 export const eliminarCategoria = async (idCategoria: number) => {
   try {
-    const response = await axios.delete(`${apiBaseUrl}/Categoria/${idCategoria}`);
+    const response = await axios.delete(`${apiBaseUrl}/Categoria/eliminar/${idCategoria}`);
     if(response.status === 200) {
       alert(response.data.mensaje);
       window.location.reload();

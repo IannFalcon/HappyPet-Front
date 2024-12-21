@@ -15,13 +15,11 @@ interface ModalProps {
 const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
 
   const [formData, setFormData] = useState({
-    idMarca: "",
     nombre: "",
   });
 
   const handleLimpiarFormulario = () => {
     setFormData({
-      idMarca: "",
       nombre: "",
     });
   }
@@ -29,7 +27,6 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
   useEffect(() => {
     if(marca) {
       setFormData({
-        idMarca: marca.idMarca.toString(),
         nombre: marca.nombre,
       });
     } else {
@@ -45,8 +42,7 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
   const handleRegistrarMarca = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault(); // Evitar recargar la página
-
-    const { idMarca, ...dataToSend } = formData; // Eliminar idMarca del objeto a enviar
+    const { ...dataToSend } = formData;
 
     try {
       await registrarMarca(dataToSend);
@@ -61,11 +57,10 @@ const AgregarMarca: React.FC<ModalProps> = ({ open, onClose, marca }) => {
   const handleActualizarMarca = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault(); // Evitar recargar la página
-
     const { ...dataToSend } = formData;
 
     try {
-      await actualizarMarca(dataToSend);
+      await actualizarMarca(Number(marca?.idMarca), dataToSend);
       handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);

@@ -15,13 +15,11 @@ interface ModalProps {
 const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) => {
 
   const [formData, setFormData] = useState({
-    idCategoria: "",
     nombre: "",
   });
 
   const handleLimpiarFormulario = () => {
     setFormData({
-      idCategoria: "",
       nombre: "",
     });
   };
@@ -29,7 +27,6 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
   useEffect(() => {
     if(categoria) {
       setFormData({
-        idCategoria: categoria.idCategoria.toString(),
         nombre: categoria.nombre,
       });
     } else {
@@ -40,7 +37,7 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
   const handleRegistrarCategoria = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault();
-    const { idCategoria, ...dataToSend } = formData; // Eliminar idCategoria del objeto a enviar
+    const { ...dataToSend } = formData;
 
     try {
       await registrarCategoria(dataToSend);
@@ -57,7 +54,7 @@ const AgregarCategoria: React.FC<ModalProps> = ({ open, onClose, categoria }) =>
     const { ...dataToSend } = formData;
 
     try {
-      await actualizarCategoria(dataToSend);
+      await actualizarCategoria(Number(categoria?.idCategoria), dataToSend);
       handleCloseModal();
     } catch (error) {
       console.error(error);
