@@ -17,8 +17,9 @@ interface Columna {
 }
 
 const columnas: Columna[] = [
-  { id: "idTransaccion", label: "ID Transacción", width: 280, align: "left" },
-  { id: "usuarioVenta", label: "Nombre del Cliente", width: "auto", align: "left" },
+  { id: "idTransaccion", label: "ID Transacción", width: 240, align: "center" },
+  { id: "nombreCliente", label: "Nombre del cliente", width: "auto", align: "center" },
+  { id: "direccionEnvio", label: "Dirección de envio", width: "auto", align: "center" },
   { id: "fecVenta", label: "Fecha Venta", width: "auto", align: "center" },
   { id: "totalProductos", label: "Cant. Productos", width: "auto", align: "center" },
   { id: "montoTotal", label: "Importe Total", width: "auto", align: "center" },
@@ -100,9 +101,7 @@ const Ventas: React.FC = () => {
                 const value = columna.id === "acciones" ? "" : (venta as any)[columna.id];
                 return (
                   <TableCell key={columna.id} align={columna.align}>
-                    {columna.id === "usuarioVenta" 
-                    ? `${value.nombre} ${value.apellidoPaterno} ${value.apellidoMaterno}`
-                    : columna.id === "montoTotal" 
+                    {columna.id === "montoTotal" 
                     ? `S/. ${value}`
                     : columna.id === "acciones" ? (
                       <Box>

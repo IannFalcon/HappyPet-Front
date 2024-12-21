@@ -5,21 +5,16 @@ import { formatoFecha } from "../utils/dateFormat";
 
 export const obtenerVentas = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Venta`);
+    const response = await axios.get(`${apiBaseUrl}/Venta/listar`);
     if (response.status === 200) {
       const data = response.data.data.map((item: Venta) => ({
         idVenta: item.idVenta,
-        idUsuario: item.idUsuario,
+        idTransaccion: item.idTransaccion,
+        nombreCliente: item.nombreCliente,
+        direccionEnvio: item.direccionEnvio,
         totalProductos: item.totalProductos,
         montoTotal: item.montoTotal,
-        idTransaccion: item.idTransaccion,
         fecVenta: item.fecVenta,
-        usuarioVenta: {
-          idUsuario: item.usuarioVenta.idUsuario,
-          nombre: item.usuarioVenta.nombre,
-          apellidoPaterno: item.usuarioVenta.apellidoPaterno,
-          apellidoMaterno: item.usuarioVenta.apellidoMaterno,
-        }
       }));
       return data;
     } else {

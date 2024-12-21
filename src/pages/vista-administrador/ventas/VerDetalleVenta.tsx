@@ -21,9 +21,9 @@ interface Columna {
 }
 
 const columnas: Columna[] = [
-  { id: 'idDetalleVenta', label: 'ID', minWidth: 50, align: 'center' },
-  { id: 'productoDetalle', label: 'Nombre del producto', minWidth: 100 },
-  { id: 'cantidad', label: 'Cantidad', minWidth: 30, align: 'center' },
+  { id: 'cantidad', label: 'Cantidad', minWidth: 50, align: 'center' },
+  { id: 'nombreProducto', label: 'Nombre del producto', minWidth: 100 },
+  { id: 'precioUnitario', label: 'Precio unitario', minWidth: 30, align: 'center' },
   { id: 'total', label: 'Total', minWidth: 30, align: 'center' },
 ];
 
@@ -33,7 +33,7 @@ const VerDetalleVenta: React.FC<ModalProps> = ({ open, onClose, idVenta }) => {
 
   const obtenerDetallesVenta = async (id: number) => {
     try {
-      const response = await axios.get(`${apiBaseUrl}/DetalleVenta/${id}`);
+      const response = await axios.get(`${apiBaseUrl}/DetalleVenta/consultar/${id}`);
       setDetallesVenta(response.data.data);
     } catch (error) {
       console.log(error);
@@ -73,7 +73,7 @@ const VerDetalleVenta: React.FC<ModalProps> = ({ open, onClose, idVenta }) => {
             <TableRow>
               {columnas.map((columna) => (
                 <TableCell key={columna.id} align={columna.align}>
-                  {columna.id === 'productoDetalle' ? detalleVenta.productoDetalle.nombre : detalleVenta[columna.id]}
+                  {detalleVenta[columna.id]}
                 </TableCell>
               ))}
             </TableRow>
