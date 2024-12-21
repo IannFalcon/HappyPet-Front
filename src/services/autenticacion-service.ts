@@ -52,7 +52,7 @@ export const cerrarSesion = () => {
 export const cambiarContraseniaNuevoUsuario = async (dataToSend: any) => {
   try {
     // Enviar los datos al servidor
-    const response = await axios.post(`${apiBaseUrl}/Autenticacion/cambiar-contrasenia-nuevo-usuario`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Autenticacion/cambiar-contrasenia-nuevo`, dataToSend);
 
     if (response.status === 200) {
       alert(response.data.mensaje);

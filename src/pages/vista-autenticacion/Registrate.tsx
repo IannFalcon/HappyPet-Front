@@ -5,13 +5,12 @@ import { crearCuenta } from '../../services/autenticacion-service';
 const Registrate = () => {
 
   const [formData, setFormData] = useState({
-    nombre: "",
+    nombres: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    idTipoDocumento: "",
+    idTipoDoc: "",
     nroDocumento: "",
     telefono: "",
-    direccion: "",
     correo: "",
     contrasenia: "",
     confirmarContrasenia: ""
@@ -19,7 +18,7 @@ const Registrate = () => {
 
   const handleCrearCuenta = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const { confirmarContrasenia, ...dataToSend } = formData;
+    const { ...dataToSend } = formData;
     try{
       await crearCuenta(dataToSend);
     } catch (error) {
@@ -41,7 +40,7 @@ const Registrate = () => {
       >
         <Box
           sx={{
-            width: "500px",
+            width: "550px",
             height: "650px",
             border: "1px solid",
             borderRadius: "15px",
@@ -65,15 +64,17 @@ const Registrate = () => {
           {/* <pre>{JSON.stringify(formData, null, 2)}</pre>  */}
 
           <Box component="form">
-            <Typography sx={{ mb: 1 }}>Informacion personal</Typography>
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
+
+              <Typography sx={{ mb: 1 }}>Informacion personal</Typography>
+
                 <TextField
                   fullWidth
-                  label="Nombre"
+                  label="Nombre(s)"
                   variant="standard"
-                  value={formData.nombre}
-                  onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                  value={formData.nombres}
+                  onChange={(e) => setFormData({ ...formData, nombres: e.target.value })}
                   sx={{ mb: 2 }}
                 />
                 <TextField
@@ -90,15 +91,14 @@ const Registrate = () => {
                   variant="standard"
                   value={formData.apellidoMaterno}
                   onChange={(e) => setFormData({ ...formData, apellidoMaterno: e.target.value })}
+                  sx={{ mb: 2 }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
                   <InputLabel id="lbl-tipoDocumento">Tipo de documento</InputLabel>
                   <Select
                     labelId="lbl-tipoDocumento"
-                    value={formData.idTipoDocumento}
-                    onChange={(e) => setFormData({ ...formData, idTipoDocumento: e.target.value })}
+                    value={formData.idTipoDoc}
+                    onChange={(e) => setFormData({ ...formData, idTipoDoc: e.target.value })}
                   >
                     <MenuItem value="1">DNI</MenuItem>
                     <MenuItem value="2">CEX</MenuItem>
@@ -113,27 +113,19 @@ const Registrate = () => {
                   onChange={(e) => setFormData({ ...formData, nroDocumento: e.target.value })}
                   sx={{ mb: 2 }}
                 />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+
+                <Typography sx={{ mb: 1 }} >Contacto</Typography>
+
                 <TextField
                   fullWidth
                   label="Teléfono"
                   variant="standard"
                   value={formData.telefono}
                   onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                  sx={{ mb: 2 }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={12}>
-                <TextField
-                  fullWidth
-                  label="Dirección"
-                  variant="standard"
-                  value={formData.direccion}
-                  onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
-                />
-              </Grid>
-            </Grid>
-            <Typography sx={{ mt: 3, mb: 1 }}>Informacion de cuenta</Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={12}>
                 <TextField
                   fullWidth
                   type="email"
@@ -141,9 +133,11 @@ const Registrate = () => {
                   variant="standard"
                   value={formData.correo}
                   onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
+                  sx={{ mb: 2 }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
+
+                <Typography sx={{ mt: 2, mb: 2 }}>Contraseña</Typography>
+
                 <TextField
                   fullWidth
                   type="password"
@@ -151,9 +145,8 @@ const Registrate = () => {
                   variant="standard"
                   value={formData.contrasenia}
                   onChange={(e) => setFormData({ ...formData, contrasenia: e.target.value })}
+                  sx={{ mb: 2 }}
                 />
-              </Grid>
-              <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   type="password"
@@ -161,6 +154,7 @@ const Registrate = () => {
                   variant="standard"
                   value={formData.confirmarContrasenia}
                   onChange={(e) => setFormData({ ...formData, confirmarContrasenia: e.target.value })}
+                  sx={{ mb: 2 }}
                 />
               </Grid>
             </Grid>
