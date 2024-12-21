@@ -15,27 +15,23 @@ interface ModalProps {
 const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
 
   const [formData, setFormData] = useState({
-    idUsuario: "",
-    nombre: "",
+    nombres: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    idTipoDocumento: "0",
+    idTipoDoc: "0",
     nroDocumento: "",
     telefono: "",
-    direccion: "",
     correo: "",
   });
 
   const handleLimpiarFormulario = () => {
     setFormData({
-      idUsuario: "",
-      nombre: "",
+      nombres: "",
       apellidoPaterno: "",
       apellidoMaterno: "",
-      idTipoDocumento: "0",
+      idTipoDoc: "0",
       nroDocumento: "",
       telefono: "",
-      direccion: "",
       correo: "",
     });
   }
@@ -43,14 +39,12 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
   useEffect(() => {
     if (cliente) {
       setFormData({
-        idUsuario: cliente.idUsuario.toString(),
-        nombre: cliente.nombre,
+        nombres: cliente.nombres,
         apellidoPaterno: cliente.apellidoPaterno,
         apellidoMaterno: cliente.apellidoMaterno,
-        idTipoDocumento: cliente.usuTipoDoc.idTipoDocumento.toString(),
+        idTipoDoc: cliente.tipoDocumento.idTipoDoc.toString(),
         nroDocumento: cliente.nroDocumento,
         telefono: cliente.telefono,
-        direccion: cliente.direccion,
         correo: cliente.correo,
       });
     } else {
@@ -62,7 +56,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
 
     e.preventDefault();
 
-    const { idUsuario, ...dataToSend } = formData; // Eliminar idUsuario del objeto a enviar
+    const { ...dataToSend } = formData;
 
     try {
       await registrarCliente(dataToSend);
@@ -81,7 +75,7 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
     const { ...dataToSend } = formData;
 
     try {
-      await actualizarCliente(dataToSend);
+      await actualizarCliente(Number(cliente?.idCliente), dataToSend);
       handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
@@ -110,8 +104,8 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
               fullWidth
               label="Nombre"
               variant="outlined"
-              value={formData.nombre}
-              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+              value={formData.nombres}
+              onChange={(e) => setFormData({ ...formData, nombres: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -137,8 +131,8 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
                 labelId="tipo-usuario"
                 label="Tipo de documento"
                 variant="outlined"
-                value={formData.idTipoDocumento}
-                onChange={(e) => setFormData({ ...formData, idTipoDocumento: e.target.value })}
+                value={formData.idTipoDoc}
+                onChange={(e) => setFormData({ ...formData, idTipoDoc: e.target.value })}
               >
                 <MenuItem value={0} selected>Seleccionar</MenuItem>
                 <MenuItem value={1}>DNI</MenuItem>
@@ -162,14 +156,6 @@ const AgregarCliente: React.FC<ModalProps> = ({ open, onClose, cliente }) => {
               variant="outlined"
               value={formData.telefono}
               onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              label="Dirección"
-              variant="outlined"
-              value={formData.direccion}
-              onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField

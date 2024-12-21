@@ -278,10 +278,6 @@ const VistaCarrito: React.FC = () => {
                 <strong>Telefono:</strong>
                 {` ${datosCliente?.telefono}`}
               </Typography>
-              <Typography variant="body2">
-                <strong>Direccion:</strong>
-                {` ${datosCliente?.direccion}`}
-              </Typography>
               <Typography sx={{ mt: 1, fontSize: "12px" }}>
                 Nota: En caso de que la información de contacto sea incorrecta, por favor actualizala en la sección de perfil.
               </Typography>

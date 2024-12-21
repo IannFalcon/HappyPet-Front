@@ -9,21 +9,18 @@ import { Cliente } from "../../../interfaces/Cliente";
 import { eliminarCliente, exportarListadoClientes, obtenerClientes } from "../../../services/cliente-service";
 
 interface Columna {
-  id: keyof Cliente | "acciones";
+  id: keyof Cliente | "nombreCompleto" | "acciones";
   label: string;
   width: number | "auto";
-  align: "left" | "center";
+  align: "center";
 }
 
 const columnas: Columna[] = [
-  { id: "nombre", label: "Nombre", width: "auto", align: "left" },
-  { id: "apellidoPaterno", label: "Apellido Paterno", width: "auto", align: "left" },
-  { id: "apellidoMaterno", label: "Apellido Materno", width: "auto", align: "left" },
-  { id: "usuTipoDoc", label: "Tipo Doc.", width: "auto", align: "center" },
+  { id: "nombreCompleto", label: "Nombre del cliente", width: "auto", align: "center" },
+  { id: "tipoDocumento", label: "Tipo Doc.", width: "auto", align: "center" },
   { id: "nroDocumento", label: "Nro. Doc.", width: "auto", align: "center" },
   { id: "telefono", label: "Teléfono", width: "auto", align: "center" },
-  { id: "direccion", label: "Dirección", width: "auto", align: "left" },
-  { id: "correo", label: "Correo", width: "auto", align: "left" },
+  { id: "correo", label: "Dirección", width: "auto", align: "center" },
   { id: "fecRegistro", label: "Fecha Registro", width: "auto", align: "center" },
   { id: "acciones", label: "Acciones", width: 300, align: "center" },
 ]
@@ -118,12 +115,14 @@ const Clientes: React.FC = () => {
                 const value = columna.id === "acciones" ? "" : (cliente as any)[columna.id];
                 return (
                   <TableCell key={columna.id} align={columna.align}>
-                    {columna.id === "usuTipoDoc" ?
-                      cliente.usuTipoDoc.descripcion
+                    {columna.id === "nombreCompleto" ?
+                      `${cliente.nombres} ${cliente.apellidoPaterno} ${cliente.apellidoMaterno}` 
+                    : columna.id === "tipoDocumento" ?
+                      cliente.tipoDocumento.nombreTipoDoc
                     : columna.id === "acciones" ? (
                       <BotonesAccion 
                         editar={() => handleOpenModal(cliente)}
-                        eliminar={() => handleEliminarCliente(cliente.idUsuario)}
+                        eliminar={() => handleEliminarCliente(cliente.idCliente)}
                       />
                     ) : value}
                   </TableCell>

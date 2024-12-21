@@ -1,5 +1,9 @@
-export interface Cliente {
-  idCliente: number;
+export interface Empleado {
+  idEmpleado: number;
+  cargo: {
+    idCargo: number;
+    nombreCargo: string;
+  }
   nombres: string;
   apellidoPaterno: string;
   apellidoMaterno: string;
@@ -10,5 +14,6 @@ export interface Cliente {
   nroDocumento: string;
   telefono: string;
   correo: string;
+  direccion: string;
   fecRegistro: string;
 }

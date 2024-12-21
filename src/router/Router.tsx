@@ -3,7 +3,7 @@ import Login from "../pages/vista-autenticacion/Login";
 import PrincipalAdmin from "../layout/PrincipalAdmin";
 import Resumen from "../pages/vista-administrador/Resumen";
 import Productos from "../pages/vista-administrador/productos/Productos";
-import Vendedores from "../pages/vista-administrador/vendedores/Empleados";
+import Vendedores from "../pages/vista-administrador/empleados/Empleados";
 import Ventas from "../pages/vista-administrador/ventas/Ventas";
 import Categorias from "../pages/vista-administrador/categorias/Categorias";
 import Marcas from "../pages/vista-administrador/marcas/Marcas";

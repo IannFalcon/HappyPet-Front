@@ -5,26 +5,21 @@ import { apiBaseUrl } from "./apiBaseUrl";
 
 export const obtenerClientes = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Cliente`);
+    const response = await axios.get(`${apiBaseUrl}/Cliente/listar`);
     if (response.status === 200) {
       const data = response.data.data.map((item: Cliente) => ({
-        idUsuario: item.idUsuario,
-        nombre: item.nombre,
+        idCliente: item.idCliente,
+        nombres: item.nombres,
         apellidoPaterno: item.apellidoPaterno,
         apellidoMaterno: item.apellidoMaterno,
+        tipoDocumento: {
+          idTipoDoc: item.tipoDocumento.idTipoDoc,
+          nombreTipoDoc: item.tipoDocumento.nombreTipoDoc,
+        },
         nroDocumento: item.nroDocumento,
         telefono: item.telefono,
-        direccion: item.direccion,
         correo: item.correo,
-        fecRegistro: formatoFecha(item.fecRegistro),
-        usuTipoDoc: {
-          idTipoDocumento: item.usuTipoDoc.idTipoDocumento,
-          descripcion: item.usuTipoDoc.descripcion,
-        },
-        usuTipoUsu: {
-          idTipoUsuario: item.usuTipoUsu.idTipoUsuario,
-          descripcion: item.usuTipoUsu.descripcion,
-        }  
+        fecRegistro: formatoFecha(item.fecRegistro)
       }));
       return data;
     } else {
@@ -37,28 +32,23 @@ export const obtenerClientes = async () => {
 
 export const obtenerDatosCliente = async (idUsuario: number) => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Cliente/${idUsuario}`);
+    const response = await axios.get(`${apiBaseUrl}/Cliente/obtener/${idUsuario}`);
     if (response.status === 200) {
-      const data = response.data.data;
-      return {
-        idUsuario: data.idUsuario,
-        nombre: data.nombre,
-        apellidoPaterno: data.apellidoPaterno,
-        apellidoMaterno: data.apellidoMaterno,
-        nroDocumento: data.nroDocumento,
-        telefono: data.telefono,
-        direccion: data.direccion,
-        correo: data.correo,
-        fecRegistro: formatoFecha(data.fecRegistro),
-        usuTipoDoc: {
-          idTipoDocumento: data.usuTipoDoc.idTipoDocumento,
-          descripcion: data.usuTipoDoc.descripcion,
+      const data = response.data.data.map((item: Cliente) => ({
+        idCliente: item.idCliente,
+        nombres: item.nombres,
+        apellidoPaterno: item.apellidoPaterno,
+        apellidoMaterno: item.apellidoMaterno,
+        tipoDocumento: {
+          idTipoDoc: item.tipoDocumento.idTipoDoc,
+          nombreTipoDoc: item.tipoDocumento.nombreTipoDoc,
         },
-        usuTipoUsu: {
-          idTipoUsuario: data.usuTipoUsu.idTipoUsuario,
-          descripcion: data.usuTipoUsu.descripcion,
-        }
-      };
+        nroDocumento: item.nroDocumento,
+        telefono: item.telefono,
+        correo: item.correo,
+        fecRegistro: formatoFecha(item.fecRegistro)
+      }));
+      return data;
     } else {
       throw new Error("Error al obtener los datos del cliente");
     }
@@ -85,9 +75,9 @@ export const registrarCliente = async (dataToSend: any) => {
   }
 }
 
-export const actualizarCliente = async (dataToSend: any) => {
+export const actualizarCliente = async (idCliente: number, dataToSend: any) => {
   try {
-    const response = await axios.put(`${apiBaseUrl}/Cliente`, dataToSend);
+    const response = await axios.put(`${apiBaseUrl}/Cliente/actualizar/${idCliente}`, dataToSend);
     if (response.status === 200) {
       alert(response.data.mensaje);
     } else {

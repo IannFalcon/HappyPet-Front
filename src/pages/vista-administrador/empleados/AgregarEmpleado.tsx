@@ -2,90 +2,90 @@ import React, { useEffect, useState } from 'react'
 import ContenedorModal from '../../../components/admin-components/ContenedorModal';
 import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { Vendedor } from '../../../interfaces/Vendedor';
+import { Empleado } from '../../../interfaces/Empleado';
 import { BotonesModal } from '../../../components/admin-components/Botones';
-import { actualizarVendedor, registrarVendedor } from '../../../services/vendedor-service';
+import { actualizarEmpleado, registrarEmpleado } from '../../../services/empleado-service';
 
 interface ModalProps {
   open: boolean;
   onClose: () => void;
-  vendedor: Vendedor | null;
+  empleado: Empleado | null;
 }
 
-const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
+const AgregarEmpleado: React.FC<ModalProps> = ({ open, onClose, empleado }) => {
 
   const [formData, setFormData] = useState({
-    idUsuario: "",
-    nombre: "",
+    idCargo: "0",
+    nombres: "",
     apellidoPaterno: "",
     apellidoMaterno: "",
-    idTipoDocumento: "0",
+    idTipoDoc: "0",
     nroDocumento: "",
     telefono: "",
-    direccion: "",
     correo: "",
+    direccion: "",
   });
 
   const handleLimpiarFormulario = () => {
     setFormData({
-      idUsuario: "",
-      nombre: "",
+      idCargo: "0",
+      nombres: "",
       apellidoPaterno: "",
       apellidoMaterno: "",
-      idTipoDocumento: "0",
+      idTipoDoc: "0",
       nroDocumento: "",
       telefono: "",
-      direccion: "",
       correo: "",
+      direccion: "",
     });
   };
 
   useEffect(() => {
-    if(vendedor) {
+    if(empleado) {
       setFormData({
-        idUsuario: vendedor.idUsuario.toString(),
-        nombre: vendedor.nombre,
-        apellidoPaterno: vendedor.apellidoPaterno,
-        apellidoMaterno: vendedor.apellidoMaterno,
-        idTipoDocumento: vendedor.usuTipoDoc.idTipoDocumento.toString(),
-        nroDocumento: vendedor.nroDocumento,
-        telefono: vendedor.telefono,
-        direccion: vendedor.direccion,
-        correo: vendedor.correo,
+        idCargo: empleado.idEmpleado.toString(),
+        nombres: empleado.nombres,
+        apellidoPaterno: empleado.apellidoPaterno,
+        apellidoMaterno: empleado.apellidoMaterno,
+        idTipoDoc: empleado.tipoDocumento.idTipoDoc.toString(),
+        nroDocumento: empleado.nroDocumento,
+        telefono: empleado.telefono,
+        correo: empleado.correo,
+        direccion: empleado.direccion,
       });
     } else {
       handleLimpiarFormulario();
     }
-  }, [vendedor]);
+  }, [empleado]);
 
-  const handleRegistrarVendedor = async (e: React.MouseEvent<HTMLButtonElement>) => {
-
-    e.preventDefault(); // Evitar recargar la página
-
-    const { idUsuario, ...dataToSend } = formData; // Eliminar idUsuario del objeto a enviar
-
-    try {
-      await registrarVendedor(dataToSend);
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error: ", error);
-      alert("Ocurrió un error al registrar el vendedor");
-    }
-
-  };
-
-  const handleActualizarVendedor = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleRegistrarEmpleado = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
     e.preventDefault(); // Evitar recargar la página
 
     const { ...dataToSend } = formData;
 
     try {
-      await actualizarVendedor(dataToSend);
+      await registrarEmpleado(dataToSend);
       handleCloseModal();
     } catch (error) {
       console.error("Error: ", error);
-      alert("Ocurrió un error al registrar el vendedor");
+      alert("Ocurrió un error al registrar al empleado");
+    }
+
+  };
+
+  const handleActualizarEmpleado = async (e: React.MouseEvent<HTMLButtonElement>) => {
+
+    e.preventDefault(); // Evitar recargar la página
+
+    const { ...dataToSend } = formData;
+
+    try {
+      await actualizarEmpleado(Number(empleado?.idEmpleado), dataToSend);
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar al empleado");
     }
 
   };
@@ -102,7 +102,7 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
       ancho={700}
       alto={600}
     >
-      <TituloModal titulo={vendedor ? "Editar informacion del vendedor" : "Registrar vendedor"}/>
+      <TituloModal titulo={empleado ? "Actualizar empleado" : "Registrar empleado"}/>
       {/* <pre>{JSON.stringify(formData, null, 2)}</pre> */}
       <Box sx={{ px: 2, pt: 4 }}>
         <Grid container spacing={2}>
@@ -111,8 +111,8 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               fullWidth
               label="Nombre"
               variant="outlined"
-              value={formData.nombre}
-              onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+              value={formData.nombres}
+              onChange={(e) => setFormData({ ...formData, nombres: e.target.value })}
               sx={{ mb: 2 }}
             />
             <TextField
@@ -138,8 +138,8 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
                 labelId="tipo-documento"
                 label="Tipo de documento"
                 variant="outlined"
-                value={formData.idTipoDocumento}
-                onChange={(e) => setFormData({ ...formData, idTipoDocumento: e.target.value })}
+                value={formData.idTipoDoc}
+                onChange={(e) => setFormData({ ...formData, idTipoDoc: e.target.value })}
               >
                 <MenuItem value={0} selected>Seleccionar</MenuItem>
                 <MenuItem value={1}>DNI</MenuItem>
@@ -167,14 +167,6 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
             />
             <TextField
               fullWidth
-              label="Dirección"
-              variant="outlined"
-              value={formData.direccion}
-              onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
               type="email"
               label="Correo"
               variant="outlined"
@@ -182,15 +174,38 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
               onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
               sx={{ mb: 2 }}
             />
+            <TextField
+              fullWidth
+              label="Dirección"
+              variant="outlined"
+              value={formData.direccion}
+              onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+              <InputLabel id="tipo-documento">Cargo del empleado</InputLabel>
+              <Select
+                fullWidth
+                labelId="cargo-empleado"
+                label="Cargo del empleado"
+                variant="outlined"
+                value={formData.idCargo}
+                onChange={(e) => setFormData({ ...formData, idCargo: e.target.value })}
+              >
+                <MenuItem value={0} selected>Seleccionar</MenuItem>
+                <MenuItem value={1}>Enc. Almacen</MenuItem>
+                <MenuItem value={2}>Emp. Almacen</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
         </Grid>
       </Box>
       <BotonesModal
-        objeto={vendedor}
+        objeto={empleado}
         accion={
-          vendedor
-          ? handleActualizarVendedor
-          : handleRegistrarVendedor
+          empleado
+          ? handleActualizarEmpleado
+          : handleRegistrarEmpleado
         }
         cerrar={onClose}
       />
@@ -199,4 +214,4 @@ const AgregarVendedor: React.FC<ModalProps> = ({ open, onClose, vendedor }) => {
 
 }
 
-export default AgregarVendedor;
+export default AgregarEmpleado;
