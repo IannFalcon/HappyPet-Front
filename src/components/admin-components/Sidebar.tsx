@@ -194,7 +194,7 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
 
           </Collapse>
 
-          {rolUsuario === 3 && (
+          {rolUsuario === "admin" && (
             // Usuarios
             <ListItemButton
               component={Link}

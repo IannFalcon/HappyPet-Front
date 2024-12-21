@@ -8,9 +8,14 @@ export const obtenerIdUsuario = () => {
   return usuario ? usuario.data.idUsuario : null;
 }
 
+export const obtenerIdCliente = () => {
+  const usuario = obtenerUsuario();
+  return usuario ? usuario.data.idCliente : null;
+}
+
 export const obtenerRolUsuario = () => {
   const usuario = obtenerUsuario();
-  return usuario ? usuario.data.idTipoUsuario : null;
+  return usuario ? usuario.data.rol : null;
 }
 
 export const obtenerNombreUsuario = () => {

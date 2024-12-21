@@ -1,4 +1,4 @@
-import { Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react"
 import { iniciarSesion } from "../../services/autenticacion-service";
 
@@ -6,7 +6,6 @@ const Login: React.FC = () => {
 
   // Formulario para enviar los datos del login
   const [loginRequest, setLoginRequest] = useState({
-    idTipoUsuario: "1",
     correo: "",
     contrasenia: "",
   });
@@ -53,18 +52,6 @@ const Login: React.FC = () => {
           {/* <pre>{JSON.stringify(LoginRequest, null, 2)}</pre>  */}
 
           <Box component="form">
-            <FormControl variant="standard" fullWidth sx={{ mb: 2 }}>
-              <InputLabel id="lbl-tipoUsuario">Tipo de usuario</InputLabel>
-              <Select
-                labelId="lbl-tipoUsuario"
-                value={loginRequest.idTipoUsuario}
-                onChange={(e) => setLoginRequest({ ...loginRequest, idTipoUsuario: e.target.value })}
-              >
-                <MenuItem value="1" selected>Cliente</MenuItem>
-                <MenuItem value="2">Vendedor</MenuItem>
-                <MenuItem value="3">Administrador</MenuItem>
-              </Select>
-            </FormControl>
             <TextField
               fullWidth
               sx={{ mb: 2 }}

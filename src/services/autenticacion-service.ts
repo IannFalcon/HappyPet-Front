@@ -4,26 +4,26 @@ import { apiBaseUrl } from "./apiBaseUrl";
 export const iniciarSesion = async (dataToSend: any) => {
   try {
     // Enviar los datos al servidor
-    const response = await axios.post(`${apiBaseUrl}/Autenticacion/login`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Autenticacion/iniciar-sesion`, dataToSend);
 
-    if (response.status === 200 && response.data.data.IdUsuario !== 0) {
+    if (response.status === 200 && response.data.data.IdUsuario !== null) {
       // Guardar datos de la sesión en el localStorage
       localStorage.setItem("usuario", JSON.stringify(response.data));
       // Verificar si el usuario no está validado
-      if (response.data.data.estado === "NO_VALIDADO") {
+      if (response.data.data.cambioContra === true) {
         alert(response.data.mensaje);
         window.location.replace("/cambiar-contrasenia");
       } else {
         // Si el usuario está validado
         alert(response.data.mensaje);
-        switch (response.data.data.idTipoUsuario) {
-          case 1:
+        switch (response.data.data.rol) {
+          case "cliente":
             window.location.replace("/");
             break;
-          case 2:
+          case "empleado":
             window.location.replace("/admin/home");
             break;
-          case 3:
+          case "admin":
             window.location.replace("/admin/home");
             break;
           default:
@@ -31,7 +31,7 @@ export const iniciarSesion = async (dataToSend: any) => {
         }
       }
     } else {
-      alert(response.data.mensaje);
+      alert(response.data.mensajeError);
     }
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
