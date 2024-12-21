@@ -16,6 +16,7 @@ import Carrito from "../pages/vista-cliente/Carrito";
 import CambiarContrasenia from "../pages/vista-autenticacion/CambiarContrasenia";
 import Registrate from "../pages/vista-autenticacion/Registrate";
 import DetallesProducto from "../pages/vista-cliente/DetallesProducto";
+import Proveedores from "../pages/vista-administrador/proveedores/Proveedores";
 
 export const router = createBrowserRouter([
   {
@@ -75,16 +76,20 @@ export const router = createBrowserRouter([
         element: <Ventas />
       },
       {
-        path: "productos",
-        element: <Productos />
+        path: "categorias",
+        element: <Categorias />
       },
       {
         path: "marcas",
         element: <Marcas />
       },
       {
-        path: "categorias",
-        element: <Categorias />
+        path: "productos",
+        element: <Productos />
+      },
+      {
+        path: "proveedores",
+        element: <Proveedores />
       },
       {
         path: "usuarios",
