@@ -1,5 +1,5 @@
 import axios from "axios";
-import { Cliente } from "../models/Cliente";
+import { Cliente } from "../interfaces/Cliente";
 import { formatoFecha } from "../utils/dateFormat";
 import { apiBaseUrl } from "./apiBaseUrl";
 

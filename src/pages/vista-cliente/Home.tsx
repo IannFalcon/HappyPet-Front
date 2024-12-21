@@ -2,12 +2,12 @@ import { Box, Button, Divider, FormControlLabel, IconButton, Radio, RadioGroup, 
 import banner from '../../assets/banner.jpg';
 import React, { useEffect, useState } from 'react'
 import { Add, Pets, Remove, ShoppingCart } from '@mui/icons-material';
-import { Marca } from '../../models/Marca';
-import { Categoria } from '../../models/Categoria';
-import { Producto } from '../../models/Producto';
+import { Marca } from '../../interfaces/Marca';
+import { Categoria } from '../../interfaces/Categoria';
+import { Producto } from '../../interfaces/Producto';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { Carrito } from '../../models/Carrito';
+import { Carrito } from '../../interfaces/Carrito';
 import { obtenerCategorias } from '../../services/categoria-service';
 import { obtenerMarcas } from '../../services/marca-service';
 import { obtenerProductosFiltrados } from '../../services/producto-service';

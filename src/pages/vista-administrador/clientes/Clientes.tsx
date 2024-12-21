@@ -5,7 +5,7 @@ import ContenedorBotones from "../../../components/admin-components/ContenedorBo
 import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
 import AgregarCliente from "./AgregarCliente";
-import { Cliente } from "../../../models/Cliente";
+import { Cliente } from "../../../interfaces/Cliente";
 import { eliminarCliente, exportarListadoClientes, obtenerClientes } from "../../../services/cliente-service";
 
 interface Columna {

@@ -1,27 +1,25 @@
 import axios from "axios";
-import { Producto } from "../models/Producto";
+import { Producto } from "../interfaces/Producto";
 import { formatoFecha } from "../utils/dateFormat";
 import { apiBaseUrl } from "./apiBaseUrl";
 import { buildUrlWithParams } from "../utils/buildUrlWithParams";
 
 export const obtenerProductos = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Producto`);
+    const response = await axios.get(`${apiBaseUrl}/Producto/listar`);
     if (response.status === 200) {
       const data = response.data.data.map((item: Producto) => ({
         idProducto: item.idProducto,
         nombre: item.nombre,
-        idCategoria: item.idCategoria,
-        idMarca: item.idMarca,
+        marca: item.marca,
+        categoria: item.categoria,
         descripcion: item.descripcion,
         precioUnitario: item.precioUnitario,
         stock: item.stock,
         nombreImagen: item.nombreImagen,
         rutaImagen: item.rutaImagen,
         fecVencimiento: item.fecVencimiento ? formatoFecha(item.fecVencimiento) : null,
-        fecRegistro: formatoFecha(item.fecRegistro),
-        productoCategoria: item.productoCategoria,
-        productoMarca: item.productoMarca,
+        fecRegistro: formatoFecha(item.fecRegistro)
       }));
       return data;
     } else {
@@ -35,7 +33,7 @@ export const obtenerProductos = async () => {
 
 export const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: number, nombre?: string) => {
   try {
-    const url = buildUrlWithParams(`${apiBaseUrl}/Producto`, {
+    const url = buildUrlWithParams(`${apiBaseUrl}/Producto/listar`, {
       id_categoria: idCategoria,
       id_marca: idMarca,
       nombre: nombre
@@ -53,7 +51,7 @@ export const obtenerProductosFiltrados = async (idCategoria?: number, idMarca?: 
 
 export const obtenerProductoPorId = async (idProducto: number) => {
   try{
-    const response = await axios.get(`${apiBaseUrl}/Producto/${idProducto}`);
+    const response = await axios.get(`${apiBaseUrl}/Producto/obtener/${idProducto}`);
     if(response.status === 200) {
       return response.data.data;
     } else {

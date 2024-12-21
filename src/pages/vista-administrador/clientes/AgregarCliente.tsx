@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ContenedorModal from '../../../components/admin-components/ContenedorModal';
 import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { Cliente } from '../../../models/Cliente';
+import { Cliente } from '../../../interfaces/Cliente';
 import { BotonesModal } from '../../../components/admin-components/Botones';
 import { actualizarCliente, registrarCliente } from '../../../services/cliente-service';
 

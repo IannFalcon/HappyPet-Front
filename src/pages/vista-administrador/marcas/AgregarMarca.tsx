@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import ContenedorModal from "../../../components/admin-components/ContenedorModal";
 import TituloModal from "../../../components/admin-components/TituloModal";
 import { useEffect, useState } from "react";
-import { Marca } from "../../../models/Marca";
+import { Marca } from "../../../interfaces/Marca";
 import { BotonesModal } from "../../../components/admin-components/Botones";
 import { actualizarMarca, registrarMarca } from "../../../services/marca-service";
 

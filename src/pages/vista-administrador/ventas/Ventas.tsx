@@ -4,7 +4,7 @@ import ContenedorBotones from '../../../components/admin-components/ContenedorBo
 import { Box, Button, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import { BotonExportar } from '../../../components/admin-components/Botones';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
-import { Venta } from '../../../models/Venta';
+import { Venta } from '../../../interfaces/Venta';
 import VerDetalleVenta from './VerDetalleVenta';
 import { exportarListadoVentas, obtenerVentas } from '../../../services/venta-service';
 import { Article } from '@mui/icons-material';

@@ -4,7 +4,7 @@ import { formatoFecha } from "../utils/dateFormat";
 
 export const obtenerCategorias = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Categoria`);
+    const response = await axios.get(`${apiBaseUrl}/Categoria/listar`);
     if (response.status === 200) {
       return response.data.data;
     } else {

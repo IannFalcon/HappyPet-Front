@@ -4,8 +4,8 @@ import { Marca } from "./Marca";
 export interface Producto {
   idProducto: number;
   nombre: string;
-  idCategoria: number;
-  idMarca: number;
+  categoria: Categoria;
+  marca: Marca;
   descripcion: string;
   precioUnitario: number;
   stock: number;
@@ -13,6 +13,4 @@ export interface Producto {
   rutaImagen: string;
   fecVencimiento: string;
   fecRegistro: string;
-  productoCategoria: Categoria;
-  productoMarca: Marca;
 }

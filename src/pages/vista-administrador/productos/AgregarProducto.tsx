@@ -4,9 +4,9 @@ import TituloModal from '../../../components/admin-components/TituloModal';
 import { Box, Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { CleaningServices } from '@mui/icons-material';
 import { reFormatoFecha } from '../../../utils/dateFormat';
-import { Producto } from '../../../models/Producto';
-import { Marca } from '../../../models/Marca';
-import { Categoria } from '../../../models/Categoria';
+import { Producto } from '../../../interfaces/Producto';
+import { Marca } from '../../../interfaces/Marca';
+import { Categoria } from '../../../interfaces/Categoria';
 import { obtenerCategorias } from '../../../services/categoria-service';
 import { obtenerMarcas } from '../../../services/marca-service';
 import { BotonesModal } from '../../../components/admin-components/Botones';
@@ -65,8 +65,8 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
       setFormData({
         idProducto: producto.idProducto.toString(),
         nombre: producto.nombre,
-        idCategoria: producto.idCategoria.toString(),
-        idMarca: producto.idMarca.toString(),
+        idCategoria: producto.categoria.idCategoria.toString(),
+        idMarca: producto.marca.idMarca.toString(),
         descripcion: producto.descripcion,
         precioUnitario: producto.precioUnitario.toString(),
         stock: producto.stock.toString(),
@@ -74,8 +74,8 @@ const AgregarProductos: React.FC<ModalProps> = ({ open, onClose, producto }) => 
         rutaImagen: producto.rutaImagen,
         fecVencimiento: producto.fecVencimiento ? reFormatoFecha(producto.fecVencimiento) : "",
       });
-      setCategoriaSeleccionada(producto.idCategoria);
-      setMarcaSeleccionada(producto.idMarca);
+      setCategoriaSeleccionada(producto.categoria.idCategoria);
+      setMarcaSeleccionada(producto.marca.idMarca);
       setImagenPrevia(producto.rutaImagen);
     } else {
       handleLimpiarFormulario();

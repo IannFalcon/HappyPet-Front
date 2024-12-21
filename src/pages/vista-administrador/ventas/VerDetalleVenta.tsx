@@ -3,7 +3,7 @@ import ContenedorModal from '../../../components/admin-components/ContenedorModa
 import TituloModal from '../../../components/admin-components/TituloModal';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import { Button, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
-import { DetalleVenta } from '../../../models/DetalleVenta';
+import { DetalleVenta } from '../../../interfaces/DetalleVenta';
 import axios from 'axios';
 import { apiBaseUrl } from '../../../services/apiBaseUrl';
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiBaseUrl } from "./apiBaseUrl";
-import { Carrito } from "../models/Carrito";
+import { Carrito } from "../interfaces/Carrito";
 import { obtenerIdUsuario } from "../utils/localStorage";
 
 const idUsuario = obtenerIdUsuario();

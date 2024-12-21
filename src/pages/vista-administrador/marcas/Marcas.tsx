@@ -5,7 +5,7 @@ import ContenedorBotones from "../../../components/admin-components/ContenedorBo
 import ContenedorTabla from "../../../components/admin-components/ContenedorTabla";
 import { BotonAgregar, BotonesAccion, BotonExportar } from "../../../components/admin-components/Botones";
 import AgregarMarca from "./AgregarMarca";
-import { Marca } from "../../../models/Marca";
+import { Marca } from "../../../interfaces/Marca";
 import { eliminarMarca, exportarListadoMarcas, obtenerMarcas } from "../../../services/marca-service";
 
 interface Columna {

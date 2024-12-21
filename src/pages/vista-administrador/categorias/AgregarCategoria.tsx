@@ -2,7 +2,7 @@ import { Box, TextField } from "@mui/material";
 import ContenedorModal from "../../../components/admin-components/ContenedorModal";
 import TituloModal from "../../../components/admin-components/TituloModal";
 import { useEffect, useState } from "react";
-import { Categoria } from "../../../models/Categoria";
+import { Categoria } from "../../../interfaces/Categoria";
 import { BotonesModal } from "../../../components/admin-components/Botones";
 import { actualizarCategoria, registrarCategoria } from "../../../services/categoria-service";
 

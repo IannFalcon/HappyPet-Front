@@ -1,14 +1,14 @@
 import { Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
-import { Carrito } from '../../models/Carrito';
+import { Carrito } from '../../interfaces/Carrito';
 import ContenedorTabla from '../../components/admin-components/ContenedorTabla';
-import { Producto } from '../../models/Producto';
+import { Producto } from '../../interfaces/Producto';
 import { Add, Payment, Remove } from '@mui/icons-material';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import { obtenerIdUsuario, obtenerNombreUsuario } from '../../utils/localStorage';
 import { manejarRedireccion, realizarPago } from '../../services/pago-service';
-import { Cliente } from '../../models/Cliente';
+import { Cliente } from '../../interfaces/Cliente';
 import { obtenerDatosCliente } from '../../services/cliente-service';
 import defaultImagen from '../../assets/default.jpg';
 

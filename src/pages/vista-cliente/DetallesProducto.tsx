@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import { useEffect, useState } from 'react'
-import { Producto } from '../../models/Producto';
+import { Producto } from '../../interfaces/Producto';
 import { obtenerProductoPorId } from '../../services/producto-service';
 import { useParams } from 'react-router-dom';
 import { formatoFecha } from '../../utils/dateFormat';
@@ -56,8 +56,8 @@ const DetallesProducto = () => {
           <Typography variant="body1">{producto?.descripcion}</Typography>
           <Typography variant="body1"><strong>Precio:</strong> {`S/ ${producto?.precioUnitario.toFixed(2)}`}</Typography>
           <Typography variant="body1"><strong>Unidades disponibles:</strong> {producto?.stock}</Typography>
-          <Typography variant="body1"><strong>Categoria:</strong> {producto?.productoCategoria?.nombre}</Typography>
-          <Typography variant="body1"><strong>Marca:</strong> {producto?.productoMarca?.nombre}</Typography>
+          <Typography variant="body1"><strong>Categoria:</strong> {producto?.categoria?.nombre}</Typography>
+          <Typography variant="body1"><strong>Marca:</strong> {producto?.marca?.nombre}</Typography>
           <Typography variant="body1">
             <strong>Fecha de vencimiento:</strong> {producto?.fecVencimiento ? formatoFecha(producto?.fecVencimiento) : 'No aplica'}
           </Typography>

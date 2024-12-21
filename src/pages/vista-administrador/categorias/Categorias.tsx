@@ -5,7 +5,7 @@ import ContenedorTabla from '../../../components/admin-components/ContenedorTabl
 import { useEffect, useState } from 'react';
 import { BotonAgregar, BotonesAccion, BotonExportar } from '../../../components/admin-components/Botones';
 import AgregarCategoria from './AgregarCategoria';
-import { Categoria } from '../../../models/Categoria';
+import { Categoria } from '../../../interfaces/Categoria';
 import { eliminarCategoria, exportarListadoCategorias, obtenerCategorias } from '../../../services/categoria-service';
 
 interface Columna {
