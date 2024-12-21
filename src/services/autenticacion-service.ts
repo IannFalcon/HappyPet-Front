@@ -21,10 +21,10 @@ export const iniciarSesion = async (dataToSend: any) => {
             window.location.replace("/");
             break;
           case "empleado":
-            window.location.replace("/admin/home");
+            window.location.replace("/admin-inicio");
             break;
           case "admin":
-            window.location.replace("/admin/home");
+            window.location.replace("/admin-inicio");
             break;
           default:
             break;

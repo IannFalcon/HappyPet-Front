@@ -1,4 +1,4 @@
-import { TableBody, TableCell, TableHead, TableRow } from "@mui/material";
+import { Button, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 import Contenedor from "../../../components/admin-components/Contenedor";
 import ContenedorBotones from "../../../components/admin-components/ContenedorBotones";
 import { useEffect, useState } from "react";
@@ -8,6 +8,8 @@ import AgregarProductos from "./AgregarProducto";
 import { Producto } from "../../../interfaces/Producto";
 import { eliminarProducto, exportarListadoProductos, obtenerProductos } from "../../../services/producto-service";
 import defaultImagen from '../../../assets/default.jpg';
+import { CheckBox } from "@mui/icons-material";
+import IngresoProductos from "./IngresoProductos";
 
 interface Columna {
   id: keyof Producto | "acciones";
@@ -35,6 +37,7 @@ const Productos: React.FC = () => {
   const [editarProducto, setEditarProducto] = useState<Producto | null>(null);
 
   const [openModal, setOpenModal] = useState(false);
+  const [openIngresoProductos, setOpenIngresoProductos] = useState(false);
 
   const handleOpenModal = (producto?: Producto) => {
     setEditarProducto(producto || null);
@@ -46,6 +49,15 @@ const Productos: React.FC = () => {
     listarProductos();
     setOpenModal(false);
   };
+
+  const handleOpenIngresoProductos = () => {
+    setOpenIngresoProductos(true);
+  };
+
+  const handleCloseIngresoProductos = () => {
+    listarProductos();
+    setOpenIngresoProductos(false);
+  }
 
   const listarProductos = async () => {
     try {
@@ -92,6 +104,21 @@ const Productos: React.FC = () => {
           open={openModal}
           onClose={handleCloseModal}
           producto={editarProducto}
+        />
+
+        <Button
+          variant="contained"
+          color="warning"
+          startIcon={<CheckBox />}
+          sx={{ marginLeft: 2 }}
+          onClick={() => handleOpenIngresoProductos()}
+        >
+          Ingreso de productos
+        </Button>
+
+        <IngresoProductos
+          open={openIngresoProductos}
+          onClose={handleCloseIngresoProductos}
         />
 
         <BotonExportar

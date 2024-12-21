@@ -8,7 +8,7 @@ interface BotonProps {
 }
 
 interface BotonesModalProps {
-  objeto: any;
+  objeto?: any;
   accion: (e: React.MouseEvent<HTMLButtonElement>) => void;
   cerrar: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }

@@ -63,9 +63,23 @@ export const obtenerProductoPorId = async (idProducto: number) => {
   }
 }
 
+export const obtenerIngresoProductos = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Producto/listar-ingreso`);
+    if(response.status === 200) {
+      return response.data.data;
+    } else {
+      throw new Error("Error al obtener los ingresos de productos");
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Ocurrió un error al obtener los ingresos de productos");
+  }
+}
+
 export const registrarProducto = async (dataToSend: any) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/Producto`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Producto/registrar`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -81,9 +95,27 @@ export const registrarProducto = async (dataToSend: any) => {
   }
 }
 
-export const actualizarProducto = async (dataToSend: any) => {
+export const registrarIngresoProducto = async (dataToSend: any) => {
   try {
-    const response = await axios.put(`${apiBaseUrl}/Producto`, dataToSend);
+    const response = await axios.post(`${apiBaseUrl}/Producto/registrar-ingreso`, dataToSend);
+    if(response.status === 200) {
+      alert(response.data.mensaje);
+    } else {
+      alert("Error al registrar el ingreso del producto");
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error al registrar el ingreso del producto");
+    }
+  }
+}
+
+export const actualizarProducto = async (idProducto: number, dataToSend: any) => {
+  try {
+    const response = await axios.put(`${apiBaseUrl}/Producto/actualizar/${idProducto}`, dataToSend);
     if(response.status === 200) {
       alert(response.data.mensaje);
     } else {
@@ -100,7 +132,7 @@ export const actualizarProducto = async (dataToSend: any) => {
 
 export const eliminarProducto = async (idProducto: number) => {
   try {
-    const response = await axios.delete(`${apiBaseUrl}/Producto/${idProducto}`);
+    const response = await axios.delete(`${apiBaseUrl}/Producto/eliminar/${idProducto}`);
     if(response.status === 200) {
       alert(response.data.mensaje);
       window.location.reload();
@@ -127,6 +159,26 @@ export const exportarListadoProductos = async () => {
       link.href = url;
       const date = new Date();
       link.setAttribute("download", `Listado-productos-${formatoFecha(date.toDateString())}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+    } else {
+      throw new Error("Error al exportar los productos");
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const exportarIngresoProductos = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/Producto/exportar-lista-ingreso`, { responseType: "blob" });
+    if (response.status === 200) {
+      alert("La lista de ingreso de productos se descargará en breve.");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      const date = new Date();
+      link.setAttribute("download", `Ingreso-productos-${formatoFecha(date.toDateString())}.xlsx`);
       document.body.appendChild(link);
       link.click();
     } else {
