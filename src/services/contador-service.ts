@@ -55,19 +55,6 @@ export const ObtenerContadorMarcas = async () => {
   }
 };
 
-export const ObtenerContadorUsuarios = async () => {
-  try {
-    const response = await axios.get(`${apiBaseUrl}/Contador/Usuarios`);
-    if(response.status === 200){
-      return response.data.data;
-    } else {
-      alert(response.data.mensaje);
-    }
-  } catch(error) {
-    manejarError(error);
-  }
-};
-
 export const ObtenerContadorClientes = async () => {
   try {
     const response = await axios.get(`${apiBaseUrl}/Contador/Clientes`);
@@ -81,9 +68,9 @@ export const ObtenerContadorClientes = async () => {
   }
 };
 
-export const ObtenerContadorVendedores = async () => {
+export const ObtenerContadorEmpleados = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Contador/Vendedores`);
+    const response = await axios.get(`${apiBaseUrl}/Contador/Empleados`);
     if(response.status === 200){
       return response.data.data;
     } else {
