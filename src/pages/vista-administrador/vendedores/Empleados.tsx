@@ -4,7 +4,7 @@ import ContenedorBotones from '../../../components/admin-components/ContenedorBo
 import { TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import ContenedorTabla from '../../../components/admin-components/ContenedorTabla';
 import { BotonAgregar, BotonesAccion, BotonExportar } from '../../../components/admin-components/Botones';
-import AgregarVendedor from './AgregarVendedor';
+import AgregarVendedor from './AgregarEmpleado';
 import { Vendedor } from '../../../interfaces/Vendedor';
 import { eliminarVendedor, exportarListadoVendedores, obtenerVendedores } from '../../../services/vendedor-service';
 

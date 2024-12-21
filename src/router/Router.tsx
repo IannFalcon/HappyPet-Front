@@ -3,7 +3,7 @@ import Login from "../pages/vista-autenticacion/Login";
 import PrincipalAdmin from "../layout/PrincipalAdmin";
 import Resumen from "../pages/vista-administrador/Resumen";
 import Productos from "../pages/vista-administrador/productos/Productos";
-import Vendedores from "../pages/vista-administrador/vendedores/Vendedores";
+import Vendedores from "../pages/vista-administrador/vendedores/Empleados";
 import Ventas from "../pages/vista-administrador/ventas/Ventas";
 import Categorias from "../pages/vista-administrador/categorias/Categorias";
 import Marcas from "../pages/vista-administrador/marcas/Marcas";
@@ -59,7 +59,7 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    path: "/admin/home",
+    path: "/admin-inicio",
     element: (
       <ProtectedRoute>
         <PrincipalAdmin />
@@ -79,11 +79,11 @@ export const router = createBrowserRouter([
         element: <Productos />
       },
       {
-        path: "productos/marcas",
+        path: "marcas",
         element: <Marcas />
       },
       {
-        path: "productos/categorias",
+        path: "categorias",
         element: <Categorias />
       },
       {
@@ -91,12 +91,12 @@ export const router = createBrowserRouter([
         element: <Usuarios />
       },
       {
-        path: "vendedores",
-        element: <Vendedores />
-      },
-      {
         path: "clientes",
         element: <Clientes />
+      },
+      {
+        path: "empleados",
+        element: <Vendedores />
       },
     ]
   }

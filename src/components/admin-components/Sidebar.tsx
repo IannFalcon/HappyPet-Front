@@ -1,4 +1,4 @@
-import { AddBusiness, Category, Dashboard, Engineering, ExpandLess, ExpandMore, Group, Inventory, Logout, Person, Pets, TrendingUp } from '@mui/icons-material';
+import { BusinessCenter, Category, Dashboard, ExpandLess, ExpandMore, Group, Inventory, Leaderboard, LocalShipping, Logout, Person, Pets, Sell } from '@mui/icons-material';
 import { Box, Collapse, List, ListItemButton, ListItemIcon, ListItemText, Typography } from '@mui/material';
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
@@ -103,10 +103,10 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
           {/* Resumen */}
           <ListItemButton
             component={Link}
-            to="/admin/home"
-            sx={estilosSeleccionado("/admin/home", {})}
+            to="/admin-inicio"
+            sx={estilosSeleccionado("/admin-inicio", {})}
             onClick={() => {
-              if (location.pathname === "/admin/home") {
+              if (location.pathname === "/admin-inicio") {
                 setCollapseResumen(!collapseResumen)
               }
             }}
@@ -129,11 +129,11 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
               {/* Ventas */}
               <ListItemButton
                 component={Link}
-                to="/admin/home/ventas"
-                sx={estilosSeleccionado("/admin/home/ventas", estilosItemChild())}
+                to="/admin-inicio/ventas"
+                sx={estilosSeleccionado("/admin-inicio/ventas", estilosItemChild())}
               >
                 <ListItemIcon sx={estilosIconos}>
-                  <TrendingUp />
+                  <Leaderboard />
                 </ListItemIcon>
                 {open && (
                   <ListItemText
@@ -142,27 +142,11 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
                 )}
               </ListItemButton>
 
-              {/* Productos */}
-              <ListItemButton
-                component={Link}
-                to="/admin/home/productos"
-                sx={estilosSeleccionado("/admin/home/productos", estilosItemChild())}
-              >
-                <ListItemIcon sx={estilosIconos}>
-                  <Inventory />
-                </ListItemIcon>
-                {open && (
-                  <ListItemText
-                    primary="Productos"
-                  />
-                )}
-              </ListItemButton>
-
               {/* Categorias */}
               <ListItemButton
                 component={Link}
-                to="/admin/home/productos/categorias"
-                sx={estilosSeleccionado("/admin/home/productos/categorias", estilosItemChild())}
+                to="/admin-inicio/categorias"
+                sx={estilosSeleccionado("/admin-inicio/categorias", estilosItemChild())}
               >
                 <ListItemIcon sx={estilosIconos}>
                   <Category />
@@ -177,15 +161,47 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
               {/* Marcas */}
               <ListItemButton
                 component={Link}
-                to="/admin/home/productos/marcas"
-                sx={estilosSeleccionado("/admin/home/productos/marcas", estilosItemChild())}
+                to="/admin-inicio/marcas"
+                sx={estilosSeleccionado("/admin-inicio/marcas", estilosItemChild())}
               >
                 <ListItemIcon sx={estilosIconos}>
-                  <AddBusiness />
+                  <Sell />
                 </ListItemIcon>
                 {open && (
                   <ListItemText
                     primary="Marcas"
+                  />
+                )}
+              </ListItemButton>
+
+              {/* Productos */}
+              <ListItemButton
+                component={Link}
+                to="/admin-inicio/productos"
+                sx={estilosSeleccionado("/admin-inicio/productos", estilosItemChild())}
+              >
+                <ListItemIcon sx={estilosIconos}>
+                  <Inventory />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary="Productos"
+                  />
+                )}
+              </ListItemButton>
+
+              {/* Proveedores */}
+              <ListItemButton
+                component={Link}
+                to="/admin-inicio/proveedores"
+                sx={estilosSeleccionado("/admin-inicio/proveedores", estilosItemChild())}
+              >
+                <ListItemIcon sx={estilosIconos}>
+                  <LocalShipping />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary="Proveedores"
                   />
                 )}
               </ListItemButton>
@@ -198,10 +214,10 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
             // Usuarios
             <ListItemButton
               component={Link}
-              to="/admin/home/usuarios"
-              sx={estilosSeleccionado("/admin/home/usuarios", {})}
+              to="/admin-inicio/usuarios"
+              sx={estilosSeleccionado("/admin-inicio/usuarios", {})}
               onClick={() => {
-                if (location.pathname === "/admin/home/usuarios") {
+                if (location.pathname === "/admin-inicio/usuarios") {
                   setCollapseUsuarios(!collapseUsuarios)
                 }
               }} 
@@ -222,27 +238,11 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
             
             <List component="div" disablePadding>
 
-              {/* Vendedores */}
-              <ListItemButton
-                component={Link}
-                to="/admin/home/vendedores"
-                sx={estilosSeleccionado("/admin/home/vendedores", estilosItemChild())}
-              >
-                <ListItemIcon sx={estilosIconos}>
-                  <Engineering />
-                </ListItemIcon>
-                {open && (
-                  <ListItemText
-                    primary="Vendedores"
-                  />
-                )}
-              </ListItemButton>
-
               {/* Clientes */}
               <ListItemButton
                 component={Link}
-                to="/admin/home/clientes"
-                sx={estilosSeleccionado("/admin/home/clientes", estilosItemChild())}
+                to="/admin-inicio/clientes"
+                sx={estilosSeleccionado("/admin-inicio/clientes", estilosItemChild())}
               >
                 <ListItemIcon sx={estilosIconos}>
                   <Person />
@@ -250,6 +250,22 @@ const Sidebar: React.FC<MenuProps> = ({ open, close }) => {
                 {open && (
                   <ListItemText
                     primary="Clientes"
+                  />
+                )}
+              </ListItemButton>
+
+              {/* Empleados */}
+              <ListItemButton
+                component={Link}
+                to="/admin-inicio/empleados"
+                sx={estilosSeleccionado("/admin-inicio/empleados", estilosItemChild())}
+              >
+                <ListItemIcon sx={estilosIconos}>
+                  <BusinessCenter />
+                </ListItemIcon>
+                {open && (
+                  <ListItemText
+                    primary="Empleados"
                   />
                 )}
               </ListItemButton>
