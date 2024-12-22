@@ -1,9 +1,8 @@
-import { Producto } from "./Producto";
-
 export interface Carrito {
-  idCarrito: number;
-  idUsuario: number;
   idProducto: number;
+  rutaImagen: string;
+  nombre: string;
+  descripcion: string;
+  precioUnitario: number;
   cantidad: number;
-  productosCarrito: Producto;
 }

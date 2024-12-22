@@ -1,13 +1,13 @@
 import axios from "axios";
 import { apiBaseUrl } from "./apiBaseUrl";
 import { Carrito } from "../interfaces/Carrito";
-import { obtenerIdUsuario } from "../utils/localStorage";
+import { obtenerIdCliente } from "../utils/localStorage";
 
-const idUsuario = obtenerIdUsuario();
+const idCliente = obtenerIdCliente();
 
 export const obtenerProductosCarrito = async () => {
   try {
-    const response = await axios.get(`${apiBaseUrl}/Carrito/${idUsuario}`);
+    const response = await axios.get(`${apiBaseUrl}/Carrito/productos/${idCliente}`);
     if (response.status === 200) {
       return response.data.data;
     } else {
@@ -36,37 +36,23 @@ export const cantidadProductosCarrito = async () => {
   }
 };
 
-export const accionesCarrito = async (idProducto: number, accion: boolean) => {
+export const accionesCarrito = async (dataToSend: any) => {
   try {
-    const response = await axios.post(`${apiBaseUrl}/Carrito?idUsuario=${idUsuario}&idProducto=${idProducto}&accion=${accion}`);
+    const response = await axios.post(`${apiBaseUrl}/Carrito/acciones`, dataToSend);
     if (response.status === 200) {
       const mensaje = response.data.mensaje;
-      switch (mensaje) {
-        case "AUMENTADO":
-          alert("La cantidad del producto ha sido aumentada");
-          break;
-        case "REDUCIDO":
-          alert("La cantidad del producto ha sido reducida");
-          break;
-        case "ELIMINADO":
-          alert("El producto ha sido eliminado del carrito");
-          break;
-        case "AÑADIDO":
-          alert("El producto ha sido añadido al carrito");
-          break;
-        case "SIN_STOCK":
-          alert("No hay suficiente stock del producto");
-          break;
-        default:
-          alert("El producto no ha sido añadido al carrito");
-          break;
-      }
+      console.log(mensaje);
       return;
     } else {
       console.error(response);
       alert("Error al agregar o eliminar un producto del carrito");
     }
   } catch (error) {
-    console.error(error);
+    if (axios.isAxiosError(error) && error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      console.error("Error: ", error);
+      alert("Ocurrió un error inesperado. Por favor, inténtelo de nuevo");
+    }
   }
 };

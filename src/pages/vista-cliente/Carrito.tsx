@@ -1,4 +1,4 @@
-import { Box, Button, Divider, IconButton, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
+import { Box, Button, Divider, FormControl, Grid, IconButton, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { Carrito } from '../../interfaces/Carrito';
 import ContenedorTabla from '../../components/admin-components/ContenedorTabla';
@@ -6,11 +6,10 @@ import { Producto } from '../../interfaces/Producto';
 import { Add, Payment, Remove } from '@mui/icons-material';
 import { accionesCarrito, obtenerProductosCarrito } from '../../services/carrito-service';
 import { useNavigate, useOutletContext } from 'react-router-dom';
-import { obtenerIdUsuario, obtenerNombreUsuario } from '../../utils/localStorage';
+import { obtenerIdCliente } from '../../utils/localStorage';
 import { manejarRedireccion, realizarPago } from '../../services/pago-service';
-import { Cliente } from '../../interfaces/Cliente';
-import { obtenerDatosCliente } from '../../services/cliente-service';
 import defaultImagen from '../../assets/default.jpg';
+import { obtenerDireccionesCliente } from '../../services/direccion-cliente-service';
 
 interface Columnas {
   id: keyof Producto | "idCarrito" | "cantidad" | "precioTotal";
@@ -43,10 +42,18 @@ const VistaCarrito: React.FC = () => {
 
   const { actualizarCantidadProductos, session } = useOutletContext<OutletContext>();
   
-  const idUsuario = obtenerIdUsuario();
-  const [datosCliente, setDatosCliente] = useState<Cliente | null>(null);
+  const idCliente = obtenerIdCliente();
 
   const [productosCarrito, setProductosCarrito] = useState<Carrito[]>([]);
+
+  const [direcciones, setDirecciones] = useState<any[]>([]);
+  const [direccionSeleccionada, setDireccionSeleccionada] = useState<number>(0);
+  const [direccionEnvio, setDireccionEnvio] = useState({
+    pais: "Perú",
+    ciudad: "Lima",
+    direccion: "Av. San Martin",
+    codigoPostal: "12354"
+  })
 
   const navigate = useNavigate();
 
@@ -57,21 +64,17 @@ const VistaCarrito: React.FC = () => {
     }
   };
 
-  const obtenerInformacionContacto = async () => {
-    const datos = await obtenerDatosCliente(idUsuario);
-    if (datos) {
-      setDatosCliente(datos);
-    } else {
-      return null;
-    }
-  }
-
   const calcularTotal = () => {
     return productosCarrito.reduce(
       (acc, item) =>
-        acc + (item.productosCarrito as any).precioUnitario * item.cantidad,
+        acc + (item as any).precioUnitario * item.cantidad,
       0
     );
+  }
+
+  const obtenerDirecciones = async () => {
+    const direcciones = await obtenerDireccionesCliente(idCliente);
+    setDirecciones(direcciones);
   }
 
   const listarProductosCarrito = async () => {
@@ -83,12 +86,20 @@ const VistaCarrito: React.FC = () => {
   };
 
   const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
-    await accionesCarrito(idProducto, accion);
+    
+    const dataToSend = {
+      idCliente: idCliente,
+      idProducto: idProducto,
+      cantidad: "1",
+      accion: accion
+    }
+
+    await accionesCarrito(dataToSend);
     await listarProductosCarrito();
   };
 
   useEffect(() => {
-    obtenerInformacionContacto();
+    obtenerDirecciones();
     listarProductosCarrito();
   }, []);
 
@@ -142,13 +153,13 @@ const VistaCarrito: React.FC = () => {
                   const value =
                     columna.id === "precioTotal"
                       ? ""
-                      : (producto.productosCarrito as any)[columna.id];
+                      : (producto as any)[columna.id];
                   return (
                     <TableCell key={columna.id} align={columna.align}>
                       {columna.id === "rutaImagen" ? (
                         <img
-                          src={producto.productosCarrito.rutaImagen ? producto.productosCarrito.rutaImagen : defaultImagen}
-                          alt={producto.productosCarrito.nombre}
+                          src={producto.rutaImagen ? producto.rutaImagen : defaultImagen}
+                          alt={producto.nombre}
                           style={{ width: "80px", height: "80px" }}
                         />
                       ) : columna.id === "cantidad" ? (
@@ -182,7 +193,7 @@ const VistaCarrito: React.FC = () => {
                           </IconButton>
                         </Box>
                       ) : columna.id === "precioTotal" ? (
-                        producto.cantidad * producto.productosCarrito.precioUnitario
+                        producto.cantidad * producto.precioUnitario
                       ) : (
                         value
                       )}
@@ -255,7 +266,7 @@ const VistaCarrito: React.FC = () => {
           <Box>
             <Divider sx={{ mb: 1 }}/>
             <Typography variant="h6" sx={{ p: 1, fontWeight: "bold" }}>
-              Informacion de contacto
+              Detalles de envío
             </Typography>
             <Divider sx={{ mt: 1 }} />
             <Box
@@ -266,17 +277,64 @@ const VistaCarrito: React.FC = () => {
                 gap: 1,
               }}
             >
+              <Grid container spacing={2} sx={{ justifyContent: "center" }}>
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth>
+                    <InputLabel>Direccion de envio</InputLabel>
+                    <Select
+                      fullWidth
+                      label="Direccion de envio"
+                      variant="outlined"
+                      value={direccionSeleccionada}
+                      onChange={(e) => {
+                        setDireccionSeleccionada(Number(e.target.value));
+                        setDireccionEnvio({
+                          ...direccionEnvio,
+                        });
+                      }}
+                      sx={{ mb: 2 }}
+                    >
+                      <MenuItem value={0}>Seleccionar</MenuItem>
+                      {direcciones.map((direccion) => (
+                        <MenuItem
+                          key={direccion.idDireccion}
+                          value={direccion.idDireccion}
+                        >
+                          {direccion.nombre}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Button
+                    fullWidth
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      height: "75%",
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#388e3c",
+                      },
+                    }}
+                    onClick={() => {}}
+                  >
+                    Agregar dirección
+                  </Button>
+                </Grid>
+              </Grid>
               <Typography variant="body2">
-                <strong>Nombre:</strong>
-                {` ${obtenerNombreUsuario()}`}
+                <strong>País:</strong>{ ` ${direccionEnvio.pais}` }
               </Typography>
               <Typography variant="body2">
-                <strong>Correo:</strong>
-                {` ${datosCliente?.correo}`}
+                <strong>Ciudad:</strong>{ ` ${direccionEnvio.ciudad}` }
               </Typography>
               <Typography variant="body2">
-                <strong>Telefono:</strong>
-                {` ${datosCliente?.telefono}`}
+                <strong>Direccion:</strong>{ ` ${direccionEnvio.direccion}` }
+              </Typography>
+              <Typography variant="body2">
+                <strong>Código postal:</strong>{ ` ${direccionEnvio.codigoPostal}` }
               </Typography>
               <Typography sx={{ mt: 1, fontSize: "12px" }}>
                 Nota: En caso de que la información de contacto sea incorrecta, por favor actualizala en la sección de perfil.
@@ -307,10 +365,10 @@ const VistaCarrito: React.FC = () => {
                 {productosCarrito.length 
                 ? productosCarrito.map((producto) => (
                   <TableRow>
-                    <TableCell>{producto.productosCarrito.nombre}</TableCell>
+                    <TableCell>{producto.nombre}</TableCell>
                     <TableCell align="center">{producto.cantidad}</TableCell>
                     <TableCell align="center">
-                      {( producto.productosCarrito.precioUnitario * producto.cantidad).toFixed(2)}
+                      {( producto.precioUnitario * producto.cantidad).toFixed(2)}
                     </TableCell>
                   </TableRow>
                 ))

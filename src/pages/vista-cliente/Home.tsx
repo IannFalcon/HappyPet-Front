@@ -12,6 +12,7 @@ import { obtenerCategorias } from '../../services/categoria-service';
 import { obtenerMarcas } from '../../services/marca-service';
 import { obtenerProductosFiltrados } from '../../services/producto-service';
 import defaultImagen from '../../assets/default.jpg';
+import { obtenerIdCliente } from '../../utils/localStorage';
 
 interface OutletContext {
   actualizarCantidadProductos: () => void;
@@ -33,6 +34,7 @@ const Home: React.FC = () => {
   const [idMarca, setIdMarca] = useState<number | null>(null);
   const [nomProducto, setNomProducto] = useState<string | null>(null);
 
+  const idCliente = obtenerIdCliente();
   const navigate = useNavigate();
 
   const listarCategorias = async () => {
@@ -78,11 +80,22 @@ const Home: React.FC = () => {
   }
 
   const validarProductoCarrito = (idProducto: number) => {
+    if (productosCarrito.length === 0) {
+      return;
+    } 
     return productosCarrito.some(producto => producto.idProducto === idProducto);
   }
 
   const ejecutarAccionesCarrito = async (idProducto: number, accion: boolean) => {
-    await accionesCarrito(idProducto, accion);
+
+    const dataToSend = {
+      idCliente: idCliente,
+      idProducto: idProducto,
+      cantidad: "1",
+      accion: accion
+    }
+
+    await accionesCarrito(dataToSend);
     await actualizarListadoProductos();
   };
 
@@ -152,11 +165,11 @@ const Home: React.FC = () => {
         {/* Filtros */}
         <Box
           sx={{
+            height: "650px",
             width: "20%",
             mr: 2,
             display: "flex",
             flexDirection: "column",
-            justifyContent: "center",
             border: "1px solid #000",
           }}
         >
